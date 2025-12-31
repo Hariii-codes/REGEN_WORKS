@@ -1,0 +1,22 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(pip install:*)",
+      "Bash(python:*)",
+      "Bash(cp:*)",
+      "Bash(export FLASK_ENV=development:*)",
+      "Bash(export PORT=5001:*)",
+      "Bash(flask run:*)",
+      "Bash(lsof:*)",
+      "Bash(kill:*)",
+      "Bash(export PORT=10000:*)",
+      "Bash(export FLASK_APP=app:*)",
+      "Bash(ls:*)",
+      "Bash(xargs kill:*)",
+      "Bash(curl:*)",
+      "Bash(git init:*)",
+      "Bash(git remote add:*)",
+      "Bash(git add:*)"
+    ]
+  }
+}

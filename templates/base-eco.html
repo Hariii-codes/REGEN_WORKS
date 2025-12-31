@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ get_localized_string('base.ReGenWorks_smart_waste_management', get_current_language(), 'ReGenWorks - Smart Waste Management') }}</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- OpenLayers CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ol@v7.3.0/ol.css">
+
+    <!-- Eco Design System V2 - Improved Visibility -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/eco-design-system-v2.css') }}">
+
+    <!-- Legacy Bootstrap (for components that still use it) -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+
+  
+    <!-- Custom Styles -->
+    <style>
+        /* Override Bootstrap with eco theme */
+        .alert {
+            border: none;
+            border-radius: var(--radius-md);
+            backdrop-filter: var(--glass-blur);
+        }
+
+        .alert-success {
+            background: linear-gradient(135deg, rgba(107, 203, 119, 0.2), rgba(76, 175, 80, 0.2));
+            color: var(--eco-accent-dark);
+            border: 1px solid rgba(107, 203, 119, 0.3);
+        }
+
+        .alert-info {
+            background: linear-gradient(135deg, rgba(33, 150, 243, 0.2), rgba(3, 169, 244, 0.2));
+            color: #0277bd;
+            border: 1px solid rgba(33, 150, 243, 0.3);
+        }
+
+        .alert-warning {
+            background: linear-gradient(135deg, rgba(255, 193, 7, 0.2), rgba(255, 152, 0, 0.2));
+            color: #e65100;
+            border: 1px solid rgba(255, 193, 7, 0.3);
+        }
+
+        .alert-danger {
+            background: linear-gradient(135deg, rgba(244, 67, 54, 0.2), rgba(211, 47, 47, 0.2));
+            color: #c62828;
+            border: 1px solid rgba(244, 67, 54, 0.3);
+        }
+
+        /* Form enhancements */
+        .form-control, .form-select {
+            border: 2px solid var(--eco-light-green);
+            border-radius: var(--radius-md);
+            padding: 12px 16px;
+            transition: all var(--transition-normal);
+            background: rgba(255, 255, 255, 0.8);
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: var(--eco-primary);
+            box-shadow: 0 0 0 0.2rem rgba(107, 203, 119, 0.25);
+            background: white;
+        }
+
+        .btn {
+            border-radius: var(--radius-full);
+            padding: 10px 24px;
+            font-weight: 600;
+            transition: all var(--transition-normal);
+        }
+
+        .btn-primary {
+            background: var(--eco-gradient-primary);
+            border: none;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg), var(--shadow-glow);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            border: none;
+        }
+
+        .btn-success:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        /* Card enhancements */
+        .card {
+            border: none;
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            background: var(--glass-bg);
+            backdrop-filter: var(--glass-blur);
+            border: 1px solid var(--glass-border);
+            transition: all var(--transition-normal);
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-xl);
+        }
+
+        /* Mobile menu adjustments */
+        @media (max-width: 768px) {
+            .eco-nav-links {
+                position: fixed;
+                top: 80px;
+                left: 0;
+                right: 0;
+                background: rgba(255, 255, 255, 0.98);
+                flex-direction: column;
+                padding: var(--spacing-lg);
+                box-shadow: var(--shadow-lg);
+                transform: translateY(-100vh);
+                transition: transform var(--transition-normal);
+            }
+
+            .eco-nav-links.active {
+                transform: translateY(0);
+            }
+
+            .mobile-menu-toggle {
+                display: block !important;
+            }
+        }
+
+        .mobile-menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--eco-primary);
+            cursor: pointer;
+        }
+
+        /* Loading spinner */
+        .eco-spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(107, 203, 119, 0.3);
+            border-radius: 50%;
+            border-top-color: var(--eco-primary);
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Points badge animation */
+        .eco-points-badge {
+            background: var(--eco-gradient-primary);
+            color: white;
+            padding: 4px 8px;
+            border-radius: var(--radius-full);
+            font-size: 0.75rem;
+            font-weight: 700;
+            animation: pulse 2s ease-in-out infinite;
+            display: inline-block;
+            min-width: 50px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <!-- Enhanced Eco Navigation -->
+    <nav class="eco-nav nav-enhanced">
+        <div class="nav-container">
+            <a href="{{ url_for('index') }}" class="eco-logo">
+                <i class="fas fa-leaf" style="color: var(--eco-primary);"></i>
+                <span>ReGenWorks</span>
+            </a>
+
+            <button class="mobile-menu-toggle" id="mobileMenuToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+
+            <ul class="eco-nav-links" id="navLinks">
+                <li>
+                    <a href="{{ url_for('index') }}" class="eco-nav-link {% if request.path == url_for('index') %}active{% endif %}">
+                        <i class="fas fa-camera"></i>
+                        <span>Analyze</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ url_for('marketplace') }}" class="eco-nav-link {% if request.path == url_for('marketplace') %}active{% endif %}">
+                        <i class="fas fa-store"></i>
+                        <span>Marketplace</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ url_for('municipality') }}" class="eco-nav-link {% if request.path == url_for('municipality') %}active{% endif %}">
+                        <i class="fas fa-building"></i>
+                        <span>Municipality</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ url_for('drop_points') }}" class="eco-nav-link {% if request.path == url_for('drop_points') %}active{% endif %}">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>Drop Points</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ url_for('infrastructure_projects') }}" class="eco-nav-link {% if '/infrastructure-projects' in request.path or '/projects' in request.path %}active{% endif %}">
+                        <i class="fas fa-project-diagram"></i>
+                        <span>Projects</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ url_for('my_contribution_blockchain') }}" class="eco-nav-link {% if '/my-contributions' in request.path or '/blockchain' in request.path %}active{% endif %}">
+                        <i class="fas fa-link"></i>
+                        <span>Material Journey</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ url_for('rewards') }}" class="eco-nav-link {% if request.path == url_for('rewards') %}active{% endif %}">
+                        <i class="fas fa-gift"></i>
+                        <span>Rewards</span>
+                    </a>
+                </li>
+
+                {% if current_user.is_authenticated %}
+                <li class="nav-user-menu">
+                    <div class="user-dropdown">
+                        <button class="user-dropdown-btn" id="userDropdownBtn">
+                            <i class="fas fa-user-circle"></i>
+                            <span>{{ current_user.username }}</span>
+                            <span class="eco-points-badge">{{ current_user.eco_points }} pts</span>
+                        </button>
+
+                        <div class="user-dropdown-menu" id="userDropdownMenu">
+                            <a href="{{ url_for('auth.profile') }}" class="dropdown-item">
+                                <i class="fas fa-user"></i>
+                                My Profile
+                            </a>
+                            <a href="{{ url_for('footprint_dashboard') }}" class="dropdown-item">
+                                <i class="fas fa-chart-line"></i>
+                                Impact Dashboard
+                            </a>
+                            <div class="dropdown-divider"></div>
+                            <div class="language-selector">
+                                <small>Language</small>
+                                <form method="POST" action="{{ url_for('change_language') }}" id="languageForm" class="d-inline">
+                                    <select name="language" id="languageSelect" class="form-select form-select-sm">
+                                        {% set all_langs = get_all_languages() %}
+                                        {% set current_lang = get_current_language() %}
+                                        {% for lang_code, lang_info in all_langs.items() %}
+                                        <option value="{{ lang_code }}"
+                                                {% if current_lang == lang_code %}selected{% endif %}>
+                                            {{ lang_info.native }}
+                                        </option>
+                                        {% endfor %}
+                                    </select>
+                                </form>
+                            </div>
+                            <div class="dropdown-divider"></div>
+                            <a href="{{ url_for('auth.logout') }}" class="dropdown-item text-danger">
+                                <i class="fas fa-sign-out-alt"></i>
+                                Logout
+                            </a>
+                        </div>
+                    </div>
+                </li>
+                {% else %}
+                <li>
+                    <a href="{{ url_for('auth.login') }}" class="eco-btn eco-btn-secondary">
+                        Login
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ url_for('auth.register') }}" class="eco-btn">
+                        Sign Up
+                    </a>
+                </li>
+                {% endif %}
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Main Content with margin for fixed nav -->
+    <main style="margin-top: 80px; min-height: calc(100vh - 80px);">
+        <!-- Flash Messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="container mt-4">
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        <!-- Page content -->
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Enhanced Eco Footer -->
+    <footer class="eco-footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>ReGenWorks</h3>
+                    <p>Transforming waste into sustainable infrastructure through AI-powered recycling and material recovery.</p>
+                    <div class="social-links">
+                        <a href="#" class="social-link"><i class="fab fa-facebook"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-linkedin"></i></a>
+                    </div>
+                </div>
+
+                <div class="footer-section">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="{{ url_for('index') }}">Analyze Waste</a></li>
+                        <li><a href="{{ url_for('marketplace') }}">Marketplace</a></li>
+                        <li><a href="{{ url_for('drop_points') }}">Drop Points</a></li>
+                        <li><a href="{{ url_for('my_contribution_blockchain') }}">Material Journey</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-section">
+                    <h4>Impact</h4>
+                    <div class="impact-stats">
+                        <div class="stat">
+                            <span class="stat-number" data-counter="125000">0</span>
+                            <span class="stat-label">kg Recycled</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-number" data-counter="8500">0</span>
+                            <span class="stat-label">Active Users</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="footer-section">
+                    <h4>Newsletter</h4>
+                    <p>Get updates on recycling tips and new features</p>
+                    <form class="newsletter-form">
+                        <input type="email" placeholder="Your email" class="form-control">
+                        <button type="submit" class="eco-btn">Subscribe</button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <p>&copy; 2024 ReGenWorks. Building a sustainable future, one recycled item at a time.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/ol@v7.3.0/dist/ol.js"></script>
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/webcam.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/live_language_switch.js') }}"></script>
+
+    <style>
+        /* Footer styles */
+        .eco-footer {
+            background: linear-gradient(135deg, var(--eco-primary-dark), #1a4d2e);
+            color: white;
+            padding: var(--spacing-xxl) 0 var(--spacing-lg) 0;
+            margin-top: var(--spacing-xxl);
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: var(--spacing-xl);
+            margin-bottom: var(--spacing-xl);
+        }
+
+        .footer-section h3, .footer-section h4 {
+            margin-bottom: var(--spacing-md);
+            color: var(--eco-light-green);
+        }
+
+        .footer-section ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .footer-section ul li {
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .footer-section a {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            transition: color var(--transition-normal);
+        }
+
+        .footer-section a:hover {
+            color: var(--eco-light-green);
+        }
+
+        .social-links {
+            display: flex;
+            gap: var(--spacing-md);
+            margin-top: var(--spacing-md);
+        }
+
+        .social-link {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            transition: all var(--transition-normal);
+        }
+
+        .social-link:hover {
+            background: var(--eco-primary);
+            transform: translateY(-2px);
+        }
+
+        .impact-stats {
+            display: flex;
+            gap: var(--spacing-lg);
+            margin-top: var(--spacing-md);
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-number {
+            display: block;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--eco-light-green);
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        .newsletter-form {
+            display: flex;
+            gap: var(--spacing-sm);
+            margin-top: var(--spacing-md);
+        }
+
+        .newsletter-form input {
+            flex: 1;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: var(--spacing-lg);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            opacity: 0.8;
+        }
+
+        /* User dropdown styles */
+        .user-dropdown {
+            position: relative;
+        }
+
+        .user-dropdown-btn {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-xs);
+            background: none;
+            border: none;
+            color: var(--eco-primary-dark);
+            font-weight: 500;
+            cursor: pointer;
+            padding: var(--spacing-xs);
+            border-radius: var(--radius-sm);
+            transition: background var(--transition-normal);
+        }
+
+        .user-dropdown-btn:hover {
+            background: rgba(107, 203, 119, 0.1);
+        }
+
+        .user-dropdown-menu {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: white;
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-xl);
+            min-width: 250px;
+            padding: var(--spacing-md) 0;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all var(--transition-normal);
+            z-index: 1000;
+        }
+
+        .user-dropdown-menu.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            padding: var(--spacing-sm) var(--spacing-md);
+            color: var(--eco-primary-dark);
+            text-decoration: none;
+            transition: background var(--transition-normal);
+        }
+
+        .dropdown-item:hover {
+            background: rgba(107, 203, 119, 0.1);
+        }
+
+        .dropdown-divider {
+            height: 1px;
+            background: rgba(0, 0, 0, 0.1);
+            margin: var(--spacing-sm) 0;
+        }
+
+        .language-selector {
+            padding: var(--spacing-sm) var(--spacing-md);
+        }
+
+        .language-selector small {
+            display: block;
+            margin-bottom: var(--spacing-xs);
+            opacity: 0.7;
+        }
+    </style>
+
+    <script>
+        // Mobile menu toggle
+        document.getElementById('mobileMenuToggle').addEventListener('click', function() {
+            document.getElementById('navLinks').classList.toggle('active');
+        });
+
+        // User dropdown
+        const userDropdownBtn = document.getElementById('userDropdownBtn');
+        const userDropdownMenu = document.getElementById('userDropdownMenu');
+
+        if (userDropdownBtn && userDropdownMenu) {
+            userDropdownBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                userDropdownMenu.classList.toggle('show');
+            });
+
+            document.addEventListener('click', function() {
+                userDropdownMenu.classList.remove('show');
+            });
+
+            userDropdownMenu.addEventListener('click', function(e) {
+                e.stopPropagation();
+            });
+        }
+
+        // Language change
+        const languageSelect = document.getElementById('languageSelect');
+        if (languageSelect) {
+            languageSelect.addEventListener('change', function() {
+                const form = document.getElementById('languageForm');
+                if (form) {
+                    form.submit();
+                }
+            });
+        }
+
+        // Close mobile menu when clicking a link
+        document.querySelectorAll('.eco-nav-link').forEach(link => {
+            link.addEventListener('click', () => {
+                document.getElementById('navLinks').classList.remove('active');
+            });
+        });
+
+            </script>
+
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

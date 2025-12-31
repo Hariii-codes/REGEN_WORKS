@@ -1,0 +1,1082 @@
+{% extends "base-eco.html" %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="eco-hero">
+    <div class="hero-content">
+        <h1 class="hero-title" data-animate="fade-up">
+            <i class="fas fa-recycle eco-leaf" style="font-size: 0.8em;"></i>
+            ReGenWorks Analysis
+        </h1>
+        <p class="hero-subtitle" data-animate="fade-up">
+            Transform waste into sustainable infrastructure with AI-powered recycling analysis
+        </p>
+        <div class="hero-buttons" data-animate="fade-up">
+            <a href="#upload-section" class="eco-btn">
+                <i class="fas fa-camera"></i>
+                Start Analyzing
+            </a>
+            <a href="{{ url_for('drop_points') }}" class="eco-btn eco-btn-secondary">
+                <i class="fas fa-map-marker-alt"></i>
+                Find Drop Points
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- Main Content Section -->
+<section id="upload-section" class="section">
+    <div class="container">
+        <div class="grid grid-2">
+            <!-- Upload Card -->
+            <div class="eco-card" data-animate="fade-right">
+                <div class="card-header-eco">
+                    <h2>
+                        <i class="fas fa-camera" style="color: var(--eco-primary);"></i>
+                        Analyze Your Waste
+                    </h2>
+                </div>
+
+                <form method="POST" enctype="multipart/form-data" id="upload-form">
+                    <!-- Image Capture Options -->
+                    <div class="capture-options mb-4">
+                        <div class="option-group">
+                            <input type="radio" class="option-radio" name="capture-option" id="option-upload" autocomplete="off" checked>
+                            <label class="option-label" for="option-upload">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                                <span>Upload Image</span>
+                            </label>
+
+                            <input type="radio" class="option-radio" name="capture-option" id="option-webcam" autocomplete="off">
+                            <label class="option-label" for="option-webcam">
+                                <i class="fas fa-camera"></i>
+                                <span>Use Webcam</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- File Upload Option -->
+                    <div id="upload-container" class="upload-container">
+                        <div class="file-upload-area" id="fileUploadArea">
+                            <div class="upload-icon">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                            </div>
+                            <p>Drag & drop an image here or click to browse</p>
+                            <input type="file" id="waste-image" name="file" accept="image/*" hidden>
+
+                            <!-- Voice Input for Description -->
+                            {% if current_user.is_authenticated %}
+                            <div class="voice-input mt-4">
+                                <label class="voice-label">
+                                    <i class="fas fa-microphone"></i>
+                                    Add voice description
+                                </label>
+                                <div class="voice-input-group">
+                                    <input type="text"
+                                           id="voice-description"
+                                           name="description"
+                                           class="voice-input-field"
+                                           placeholder="Tap mic to speak"
+                                           readonly>
+                                    <button class="voice-btn" id="voice-desc-btn" type="button">
+                                        <i class="fas fa-microphone"></i>
+                                    </button>
+                                </div>
+                                <div id="voice-desc-status" class="voice-status"></div>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Webcam Option -->
+                    <div id="webcam-option-container" class="webcam-container d-none">
+                        <div id="webcam-alerts"></div>
+
+                        <button type="button" id="start-webcam" class="eco-btn eco-btn-secondary w-100 mb-3">
+                            <i class="fas fa-video"></i>
+                            Start Camera
+                        </button>
+
+                        <div id="webcam-container" class="webcam-preview d-none mb-3">
+                            <div class="webcam-wrapper">
+                                <video id="webcam-video" playsinline></video>
+                                <button type="button" id="close-webcam" class="webcam-close-btn d-none">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                            <button type="button" id="capture-image" class="eco-btn d-none w-100 mt-3">
+                                <i class="fas fa-camera"></i>
+                                Capture Image
+                            </button>
+                            <canvas id="webcam-canvas" class="d-none"></canvas>
+                        </div>
+
+                        <input type="hidden" id="webcam-image-data" name="webcam_image">
+                    </div>
+
+                    <!-- Image Preview -->
+                    <div id="image-preview-container" class="preview-container d-none">
+                        <p class="preview-label">Selected Image:</p>
+                        <img id="preview-image" src="#" alt="Preview" class="preview-image">
+                    </div>
+
+                    <!-- Analysis Button -->
+                    <button type="submit" class="eco-btn w-100" id="upload-btn">
+                        <span id="upload-spinner" class="eco-spinner d-none"></span>
+                        <i class="fas fa-search"></i>
+                        Analyze Item
+                    </button>
+                </form>
+            </div>
+
+            <!-- Results Card -->
+            <div class="eco-card" data-animate="fade-left">
+                {% if result %}
+                    <div class="results-header">
+                        <h2>
+                            <i class="fas fa-robot" style="color: var(--eco-primary);"></i>
+                            Analysis Results
+                        </h2>
+                    </div>
+
+                    <div class="result-preview text-center mb-4">
+                        <img src="{{ image_path }}" alt="Uploaded waste" class="result-image">
+                    </div>
+
+                    <div class="result-badges">
+                        <div class="badge-item">
+                            <span class="badge-label">Recyclable</span>
+                            {% if result.is_recyclable %}
+                                <span class="badge-value success">
+                                    <i class="fas fa-check-circle"></i>
+                                    Yes
+                                </span>
+                            {% else %}
+                                <span class="badge-value danger">
+                                    <i class="fas fa-times-circle"></i>
+                                    No
+                                </span>
+                            {% endif %}
+                        </div>
+
+                        <div class="badge-item">
+                            <span class="badge-label">Material</span>
+                            <span class="badge-value primary">
+                                <i class="material-icon" data-material="{{ result.material }}"></i>
+                                {{ result.material }}
+                            </span>
+                        </div>
+
+                        <div class="badge-item">
+                            <span class="badge-label">E-Waste</span>
+                            {% if result.is_ewaste %}
+                                <span class="badge-value warning">
+                                    <i class="fas fa-laptop"></i>
+                                    Yes
+                                </span>
+                            {% else %}
+                                <span class="badge-value secondary">
+                                    <i class="fas fa-times"></i>
+                                    No
+                                </span>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Tabbed Analysis -->
+                    <div class="analysis-tabs">
+                        <div class="tab-headers">
+                            <button class="tab-btn active" data-tab="summary">
+                                <i class="fas fa-clipboard-list"></i>
+                                Summary
+                            </button>
+                            <button class="tab-btn" data-tab="recycling">
+                                <i class="fas fa-recycle"></i>
+                                Recycling
+                            </button>
+                            <button class="tab-btn" data-tab="impact">
+                                <i class="fas fa-leaf"></i>
+                                Impact
+                            </button>
+                            <button class="tab-btn" data-tab="full">
+                                <i class="fas fa-file-alt"></i>
+                                Full
+                            </button>
+                        </div>
+
+                        <div class="tab-content">
+                            <div class="tab-pane active" id="summary">
+                                {% if result.summary %}
+                                    <div class="item-summary">
+                                        {{ result.summary|safe }}
+                                    </div>
+                                {% else %}
+                                    <h6>Material: <span class="eco-badge">{{ result.material }}</span></h6>
+                                    <div class="mt-3">
+                                        <h6>Best Disposal Method:</h6>
+                                        <p>{{ result.disposal_recommendations|truncate(150) }}</p>
+                                    </div>
+                                {% endif %}
+
+                                {% if result.carbon_emissions %}
+                                <div class="carbon-emissions mt-4">
+                                    {{ result.carbon_summary|safe }}
+                                </div>
+                                {% endif %}
+                            </div>
+
+                            <div class="tab-pane" id="recycling">
+                                <div class="recycling-instructions">
+                                    {{ result.recycling_instructions|safe }}
+                                </div>
+                            </div>
+
+                            <div class="tab-pane" id="impact">
+                                <div class="environmental-impact">
+                                    {{ result.environmental_impact|safe }}
+                                </div>
+                            </div>
+
+                            <div class="tab-pane" id="full">
+                                <div class="ai-analysis" id="analysis-text">
+                                    {{ result.full_analysis|safe }}
+                                    <button id="copy-analysis" class="eco-btn eco-btn-secondary mt-3">
+                                        <i class="fas fa-copy"></i>
+                                        Copy Analysis
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {% if result.is_recyclable %}
+                        <div class="next-steps success">
+                            <h3><i class="fas fa-lightbulb"></i> What's Next?</h3>
+                            <p>This item appears to be recyclable! Choose your next action:</p>
+
+                            <div class="action-buttons">
+                                {% if waste_item and current_user.is_authenticated %}
+                                <a href="{{ url_for('contribute_to_project', waste_item_id=waste_item.id) }}" class="eco-btn">
+                                    <i class="fas fa-building"></i>
+                                    Contribute to Infrastructure
+                                </a>
+                                {% endif %}
+
+                                <a href="{{ url_for('list_item') }}" class="eco-btn">
+                                    <i class="fas fa-store"></i>
+                                    List in Marketplace
+                                </a>
+
+                                {% if waste_item %}
+                                <form method="POST" action="{{ url_for('send_to_municipality', item_id=waste_item.id) }}">
+                                    <button type="submit" class="eco-btn eco-btn-secondary">
+                                        <i class="fas fa-recycle"></i>
+                                        Send to Municipality
+                                    </button>
+                                </form>
+                                {% endif %}
+                            </div>
+                        </div>
+                    {% else %}
+                        <div class="next-steps danger">
+                            <h3><i class="fas fa-exclamation-triangle"></i> Not Recyclable</h3>
+                            <p>Based on our analysis, this item is not recyclable through conventional channels. Please dispose of it according to your local waste management guidelines.</p>
+                        </div>
+                    {% endif %}
+                {% else %}
+                    <div class="no-analysis">
+                        <div class="no-analysis-icon">
+                            <i class="fas fa-info-circle"></i>
+                        </div>
+                        <h3>No Analysis Yet</h3>
+                        <p>Upload an image of your waste item to get an AI-powered analysis of its recyclability and material composition.</p>
+
+                        <div class="analyzable-items">
+                            <h4>What you can analyze:</h4>
+                            <div class="items-grid">
+                                <div class="item-tag">
+                                    <i class="fas fa-wine-bottle"></i>
+                                    <span>Plastic</span>
+                                </div>
+                                <div class="item-tag">
+                                    <i class="fas fa-newspaper"></i>
+                                    <span>Paper</span>
+                                </div>
+                                <div class="item-tag">
+                                    <i class="fas fa-cog"></i>
+                                    <span>Metal</span>
+                                </div>
+                                <div class="item-tag">
+                                    <i class="fas fa-glass-martini"></i>
+                                    <span>Glass</span>
+                                </div>
+                                <div class="item-tag">
+                                    <i class="fas fa-laptop"></i>
+                                    <span>Electronic</span>
+                                </div>
+                                <div class="item-tag">
+                                    <i class="fas fa-tshirt"></i>
+                                    <span>Textile</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="quick-actions-grid mt-5" data-animate="fade-up">
+            <div class="eco-card action-card">
+                <div class="action-icon">
+                    <i class="fas fa-map-marker-alt"></i>
+                </div>
+                <h3>Find Drop Points</h3>
+                <p>Locate nearby recycling centers and waste collection points</p>
+                <a href="{{ url_for('drop_points') }}" class="eco-btn eco-btn-secondary">
+                    View Map
+                </a>
+            </div>
+
+            <div class="eco-card action-card">
+                <div class="action-icon">
+                    <i class="fas fa-link"></i>
+                </div>
+                <h3>Track Your Waste</h3>
+                <p>Follow your waste journey with blockchain-based tracking</p>
+                <a href="{{ url_for('my_contribution_blockchain') if current_user.is_authenticated else url_for('auth.login') }}" class="eco-btn eco-btn-secondary">
+                    Track Now
+                </a>
+            </div>
+
+            <div class="eco-card action-card">
+                <div class="action-icon">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </div>
+                <h3>Report Issues</h3>
+                <p>Help improve infrastructure by reporting problems</p>
+                <a href="{{ url_for('report_infrastructure') }}" class="eco-btn eco-btn-secondary">
+                    Report Now
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Stats Section -->
+<section class="section section-alt">
+    <div class="container">
+        <h2 class="text-center" data-animate="fade-up">Our Environmental Impact</h2>
+
+        <div class="stats-grid" data-animate="fade-up">
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-recycle"></i>
+                </div>
+                <div class="stat-number" data-counter="125000">0</div>
+                <div class="stat-label">kg Recycled</div>
+                <div class="eco-progress">
+                    <div class="eco-progress-bar" style="width: 75%;"></div>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-users"></i>
+                </div>
+                <div class="stat-number" data-counter="8500">0</div>
+                <div class="stat-label">Active Users</div>
+                <div class="eco-progress">
+                    <div class="eco-progress-bar" style="width: 85%;"></div>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-tree"></i>
+                </div>
+                <div class="stat-number" data-counter="3200">0</div>
+                <div class="stat-label">Trees Saved</div>
+                <div class="eco-progress">
+                    <div class="eco-progress-bar" style="width: 64%;"></div>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-co2"></i>
+                </div>
+                <div class="stat-number" data-counter="45000">0</div>
+                <div class="stat-label">kg CO₂ Reduced</div>
+                <div class="eco-progress">
+                    <div class="eco-progress-bar" style="width: 90%;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Login Modal -->
+<div class="modal" id="loginPromptModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>Login Required</h3>
+            <button class="modal-close" data-bs-dismiss="modal">&times;</button>
+        </div>
+        <div class="modal-body">
+            <p>You need to be logged in to use this feature. Would you like to log in now?</p>
+        </div>
+        <div class="modal-footer">
+            <button class="eco-btn eco-btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            <a href="{{ url_for('auth.login') }}" class="eco-btn">Log In</a>
+            <a href="{{ url_for('auth.register') }}" class="eco-btn">Sign Up</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<style>
+/* Additional Styles for Eco Index Page */
+.section-alt {
+    background: var(--eco-gradient-secondary);
+}
+
+.card-header-eco {
+    margin-bottom: var(--spacing-lg);
+}
+
+.capture-options .option-group {
+    display: flex;
+    gap: var(--spacing-md);
+}
+
+.option-radio {
+    display: none;
+}
+
+.option-label {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--spacing-xs);
+    padding: var(--spacing-md);
+    border: 2px solid var(--eco-light-green);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: all var(--transition-normal);
+}
+
+.option-label:hover {
+    background: rgba(107, 203, 119, 0.1);
+}
+
+.option-radio:checked + .option-label {
+    background: var(--eco-primary);
+    color: white;
+    border-color: var(--eco-primary);
+}
+
+.file-upload-area {
+    border: 2px dashed var(--eco-light-green);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-xl);
+    text-align: center;
+    cursor: pointer;
+    transition: all var(--transition-normal);
+    background: rgba(107, 203, 119, 0.05);
+}
+
+.file-upload-area:hover {
+    border-color: var(--eco-primary);
+    background: rgba(107, 203, 119, 0.1);
+}
+
+.upload-icon {
+    font-size: 3rem;
+    color: var(--eco-primary);
+    margin-bottom: var(--spacing-md);
+}
+
+.voice-input {
+    background: rgba(107, 203, 119, 0.05);
+    border-radius: var(--radius-md);
+    padding: var(--spacing-md);
+}
+
+.voice-label {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    font-weight: 500;
+    color: var(--eco-primary-dark);
+    margin-bottom: var(--spacing-sm);
+}
+
+.voice-input-group {
+    display: flex;
+    gap: var(--spacing-sm);
+}
+
+.voice-input-field {
+    flex: 1;
+    padding: 12px;
+    border: 1px solid var(--eco-light-green);
+    border-radius: var(--radius-md);
+    background: white;
+}
+
+.voice-btn {
+    padding: 12px 16px;
+    background: var(--eco-primary);
+    color: white;
+    border: none;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: all var(--transition-normal);
+}
+
+.voice-btn:hover {
+    background: var(--eco-primary-dark);
+}
+
+.voice-status {
+    margin-top: var(--spacing-xs);
+    font-size: 0.9rem;
+    color: var(--eco-primary-dark);
+    opacity: 0.7;
+}
+
+.webcam-preview {
+    position: relative;
+}
+
+.webcam-wrapper {
+    position: relative;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+}
+
+#webcam-video {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+.webcam-close-btn {
+    position: absolute;
+    top: var(--spacing-sm);
+    right: var(--spacing-sm);
+    background: rgba(244, 67, 54, 0.9);
+    color: white;
+    border: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all var(--transition-normal);
+}
+
+.webcam-close-btn:hover {
+    background: #d32f2f;
+}
+
+.preview-container {
+    text-align: center;
+    margin-top: var(--spacing-lg);
+}
+
+.preview-label {
+    font-weight: 500;
+    color: var(--eco-primary-dark);
+    margin-bottom: var(--spacing-sm);
+}
+
+.preview-image {
+    max-width: 100%;
+    height: 300px;
+    object-fit: cover;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+}
+
+.result-preview {
+    margin-bottom: var(--spacing-lg);
+}
+
+.result-image {
+    max-width: 100%;
+    height: 250px;
+    object-fit: cover;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
+}
+
+.result-badges {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--spacing-md);
+    margin-bottom: var(--spacing-lg);
+}
+
+.badge-item {
+    text-align: center;
+    padding: var(--spacing-md);
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: var(--radius-md);
+}
+
+.badge-label {
+    display: block;
+    font-size: 0.9rem;
+    color: var(--eco-primary-dark);
+    opacity: 0.7;
+    margin-bottom: var(--spacing-xs);
+}
+
+.badge-value {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    padding: 8px 16px;
+    border-radius: var(--radius-full);
+    font-weight: 600;
+    font-size: 1rem;
+}
+
+.badge-value.success {
+    background: var(--eco-primary);
+    color: white;
+}
+
+.badge-value.danger {
+    background: #f44336;
+    color: white;
+}
+
+.badge-value.primary {
+    background: var(--eco-accent);
+    color: white;
+}
+
+.badge-value.warning {
+    background: #ff9800;
+    color: white;
+}
+
+.badge-value.secondary {
+    background: #757575;
+    color: white;
+}
+
+.eco-badge {
+    background: var(--eco-gradient-primary);
+    color: white;
+    padding: 4px 12px;
+    border-radius: var(--radius-full);
+    font-weight: 600;
+}
+
+.analysis-tabs {
+    margin-top: var(--spacing-lg);
+}
+
+.tab-headers {
+    display: flex;
+    gap: var(--spacing-sm);
+    margin-bottom: var(--spacing-md);
+    overflow-x: auto;
+}
+
+.tab-btn {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    padding: var(--spacing-sm) var(--spacing-md);
+    background: rgba(255, 255, 255, 0.5);
+    border: none;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: all var(--transition-normal);
+    white-space: nowrap;
+}
+
+.tab-btn:hover {
+    background: rgba(107, 203, 119, 0.2);
+}
+
+.tab-btn.active {
+    background: var(--eco-primary);
+    color: white;
+}
+
+.tab-content {
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: var(--radius-md);
+    padding: var(--spacing-lg);
+    min-height: 200px;
+}
+
+.tab-pane {
+    display: none;
+}
+
+.tab-pane.active {
+    display: block;
+    animation: fadeIn 0.3s ease-out;
+}
+
+.next-steps {
+    margin-top: var(--spacing-lg);
+    padding: var(--spacing-lg);
+    border-radius: var(--radius-md);
+}
+
+.next-steps.success {
+    background: linear-gradient(135deg, rgba(107, 203, 119, 0.2), rgba(76, 175, 80, 0.2));
+    border: 1px solid var(--eco-primary);
+}
+
+.next-steps.danger {
+    background: linear-gradient(135deg, rgba(244, 67, 54, 0.2), rgba(211, 47, 47, 0.2));
+    border: 1px solid #f44336;
+}
+
+.next-steps h3 {
+    margin-bottom: var(--spacing-sm);
+    color: var(--eco-primary-dark);
+}
+
+.action-buttons {
+    display: flex;
+    gap: var(--spacing-md);
+    margin-top: var(--spacing-md);
+    flex-wrap: wrap;
+}
+
+.no-analysis {
+    text-align: center;
+    padding: var(--spacing-xl);
+}
+
+.no-analysis-icon {
+    font-size: 4rem;
+    color: var(--eco-primary);
+    margin-bottom: var(--spacing-lg);
+}
+
+.analyzable-items {
+    margin-top: var(--spacing-lg);
+}
+
+.items-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-sm);
+    justify-content: center;
+    margin-top: var(--spacing-md);
+}
+
+.item-tag {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    padding: 8px 16px;
+    background: rgba(107, 203, 119, 0.1);
+    border-radius: var(--radius-full);
+    font-size: 0.9rem;
+}
+
+.quick-actions-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: var(--spacing-lg);
+}
+
+.action-card {
+    text-align: center;
+    padding: var(--spacing-xl);
+    transition: all var(--transition-normal);
+}
+
+.action-card:hover {
+    transform: translateY(-8px);
+}
+
+.action-icon {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto var(--spacing-lg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--eco-gradient-primary);
+    color: white;
+    border-radius: 50%;
+    font-size: 2rem;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: var(--spacing-xl);
+    margin-top: var(--spacing-xl);
+}
+
+.stat-card {
+    text-align: center;
+    padding: var(--spacing-xl);
+    background: white;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+    transition: all var(--transition-normal);
+}
+
+.stat-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-xl);
+}
+
+.stat-icon {
+    width: 60px;
+    height: 60px;
+    margin: 0 auto var(--spacing-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--eco-gradient-primary);
+    color: white;
+    border-radius: 50%;
+    font-size: 1.5rem;
+}
+
+.stat-number {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--eco-primary-dark);
+    margin-bottom: var(--spacing-xs);
+}
+
+.stat-label {
+    font-size: 1rem;
+    color: var(--eco-primary-dark);
+    opacity: 0.8;
+    margin-bottom: var(--spacing-md);
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 9999;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal.show {
+    display: flex;
+}
+
+.modal-content {
+    background: white;
+    border-radius: var(--radius-lg);
+    max-width: 500px;
+    width: 90%;
+    max-height: 90vh;
+    overflow-y: auto;
+    animation: modalSlideIn 0.3s ease-out;
+}
+
+@keyframes modalSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--spacing-lg);
+    border-bottom: 1px solid #eee;
+}
+
+.modal-header h3 {
+    margin: 0;
+}
+
+.modal-close {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 0;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: background var(--transition-normal);
+}
+
+.modal-close:hover {
+    background: #f0f0f0;
+}
+
+.modal-body {
+    padding: var(--spacing-lg);
+}
+
+.modal-footer {
+    display: flex;
+    gap: var(--spacing-md);
+    justify-content: flex-end;
+    padding: var(--spacing-lg);
+    border-top: 1px solid #eee;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .result-badges {
+        grid-template-columns: 1fr;
+    }
+
+    .action-buttons {
+        flex-direction: column;
+    }
+
+    .tab-headers {
+        justify-content: flex-start;
+    }
+
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: var(--spacing-md);
+    }
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // File upload handling
+    const fileUploadArea = document.getElementById('fileUploadArea');
+    const fileInput = document.getElementById('waste-image');
+
+    fileUploadArea.addEventListener('click', () => fileInput.click());
+
+    fileUploadArea.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        fileUploadArea.style.borderColor = 'var(--eco-primary)';
+        fileUploadArea.style.background = 'rgba(107, 203, 119, 0.2)';
+    });
+
+    fileUploadArea.addEventListener('dragleave', () => {
+        fileUploadArea.style.borderColor = 'var(--eco-light-green)';
+        fileUploadArea.style.background = 'rgba(107, 203, 119, 0.05)';
+    });
+
+    fileUploadArea.addEventListener('drop', (e) => {
+        e.preventDefault();
+        fileUploadArea.style.borderColor = 'var(--eco-light-green)';
+        fileUploadArea.style.background = 'rgba(107, 203, 119, 0.05)';
+
+        const files = e.dataTransfer.files;
+        if (files.length > 0 && files[0].type.startsWith('image/')) {
+            fileInput.files = files;
+            handleFileSelect(files[0]);
+        }
+    });
+
+    fileInput.addEventListener('change', (e) => {
+        if (e.target.files.length > 0) {
+            handleFileSelect(e.target.files[0]);
+        }
+    });
+
+    function handleFileSelect(file) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            document.getElementById('preview-image').src = e.target.result;
+            document.getElementById('image-preview-container').classList.remove('d-none');
+        };
+        reader.readAsDataURL(file);
+    }
+
+    // Tab switching
+    const tabButtons = document.querySelectorAll('.tab-btn');
+    const tabPanes = document.querySelectorAll('.tab-pane');
+
+    tabButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const targetTab = btn.dataset.tab;
+
+            tabButtons.forEach(b => b.classList.remove('active'));
+            tabPanes.forEach(p => p.classList.remove('active'));
+
+            btn.classList.add('active');
+            document.getElementById(targetTab).classList.add('active');
+        });
+    });
+
+    // Copy analysis
+    const copyBtn = document.getElementById('copy-analysis');
+    if (copyBtn) {
+        copyBtn.addEventListener('click', () => {
+            const analysisText = document.getElementById('analysis-text').innerText;
+
+            navigator.clipboard.writeText(analysisText).then(() => {
+                const originalText = copyBtn.innerHTML;
+                copyBtn.innerHTML = '<i class="fas fa-check"></i> Copied!';
+                setTimeout(() => {
+                    copyBtn.innerHTML = originalText;
+                }, 2000);
+            });
+        });
+    }
+
+    // Smooth scroll for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            const target = document.querySelector(this.getAttribute('href'));
+            if (target) {
+                target.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }
+        });
+    });
+
+    // Material icons
+    document.querySelectorAll('.material-icon').forEach(icon => {
+        const material = icon.getAttribute('data-material').toLowerCase();
+        let iconClass = 'fas fa-question';
+
+        switch(material) {
+            case 'plastic': iconClass = 'fas fa-wine-bottle'; break;
+            case 'paper': iconClass = 'fas fa-newspaper'; break;
+            case 'metal': iconClass = 'fas fa-cog'; break;
+            case 'glass': iconClass = 'fas fa-glass-martini'; break;
+            case 'electronic': iconClass = 'fas fa-laptop'; break;
+            case 'textile': iconClass = 'fas fa-tshirt'; break;
+            case 'organic': iconClass = 'fas fa-leaf'; break;
+            case 'mixed': iconClass = 'fas fa-random'; break;
+        }
+
+        icon.className = iconClass;
+    });
+});
+</script>
+{% endblock %}

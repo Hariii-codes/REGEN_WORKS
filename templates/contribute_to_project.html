@@ -1,0 +1,196 @@
+{% extends "base-eco.html" %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row mb-4">
+        <div class="col-12">
+            <a href="{{ url_for('index') }}" class="btn btn-outline-secondary mb-3">
+                <i class="fas fa-arrow-left me-1"></i>Back to Analysis
+            </a>
+            <h1 class="mb-3">
+                <i class="fas fa-building me-2"></i>
+                Contribute to Infrastructure Project
+            </h1>
+            <p class="text-muted">Select an infrastructure project to contribute your recycled materials to</p>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Waste Item Selection -->
+        <div class="col-md-4 mb-4">
+            {% if waste_item %}
+            <div class="card bg-dark mb-3">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="fas fa-recycle me-2"></i>Selected Material</h5>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <strong>Material Type:</strong>
+                        <span class="badge bg-info ms-2">{{ material_type }}</span>
+                    </div>
+                    <div class="mb-3">
+                        <strong>Weight:</strong>
+                        <span class="ms-2">{{ "%.2f"|format(waste_item.estimated_weight_grams or 25) }}g</span>
+                    </div>
+                    <div class="mb-3">
+                        <strong>Recyclable:</strong>
+                        <span class="badge {% if waste_item.is_recyclable %}bg-success{% else %}bg-danger{% endif %} ms-2">
+                            {% if waste_item.is_recyclable %}Yes{% else %}No{% endif %}
+                        </span>
+                    </div>
+                    {% if waste_item.material %}
+                    <div class="mb-3">
+                        <strong>Material:</strong>
+                        <span class="ms-2">{{ waste_item.material }}</span>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            {% endif %}
+            
+            <!-- Recent Waste Items -->
+            {% if recent_waste_items %}
+            <div class="card bg-dark">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="fas fa-history me-2"></i>Your Recent Items</h5>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted small mb-3">Select a recently scanned item to contribute:</p>
+                    <div class="list-group">
+                        {% for item in recent_waste_items %}
+                        <a href="{{ url_for('contribute_to_project', waste_item_id=item.id) }}{% if selected_project %}?project_id={{ selected_project.id }}{% endif %}" 
+                           class="list-group-item list-group-item-action bg-secondary {% if waste_item and waste_item.id == item.id %}active{% endif %}">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <strong>{{ item.material_type or item.material or 'Material' }}</strong>
+                                    <br>
+                                    <small class="text-muted">{{ "%.2f"|format(item.estimated_weight_grams or 25) }}g • {{ item.created_at.strftime('%Y-%m-%d') if item.created_at else 'N/A' }}</small>
+                                </div>
+                                <i class="fas fa-chevron-right"></i>
+                            </div>
+                        </a>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+            
+            <div class="card bg-dark mt-3">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="fas fa-info-circle me-2"></i>How It Works</h5>
+                </div>
+                <div class="card-body">
+                    <ol class="mb-0">
+                        <li class="mb-2">Select a project below</li>
+                        <li class="mb-2">Your material will be added to a batch</li>
+                        <li class="mb-2">Batch will be linked to the project</li>
+                        <li>Track your contribution in "My Material Journey"</li>
+                    </ol>
+                    <div class="mt-3">
+                        <a href="{{ url_for('index') }}" class="btn btn-outline-primary btn-sm w-100">
+                            <i class="fas fa-camera me-1"></i>Scan New Item
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Available Projects -->
+        <div class="col-md-8">
+            {% if selected_project %}
+            <div class="alert alert-info mb-4">
+                <h5 class="mb-2"><i class="fas fa-building me-2"></i>Contributing to: {{ selected_project.project_name }}</h5>
+                <p class="mb-0">Select a material from the left, or scan a new item to contribute.</p>
+            </div>
+            {% endif %}
+            
+            {% if projects %}
+            <h5 class="mb-3">
+                {% if selected_project %}
+                <i class="fas fa-list me-2"></i>Other Available Projects
+                {% else %}
+                <i class="fas fa-list me-2"></i>Available Projects
+                {% endif %}
+            </h5>
+            <div class="row">
+                {% for project in projects %}
+                <div class="col-md-6 mb-4">
+                    <div class="card bg-dark h-100">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0">{{ project.project_name }}</h5>
+                            <span class="badge 
+                                {% if project.status == 'completed' %}bg-success
+                                {% elif project.status == 'in_progress' or project.status == 'in-progress' %}bg-warning
+                                {% elif project.status == 'planned' %}bg-info
+                                {% else %}bg-secondary{% endif %}">
+                                {{ project.status.replace('_', ' ').replace('-', ' ').title() }}
+                            </span>
+                        </div>
+                        <div class="card-body">
+                            {% if project.description %}
+                            <p class="text-muted mb-3">{{ project.description[:100] }}{% if project.description|length > 100 %}...{% endif %}</p>
+                            {% endif %}
+                            
+                            {% if project.total_plastic_required_grams %}
+                            <div class="mb-3">
+                                <small class="text-muted d-block mb-1">Progress:</small>
+                                <div class="progress" style="height: 20px;">
+                                    {% set progress = (project.total_plastic_allocated_grams / project.total_plastic_required_grams * 100) if project.total_plastic_required_grams > 0 else 0 %}
+                                    <div class="progress-bar {% if progress >= 100 %}bg-success{% elif progress >= 50 %}bg-warning{% else %}bg-info{% endif %}" 
+                                         role="progressbar" 
+                                         style="width: {{ progress }}%"
+                                         aria-valuenow="{{ progress }}" 
+                                         aria-valuemin="0" 
+                                         aria-valuemax="100">
+                                        {{ "%.0f"|format(progress) }}%
+                                    </div>
+                                </div>
+                                <small class="text-muted">
+                                    {{ "%.0f"|format(project.total_plastic_allocated_grams) }}g / 
+                                    {{ "%.0f"|format(project.total_plastic_required_grams) }}g
+                                </small>
+                            </div>
+                            {% endif %}
+                            
+                            <div class="mb-2">
+                                <small class="text-muted">
+                                    <i class="fas fa-map-marker-alt me-1"></i>
+                                    {{ "%.4f"|format(project.location_lat) }}, {{ "%.4f"|format(project.location_lng) }}
+                                </small>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <div class="d-grid gap-2">
+                                {% if waste_item %}
+                                <form method="POST" action="{{ url_for('submit_contribution', waste_item_id=waste_item.id, project_id=project.id) }}">
+                                    <button type="submit" class="btn btn-success btn-sm w-100">
+                                        <i class="fas fa-plus me-1"></i>Contribute {{ "%.2f"|format(waste_item.estimated_weight_grams or 25) }}g
+                                    </button>
+                                </form>
+                                {% else %}
+                                <a href="{{ url_for('contribute_to_project') }}?project_id={{ project.id }}" 
+                                   class="btn btn-success btn-sm w-100">
+                                    <i class="fas fa-plus me-1"></i>Contribute Materials
+                                </a>
+                                <a href="{{ url_for('infrastructure_project_detail', project_id=project.id) }}" 
+                                   class="btn btn-outline-primary btn-sm w-100">
+                                    <i class="fas fa-info-circle me-1"></i>View Details
+                                </a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="alert alert-info">
+                <i class="fas fa-info-circle me-2"></i>
+                No infrastructure projects are currently accepting contributions. Check back later!
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+

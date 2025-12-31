@@ -1,0 +1,508 @@
+{% extends "base-eco.html" %}
+
+{% block content %}
+<div class="container-fluid">
+    <!-- Material Journey Eco Styles -->
+    <style>
+        /* Material Journey Card Styles */
+        .eco-journey-card {
+            background: var(--glass-bg);
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-xl);
+            box-shadow: var(--card-shadow);
+            transition: all var(--transition-normal);
+            overflow: hidden;
+            margin-bottom: var(--spacing-xl);
+        }
+
+        .eco-journey-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--card-shadow-hover);
+            background: rgba(255, 255, 255, 0.95);
+        }
+
+        .journey-header {
+            background: linear-gradient(135deg, rgba(46, 125, 50, 0.1), rgba(76, 175, 80, 0.1));
+            padding: var(--spacing-xl);
+            border-bottom: 1px solid var(--glass-border);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .journey-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(46, 125, 50, 0.1) 0%, transparent 70%);
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(180deg); }
+        }
+
+        .journey-body {
+            padding: var(--spacing-xl);
+        }
+
+        /* Info Boxes */
+        .eco-info-box {
+            background: rgba(255, 255, 255, 0.8);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-lg);
+            margin-bottom: var(--spacing-md);
+            transition: all var(--transition-normal);
+        }
+
+        .eco-info-box:hover {
+            background: rgba(255, 255, 255, 0.95);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .eco-info-box.contribution {
+            background: linear-gradient(135deg, rgba(46, 125, 50, 0.1), rgba(76, 175, 80, 0.1));
+            border-color: var(--eco-primary);
+        }
+
+        .eco-info-box.batch {
+            background: linear-gradient(135deg, rgba(33, 150, 243, 0.1), rgba(3, 169, 244, 0.1));
+            border-color: #2196F3;
+        }
+
+        .eco-info-box.project {
+            background: linear-gradient(135deg, rgba(76, 175, 80, 0.1), rgba(139, 195, 74, 0.1));
+            border-color: #4CAF50;
+        }
+
+        .eco-info-box.awaiting {
+            background: linear-gradient(135deg, rgba(255, 152, 0, 0.1), rgba(255, 193, 7, 0.1));
+            border-color: #FF9800;
+        }
+
+        /* Journey Steps */
+        .eco-journey-container {
+            background: var(--bg-gradient-eco);
+            border-radius: var(--radius-xl);
+            padding: var(--spacing-xl);
+            margin: var(--spacing-xl) 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .eco-journey-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--eco-gradient-primary);
+        }
+
+        .eco-journey-steps {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            position: relative;
+            padding: var(--spacing-lg) 0;
+        }
+
+        .eco-journey-steps::before {
+            content: '';
+            position: absolute;
+            top: 50px;
+            left: 80px;
+            right: 80px;
+            height: 3px;
+            background: linear-gradient(90deg, var(--eco-primary), var(--eco-secondary), var(--eco-primary));
+            z-index: 1;
+        }
+
+        .eco-journey-step {
+            flex: 1;
+            text-align: center;
+            position: relative;
+            z-index: 2;
+        }
+
+        .eco-step-icon {
+            width: 100px;
+            height: 100px;
+            margin: 0 auto var(--spacing-md);
+            background: var(--eco-gradient-primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 8px 24px rgba(46, 125, 50, 0.3);
+            transition: all var(--transition-normal);
+            position: relative;
+        }
+
+        .eco-step-icon::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: var(--eco-gradient-primary);
+            opacity: 0.3;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        .eco-step-icon:hover {
+            transform: scale(1.1) translateY(-5px);
+            box-shadow: 0 12px 32px rgba(46, 125, 50, 0.4);
+        }
+
+        .eco-step-icon.collection {
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+        }
+
+        .eco-step-icon.batching {
+            background: linear-gradient(135deg, #2196F3, #1976D2);
+        }
+
+        .eco-step-icon.infrastructure {
+            background: linear-gradient(135deg, #9C27B0, #7B1FA2);
+        }
+
+        .eco-step-icon.awaiting {
+            background: linear-gradient(135deg, #FF9800, #F57C00);
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.3; }
+            50% { transform: scale(1.2); opacity: 0.1; }
+        }
+
+        .eco-journey-arrow {
+            color: var(--eco-primary);
+            font-size: 2rem;
+            margin: var(--spacing-md) 0;
+            animation: bounce 2s ease-in-out infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(10px); }
+        }
+
+        /* Blockchain Blocks */
+        .eco-blockchain-container {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: var(--radius-xl);
+            padding: var(--spacing-xl);
+            margin-top: var(--spacing-xl);
+            border: 1px solid var(--glass-border);
+        }
+
+        .eco-block {
+            background: var(--glass-bg);
+            backdrop-filter: var(--glass-blur);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-md);
+            margin-bottom: var(--spacing-md);
+            transition: all var(--transition-normal);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .eco-block::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: var(--eco-gradient-primary);
+        }
+
+        .eco-block:hover {
+            transform: translateX(5px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .eco-block.valid::before {
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+        }
+
+        .eco-block.invalid::before {
+            background: linear-gradient(135deg, #f44336, #d32f2f);
+        }
+
+        .eco-hash {
+            background: rgba(0, 0, 0, 0.05);
+            padding: 4px 8px;
+            border-radius: var(--radius-sm);
+            font-family: 'Courier New', monospace;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            word-break: break-all;
+        }
+
+        /* Status Badges */
+        .eco-status-badge {
+            padding: 6px 12px;
+            border-radius: var(--radius-full);
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: inline-block;
+        }
+
+        .eco-status-success {
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            color: white;
+        }
+
+        .eco-status-info {
+            background: linear-gradient(135deg, #2196F3, #1976D2);
+            color: white;
+        }
+
+        .eco-status-warning {
+            background: linear-gradient(135deg, #FF9800, #F57C00);
+            color: white;
+        }
+
+        .eco-status-secondary {
+            background: linear-gradient(135deg, #9E9E9E, #757575);
+            color: white;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .eco-journey-steps::before {
+                display: none;
+            }
+
+            .eco-journey-steps {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .eco-journey-arrow {
+                transform: rotate(90deg);
+            }
+        }
+    </style>
+    <div class="row mb-4">
+        <div class="col-12">
+            <h1 class="mb-3">
+                <i class="fas fa-link me-2" style="color: var(--eco-primary);"></i>
+                My Material Journey
+            </h1>
+            <p class="lead" style="color: var(--text-secondary);">Track how your recycled materials flow from collection to urban infrastructure</p>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            {% if contribution_chains %}
+            {% for chain in contribution_chains %}
+            <div class="eco-journey-card">
+                <div class="journey-header">
+                    <h5 class="mb-0 position-relative">
+                        <i class="fas fa-recycle me-2" style="color: var(--eco-primary);"></i>
+                        {% if chain.contribution_id %}
+                        Contribution #{{ chain.contribution_id }}
+                        {% else %}
+                        Material Collection
+                        {% endif %}
+                    </h5>
+                </div>
+                <div class="journey-body">
+                    <!-- Contribution Info -->
+                    <div class="row mb-4">
+                        <div class="col-md-4">
+                            <div class="eco-info-box contribution">
+                                <h5 class="mb-3"><i class="fas fa-hand-holding-heart me-2"></i>Your Contribution</h5>
+                                <h2 class="mb-2" style="color: var(--eco-primary);">{{ "%.2f"|format(chain.weight) }}g</h2>
+                                <p class="mb-0 text-muted">{{ chain.date[:10] if chain.date else 'N/A' }}</p>
+                            </div>
+                        </div>
+                        {% if chain.batch %}
+                        <div class="col-md-4">
+                            <div class="eco-info-box batch">
+                                <h5 class="mb-3"><i class="fas fa-box me-2"></i>Batch</h5>
+                                <div class="eco-hash">{{ chain.batch.batch_id }}</div>
+                                <p class="mb-0 text-muted">{{ chain.batch.material }} • {{ "%.2f"|format(chain.batch.total_weight) }}g</p>
+                            </div>
+                        </div>
+                        {% else %}
+                        <div class="col-md-4">
+                            <div class="eco-info-box awaiting">
+                                <h5 class="mb-3"><i class="fas fa-clock me-2"></i>Status</h5>
+                                <span class="eco-status-badge eco-status-warning">Awaiting Batch</span>
+                                <p class="mb-0 text-muted mt-2">Material: {{ chain.material }}</p>
+                            </div>
+                        </div>
+                        {% endif %}
+                        {% if chain.project %}
+                        <div class="col-md-4">
+                            <div class="eco-info-box project">
+                                <h5 class="mb-3"><i class="fas fa-building me-2"></i>Project</h5>
+                                <h6>{{ chain.project.project_name }}</h6>
+                                <span class="eco-status-badge eco-status-info">{{ chain.project.status }}</span>
+                            </div>
+                        </div>
+                        {% elif chain.batch %}
+                        <div class="col-md-4">
+                            <div class="eco-info-box awaiting">
+                                <h5 class="mb-3"><i class="fas fa-clock me-2"></i>Status</h5>
+                                <span class="eco-status-badge eco-status-warning">Awaiting Project</span>
+                                <p class="mb-0 text-muted mt-2">Will be linked soon</p>
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Material Journey Flow -->
+                    <div class="eco-journey-container">
+                        <h5 class="mb-4"><i class="fas fa-route me-2" style="color: var(--eco-primary);"></i>Material Journey</h5>
+                        <div class="material-timeline" id="materialTimeline">
+                            <!-- Step 1: Collection -->
+                            <div class="eco-journey-step">
+                                <div class="eco-step-icon collection">
+                                    <i class="fas fa-hand-holding-heart fa-2x text-white"></i>
+                                </div>
+                                <h6>Collection</h6>
+                                <p class="text-muted small mb-0">You recycled {{ "%.2f"|format(chain.weight) }}g</p>
+                                <p class="text-muted small mb-0">{{ chain.material if chain.material else 'Material' }}</p>
+                            </div>
+
+                            {% if chain.batch %}
+                            <div class="text-center">
+                                <i class="fas fa-arrow-down eco-journey-arrow"></i>
+                            </div>
+
+                            <!-- Step 2: Batching -->
+                            <div class="eco-journey-step">
+                                <div class="eco-step-icon batching">
+                                    <i class="fas fa-box fa-2x text-white"></i>
+                                </div>
+                                <h6>Batching</h6>
+                                <p class="text-muted small mb-0">Added to batch</p>
+                                <div class="eco-hash small">{{ chain.batch.batch_id[:8] }}...</div>
+                                <p class="text-muted small mb-0">Total: {{ "%.2f"|format(chain.batch.total_weight) }}g</p>
+                            </div>
+
+                            {% if chain.project %}
+                            <div class="text-center">
+                                <i class="fas fa-arrow-down eco-journey-arrow"></i>
+                            </div>
+
+                            <!-- Step 3: Infrastructure -->
+                            <div class="eco-journey-step">
+                                <div class="eco-step-icon infrastructure">
+                                    <i class="fas fa-building fa-2x text-white"></i>
+                                </div>
+                                <h6>Infrastructure</h6>
+                                <p class="text-muted small mb-0">{{ chain.project.project_name }}</p>
+                                <span class="eco-status-badge eco-status-info">{{ chain.project.status }}</span>
+                            </div>
+                            {% else %}
+                            <div class="text-center">
+                                <i class="fas fa-arrow-down text-muted fa-2x"></i>
+                            </div>
+
+                            <!-- Step 3: Awaiting Project -->
+                            <div class="eco-journey-step">
+                                <div class="eco-step-icon awaiting">
+                                    <i class="fas fa-clock fa-2x text-white"></i>
+                                </div>
+                                <h6>Awaiting Project</h6>
+                                <p class="text-muted small mb-0">Will be linked soon</p>
+                            </div>
+                            {% endif %}
+                            {% else %}
+                            <div class="text-center">
+                                <i class="fas fa-arrow-down text-muted fa-2x"></i>
+                            </div>
+
+                            <!-- Step 2: Awaiting Batch -->
+                            <div class="eco-journey-step">
+                                <div class="eco-step-icon awaiting">
+                                    <i class="fas fa-clock fa-2x text-white"></i>
+                                </div>
+                                <h6>Awaiting Batch</h6>
+                                <p class="text-muted small mb-0">Will be batched soon</p>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <!-- Blockchain -->
+                    {% if chain.blockchain %}
+                    <div class="eco-blockchain-container">
+                        <h5 class="mb-4"><i class="fas fa-link me-2" style="color: var(--eco-primary);"></i>Blockchain Verification</h5>
+                        <div class="row">
+                            {% for block in chain.blockchain[:3] %}
+                            <div class="col-md-4 mb-3">
+                                <div class="eco-block {% if block.is_valid %}valid{% else %}invalid{% endif %}">
+                                    <h6>Block #{{ block.block_number }}</h6>
+                                    <span class="eco-status-badge {% if block.is_valid %}eco-status-success{% else %}text-white bg-danger{% endif %}">
+                                        {% if block.is_valid %}<i class="fas fa-check me-1"></i>Valid{% else %}<i class="fas fa-times me-1"></i>Invalid{% endif %}
+                                    </span>
+                                    <div class="mt-3">
+                                        <small class="d-block text-muted mb-1">Hash:</small>
+                                        <div class="eco-hash">{{ block.block_hash[:16] }}...</div>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        {% if chain.blockchain|length > 3 %}
+                        <p class="text-muted small mt-3">
+                            <i class="fas fa-info-circle me-1"></i>
+                            Showing first 3 blocks. Total: {{ chain.blockchain|length }} blocks
+                        </p>
+                        {% endif %}
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+            {% else %}
+            <div class="eco-journey-card text-center py-5">
+                <div class="mb-4">
+                    <i class="fas fa-recycle fa-4x" style="color: var(--eco-primary); opacity: 0.5;"></i>
+                </div>
+                <h4 class="mb-3">Start Your Material Journey</h4>
+                <p class="text-muted mb-4">You haven't contributed any materials to infrastructure projects yet. Start recycling to see your material journey!</p>
+                <a href="{{ url_for('index') }}" class="eco-btn">
+                    <i class="fas fa-camera me-2"></i>Start Recycling
+                </a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<style>
+.journey-steps {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.journey-step {
+    flex: 1;
+}
+.step-icon {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+}
+</style>
+
+{% endblock %}
+

@@ -1,0 +1,708 @@
+{% extends "base-eco.html" %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="eco-hero" style="min-height: 60vh; margin-top: 80px;">
+    <div class="hero-content">
+        <h1 class="hero-title" data-animate="fade-up">
+            <i class="fas fa-map-marker-alt eco-leaf"></i>
+            Waste Drop Points
+        </h1>
+        <p class="hero-subtitle" data-animate="fade-up">
+            Find recycling centers near you and contribute to a sustainable future
+        </p>
+    </div>
+</section>
+
+<!-- Map Section -->
+<section class="section">
+    <div class="container">
+        <div class="eco-card" data-animate="fade-up">
+            <div class="map-controls">
+                <div class="control-group">
+                    <button id="locate-me" class="eco-btn">
+                        <i class="fas fa-crosshairs"></i>
+                        Find My Location
+                    </button>
+                    <div class="search-box">
+                        <input type="text" id="search-input" class="search-input" placeholder="Search for a drop point...">
+                        <button id="search-button" class="search-btn">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="eco-info-box">
+                    <i class="fas fa-info-circle"></i>
+                    <p><strong>Tip:</strong> Click "Find My Location" to discover nearby drop points instantly</p>
+                </div>
+            </div>
+
+            <!-- Map Container -->
+            <div id="map" class="eco-map" data-parallax="0.3"></div>
+        </div>
+    </div>
+</section>
+
+<!-- Drop Points Listing -->
+<section class="section section-alt">
+    <div class="container">
+        <h2 class="text-center mb-5" data-animate="fade-up">Recycling Centers</h2>
+
+        <div class="drop-points-grid" data-animate="fade-up">
+            {% for point in drop_points %}
+            <div class="drop-point-card eco-card" data-lat="{{ point.lat }}" data-lon="{{ point.lon }}" data-name="{{ point.name }}">
+                <div class="card-header-eco">
+                    <h3>{{ point.name }}</h3>
+                    <div class="location-badge">
+                        <i class="fas fa-map-pin"></i>
+                        <span>{{ loop.index }} km away</span>
+                    </div>
+                </div>
+
+                <div class="card-body">
+                    <div class="location-info">
+                        <div class="info-item">
+                            <i class="fas fa-location-dot"></i>
+                            <span>{{ point.address }}</span>
+                        </div>
+                    </div>
+
+                    <div class="materials-section">
+                        <h4>Accepted Materials</h4>
+                        <div class="materials-tags">
+                            {% for type in point.types %}
+                            <span class="material-tag" data-material="{{ type }}">
+                                {% if type == 'Plastic' %}<i class="fas fa-wine-bottle"></i>
+                                {% elif type == 'Paper' %}<i class="fas fa-newspaper"></i>
+                                {% elif type == 'Metal' %}<i class="fas fa-cog"></i>
+                                {% elif type == 'Glass' %}<i class="fas fa-glass-martini"></i>
+                                {% elif type == 'E-Waste' %}<i class="fas fa-laptop"></i>
+                                {% elif type == 'Organic' %}<i class="fas fa-leaf"></i>
+                                {% else %}<i class="fas fa-recycle"></i>{% endif %}
+                                {{ type }}
+                            </span>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <div class="action-buttons">
+                        <button class="eco-btn center-map" data-lat="{{ point.lat }}" data-lon="{{ point.lon }}" data-name="{{ point.name }}">
+                            <i class="fas fa-map"></i>
+                            Show on Map
+                        </button>
+
+                        {% if current_user.is_authenticated %}
+                        <button class="eco-btn eco-btn-secondary check-in-btn" data-location-id="{{ loop.index }}" data-location-name="{{ point.name }}">
+                            <i class="fas fa-check-circle"></i>
+                            Check In
+                        </button>
+                        {% else %}
+                        <button class="eco-btn eco-btn-secondary" onclick="showLoginPrompt()">
+                            <i class="fas fa-sign-in-alt"></i>
+                            Login to Check In
+                        </button>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Statistics Section -->
+<section class="section">
+    <div class="container">
+        <h2 class="text-center mb-5" data-animate="fade-up">Our Impact</h2>
+
+        <div class="stats-grid" data-animate="fade-up">
+            <div class="stat-card eco-card">
+                <div class="stat-icon">
+                    <i class="fas fa-map-marker-alt"></i>
+                </div>
+                <div class="stat-number" data-counter="{{ drop_points|length }}">0</div>
+                <div class="stat-label">Active Drop Points</div>
+            </div>
+
+            <div class="stat-card eco-card">
+                <div class="stat-icon">
+                    <i class="fas fa-users"></i>
+                </div>
+                <div class="stat-number" data-counter="15200">0</div>
+                <div class="stat-label">Daily Visitors</div>
+            </div>
+
+            <div class="stat-card eco-card">
+                <div class="stat-icon">
+                    <i class="fas fa-weight"></i>
+                </div>
+                <div class="stat-number" data-counter="8500">0</div>
+                <div class="stat-label">kg Collected Daily</div>
+            </div>
+
+            <div class="stat-card eco-card">
+                <div class="stat-icon">
+                    <i class="fas fa-star"></i>
+                </div>
+                <div class="stat-number" data-counter="4.8">0</div>
+                <div class="stat-label">Average Rating</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Check-in Modal -->
+<div class="modal" id="checkInModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>Check In</h3>
+            <button class="modal-close" onclick="closeModal('checkInModal')">&times;</button>
+        </div>
+        <div class="modal-body">
+            <p>Are you checking in at <strong id="checkInLocationName"></strong>?</p>
+            <p class="text-muted">You'll earn 5 eco points for this visit!</p>
+        </div>
+        <div class="modal-footer">
+            <button class="eco-btn eco-btn-secondary" onclick="closeModal('checkInModal')">Cancel</button>
+            <button class="eco-btn" onclick="confirmCheckIn()">Check In</button>
+        </div>
+    </div>
+</div>
+
+<!-- Success Modal -->
+<div class="modal" id="successModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>Success!</h3>
+            <button class="modal-close" onclick="closeModal('successModal')">&times;</button>
+        </div>
+        <div class="modal-body text-center">
+            <div class="success-icon">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            <p>You've successfully checked in and earned 5 eco points!</p>
+            <p class="text-muted">Keep contributing to a sustainable future.</p>
+        </div>
+        <div class="modal-footer">
+            <button class="eco-btn" onclick="closeModal('successModal')">Great!</button>
+        </div>
+    </div>
+</div>
+
+{% block extra_js %}
+<style>
+.map-controls {
+    margin-bottom: var(--spacing-lg);
+}
+
+.control-group {
+    display: flex;
+    gap: var(--spacing-md);
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.search-box {
+    display: flex;
+    flex: 1;
+    max-width: 400px;
+    position: relative;
+}
+
+.search-input {
+    flex: 1;
+    padding: 12px 16px;
+    border: 2px solid var(--eco-light-green);
+    border-radius: var(--radius-full);
+    font-size: 1rem;
+    transition: all var(--transition-normal);
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: var(--eco-primary);
+    box-shadow: 0 0 0 0.2rem rgba(107, 203, 119, 0.25);
+}
+
+.search-btn {
+    position: absolute;
+    right: 5px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: var(--eco-primary);
+    color: white;
+    border: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all var(--transition-normal);
+}
+
+.search-btn:hover {
+    background: var(--eco-primary-dark);
+}
+
+.eco-info-box {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-md);
+    background: rgba(107, 203, 119, 0.1);
+    border-radius: var(--radius-md);
+    margin-top: var(--spacing-md);
+}
+
+.eco-info-box i {
+    color: var(--eco-primary);
+    font-size: 1.2rem;
+}
+
+.eco-map {
+    height: 500px;
+    width: 100%;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    box-shadow: var(--shadow-lg);
+}
+
+.drop-points-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: var(--spacing-lg);
+}
+
+.drop-point-card {
+    transition: all var(--transition-normal);
+    position: relative;
+    overflow: hidden;
+}
+
+.drop-point-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: var(--eco-gradient-primary);
+}
+
+.drop-point-card:hover {
+    transform: translateY(-8px);
+    box-shadow: var(--shadow-xl);
+}
+
+.card-header-eco {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: var(--spacing-md);
+}
+
+.card-header-eco h3 {
+    color: var(--eco-primary-dark);
+    font-size: 1.3rem;
+    margin: 0;
+}
+
+.location-badge {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    padding: 4px 12px;
+    background: var(--eco-gradient-primary);
+    color: white;
+    border-radius: var(--radius-full);
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.location-info {
+    margin-bottom: var(--spacing-lg);
+}
+
+.info-item {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--spacing-sm);
+    color: var(--eco-primary-dark);
+    opacity: 0.9;
+}
+
+.info-item i {
+    color: var(--eco-primary);
+    margin-top: 3px;
+}
+
+.materials-section {
+    margin-bottom: var(--spacing-lg);
+}
+
+.materials-section h4 {
+    font-size: 1rem;
+    color: var(--eco-primary-dark);
+    margin-bottom: var(--spacing-sm);
+}
+
+.materials-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-sm);
+}
+
+.material-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    padding: 6px 12px;
+    background: rgba(107, 203, 119, 0.1);
+    color: var(--eco-primary-dark);
+    border-radius: var(--radius-full);
+    font-size: 0.85rem;
+    font-weight: 500;
+    transition: all var(--transition-normal);
+}
+
+.material-tag:hover {
+    background: var(--eco-primary);
+    color: white;
+    transform: translateY(-2px);
+}
+
+.action-buttons {
+    display: flex;
+    gap: var(--spacing-sm);
+}
+
+.success-icon {
+    font-size: 4rem;
+    color: var(--eco-primary);
+    margin-bottom: var(--spacing-lg);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .control-group {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .search-box {
+        max-width: 100%;
+    }
+
+    .drop-points-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .action-buttons {
+        flex-direction: column;
+    }
+
+    .eco-btn {
+        width: 100%;
+    }
+}
+</style>
+
+<script>
+// Map functionality
+let map;
+let userLocation = null;
+
+function initMap() {
+    // Initialize OpenLayers map
+    map = new ol.Map({
+        target: 'map',
+        layers: [
+            new ol.layer.Tile({
+                source: new ol.source.OSM()
+            })
+        ],
+        view: new ol.View({
+            center: ol.proj.fromLonLat([77.5946, 12.9716]), // Bangalore coordinates
+            zoom: 12
+        })
+    });
+
+    // Add drop point markers
+    const dropPoints = [];
+    {% for point in drop_points %}
+    dropPoints.push({
+        name: '{{ point.name }}',
+        lat: {{ point.lat }},
+        lon: {{ point.lon }},
+        address: '{{ point.address }}'
+    });
+    {% endfor %}
+
+    dropPoints.forEach(point => {
+        const marker = new ol.layer.Vector({
+            source: new ol.source.Vector({
+                features: [
+                    new ol.Feature({
+                        geometry: new ol.geom.Point(ol.proj.fromLonLat([point.lon, point.lat]))
+                    })
+                ]
+            }),
+            style: new ol.style.Style({
+                image: new ol.style.Icon({
+                    anchor: [0.5, 1],
+                    src: 'data:image/svg+xml;base64,' + btoa(`
+                        <svg width="30" height="40" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M15 0C6.716 0 0 6.716 0 15c0 8.284 15 25 15 25s15-16.716 15-25C30 6.716 23.284 0 15 0z" fill="#6BCB77"/>
+                            <circle cx="15" cy="15" r="8" fill="white"/>
+                            <circle cx="15" cy="15" r="4" fill="#3A8F5D"/>
+                        </svg>
+                    `)
+                })
+            })
+        });
+
+        map.addLayer(marker);
+
+        // Add popup
+        const element = document.createElement('div');
+        element.className = 'ol-popup';
+        element.innerHTML = `
+            <div class="popup-content">
+                <h4>${point.name}</h4>
+                <p>${point.address}</p>
+            </div>
+        `;
+
+        const popup = new ol.Overlay({
+            element: element,
+            positioning: 'bottom-center',
+            stopEvent: false,
+            offset: [0, -20]
+        });
+
+        map.addOverlay(popup);
+
+        // Show popup on click
+        map.on('click', function(evt) {
+            const feature = map.forEachFeatureAtPixel(evt.pixel, function(feature) {
+                return feature;
+            });
+
+            if (feature) {
+                const coordinates = feature.getGeometry().getCoordinates();
+                popup.setPosition(coordinates);
+            }
+        });
+    });
+}
+
+// Find user location
+document.getElementById('locate-me').addEventListener('click', function() {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+            (position) => {
+                userLocation = [position.coords.longitude, position.coords.latitude];
+
+                // Center map on user location
+                map.getView().setCenter(ol.proj.fromLonLat(userLocation));
+                map.getView().setZoom(14);
+
+                // Add user location marker
+                const userMarker = new ol.layer.Vector({
+                    source: new ol.source.Vector({
+                        features: [
+                            new ol.Feature({
+                                geometry: new ol.geom.Point(ol.proj.fromLonLat(userLocation))
+                            })
+                        ]
+                    }),
+                    style: new ol.style.Style({
+                        image: new ol.style.Circle({
+                            radius: 8,
+                            fill: new ol.style.Fill({ color: '#4285F4' }),
+                            stroke: new ol.style.Stroke({ color: 'white', width: 2 })
+                        })
+                    })
+                });
+
+                map.addLayer(userMarker);
+
+                // Show success message
+                showNotification('Location found successfully!', 'success');
+            },
+            (error) => {
+                showNotification('Unable to get your location. Please check your browser settings.', 'error');
+            }
+        );
+    } else {
+        showNotification('Geolocation is not supported by your browser.', 'error');
+    }
+});
+
+// Center map on specific point
+document.querySelectorAll('.center-map').forEach(button => {
+    button.addEventListener('click', function() {
+        const lat = parseFloat(this.dataset.lat);
+        const lon = parseFloat(this.dataset.lon);
+        const name = this.dataset.name;
+
+        map.getView().setCenter(ol.proj.fromLonLat([lon, lat]));
+        map.getView().setZoom(16);
+
+        // Scroll to map
+        document.querySelector('.eco-map').scrollIntoView({ behavior: 'smooth' });
+    });
+});
+
+// Check-in functionality
+document.querySelectorAll('.check-in-btn').forEach(button => {
+    button.addEventListener('click', function() {
+        const locationId = this.dataset.locationId;
+        const locationName = this.dataset.locationName;
+
+        document.getElementById('checkInLocationName').textContent = locationName;
+        document.getElementById('checkInModal').classList.add('show');
+
+        // Store location ID for confirmation
+        document.getElementById('checkInModal').dataset.locationId = locationId;
+    });
+});
+
+function confirmCheckIn() {
+    const modal = document.getElementById('checkInModal');
+    const locationId = modal.dataset.locationId;
+
+    // Simulate check-in (in real app, this would be an API call)
+    setTimeout(() => {
+        closeModal('checkInModal');
+        document.getElementById('successModal').classList.add('show');
+
+        // Update eco points display if available
+        const pointsBadge = document.querySelector('.eco-points-badge');
+        if (pointsBadge) {
+            const currentPoints = parseInt(pointsBadge.textContent);
+            pointsBadge.textContent = (currentPoints + 5) + ' pts';
+        }
+    }, 500);
+}
+
+function closeModal(modalId) {
+    document.getElementById(modalId).classList.remove('show');
+}
+
+function showLoginPrompt() {
+    alert('Please login to check in and earn eco points!');
+}
+
+function showNotification(message, type) {
+    const notification = document.createElement('div');
+    notification.className = `notification ${type}`;
+    notification.innerHTML = `
+        <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i>
+        <span>${message}</span>
+    `;
+
+    document.body.appendChild(notification);
+
+    setTimeout(() => {
+        notification.classList.add('show');
+    }, 100);
+
+    setTimeout(() => {
+        notification.classList.remove('show');
+        setTimeout(() => notification.remove(), 300);
+    }, 3000);
+}
+
+// Initialize map when page loads
+window.addEventListener('load', initMap);
+
+// Search functionality
+document.getElementById('search-button').addEventListener('click', performSearch);
+document.getElementById('search-input').addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+        performSearch();
+    }
+});
+
+function performSearch() {
+    const query = document.getElementById('search-input').value.toLowerCase();
+    const cards = document.querySelectorAll('.drop-point-card');
+
+    cards.forEach(card => {
+        const name = card.dataset.name.toLowerCase();
+        if (name.includes(query)) {
+            card.style.display = 'block';
+        } else {
+            card.style.display = 'none';
+        }
+    });
+}
+
+// Add notification styles
+const notificationStyles = `
+<style>
+.notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 16px 24px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    transform: translateX(400px);
+    transition: transform 0.3s ease-out;
+    z-index: 9999;
+}
+
+.notification.show {
+    transform: translateX(0);
+}
+
+.notification.success {
+    border-left: 4px solid #4CAF50;
+}
+
+.notification.success i {
+    color: #4CAF50;
+}
+
+.notification.error {
+    border-left: 4px solid #f44336;
+}
+
+.notification.error i {
+    color: #f44336;
+}
+
+.ol-popup {
+    background: white;
+    border-radius: 8px;
+    padding: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    margin-bottom: 20px;
+}
+
+.popup-content h4 {
+    margin: 0 0 8px 0;
+    color: var(--eco-primary-dark);
+}
+
+.popup-content p {
+    margin: 0;
+    color: var(--eco-primary-dark);
+    opacity: 0.8;
+}
+</style>
+`;
+
+document.head.insertAdjacentHTML('beforeend', notificationStyles);
+</script>
+{% endblock %}
+{% endblock %}

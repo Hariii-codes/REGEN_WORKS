@@ -1,0 +1,141 @@
+{% extends "base-eco.html" %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-10 col-lg-8">
+        <div class="card bg-dark border-primary">
+            <div class="card-header bg-primary bg-opacity-25 text-center">
+                <h2 class="mb-0">
+                    <i class="fas fa-globe me-2"></i>
+                    {{ get_localized_string('language_selection.select_your_language', get_current_language(), 'Select Your Language') }}
+                </h2>
+                <p class="text-muted mb-0 mt-2">{{ get_localized_string('language_selection.choose_your_preferred_language', get_current_language(), 'Choose your preferred language for ReGenWorks') }}</p>
+            </div>
+            <div class="card-body">
+                <form method="POST" action="{{ url_for('select_language') }}" id="language-selection-form">
+                    <div class="row g-3">
+                        {% for lang_code, lang_info in languages.items() %}
+                        <div class="col-6 col-md-4 col-lg-3">
+                            <input type="radio" 
+                                   class="btn-check" 
+                                   name="language" 
+                                   id="lang-{{ lang_code }}" 
+                                   value="{{ lang_code }}"
+                                   {% if current_user.preferred_language == lang_code or (not current_user.preferred_language and lang_code == 'en') %}checked{% endif %}>
+                            <label class="btn btn-outline-primary w-100 language-option" for="lang-{{ lang_code }}">
+                                <div class="d-flex flex-column align-items-center p-2">
+                                    <span class="fs-4 mb-1">{{ lang_info.native }}</span>
+                                    <small class="text-muted">{{ lang_info.name }}</small>
+                                </div>
+                            </label>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    
+                    <div class="mt-4 text-center">
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <i class="fas fa-check me-2"></i>{{ get_localized_string('common.continue', get_current_language(), 'Continue') }}
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <!-- Voice Input Test -->
+        <div class="card bg-dark border-info mt-4">
+            <div class="card-header bg-info bg-opacity-25">
+                <h5 class="mb-0">
+                    <i class="fas fa-microphone me-2"></i>
+                    {{ get_localized_string('language_selection.test_voice_input', get_current_language(), 'Test Voice Input') }}
+                </h5>
+            </div>
+            <div class="card-body">
+                <p class="text-muted">{{ get_localized_string('language_selection.try_speaking_in_your_selected_language', get_current_language(), 'Try speaking in your selected language:') }}</p>
+                <div class="d-flex justify-content-center align-items-center gap-3">
+                    <button id="voice-btn" class="btn btn-info btn-lg rounded-circle" style="width: 80px; height: 80px;">
+                        <i class="fas fa-microphone fs-2"></i>
+                    </button>
+                    <div id="voice-status" class="text-muted"></div>
+                </div>
+                <div id="voice-result" class="mt-3 alert alert-info" style="display: none;"></div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Voice input test
+    let recognition = null;
+    
+    if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        recognition = new SpeechRecognition();
+        recognition.continuous = false;
+        recognition.interimResults = false;
+        
+        const voiceBtn = document.getElementById('voice-btn');
+        const voiceStatus = document.getElementById('voice-status');
+        const voiceResult = document.getElementById('voice-result');
+        
+        voiceBtn.addEventListener('click', function() {
+            if (recognition) {
+                const selectedLang = document.querySelector('input[name="language"]:checked').value;
+                
+                // Map language codes to SpeechRecognition language codes
+                const langMap = {
+                    'en': 'en-IN',
+                    'hi': 'hi-IN',
+                    'kn': 'kn-IN',
+                    'ta': 'ta-IN',
+                    'mr': 'mr-IN',
+                    'bn': 'bn-IN',
+                    'gu': 'gu-IN',
+                    'te': 'te-IN',
+                    'ml': 'ml-IN',
+                    'or': 'or-IN',
+                    'pa': 'pa-IN',
+                    'as': 'as-IN',
+                    'ur': 'ur-IN',
+                    'ne': 'ne-NP',
+                };
+                
+                recognition.lang = langMap[selectedLang] || 'en-IN';
+                
+                voiceBtn.classList.add('btn-danger');
+                voiceBtn.classList.remove('btn-info');
+                voiceBtn.innerHTML = '<i class="fas fa-stop fs-2"></i>';
+                voiceStatus.textContent = 'Listening...';
+                voiceResult.style.display = 'none';
+                
+                recognition.start();
+            }
+        });
+        
+        recognition.onresult = function(event) {
+            const transcript = event.results[0][0].transcript;
+            voiceResult.textContent = 'You said: ' + transcript;
+            voiceResult.style.display = 'block';
+        };
+        
+        recognition.onend = function() {
+            voiceBtn.classList.remove('btn-danger');
+            voiceBtn.classList.add('btn-info');
+            voiceBtn.innerHTML = '<i class="fas fa-microphone fs-2"></i>';
+            voiceStatus.textContent = 'Tap to speak again';
+        };
+        
+        recognition.onerror = function(event) {
+            voiceStatus.textContent = 'Error: ' + event.error;
+            voiceBtn.classList.remove('btn-danger');
+            voiceBtn.classList.add('btn-info');
+            voiceBtn.innerHTML = '<i class="fas fa-microphone fs-2"></i>';
+        };
+    } else {
+        document.getElementById('voice-btn').disabled = true;
+        document.getElementById('voice-status').textContent = 'Voice input not supported in this browser';
+    }
+</script>
+{% endblock %}
+

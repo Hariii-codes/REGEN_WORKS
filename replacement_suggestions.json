@@ -1,0 +1,2118 @@
+{
+  "error.html": [
+    {
+      "original": "Oops!",
+      "key": "error.oops",
+      "line": 10
+    },
+    {
+      "original": "Return to Home",
+      "key": "error.return_to_home",
+      "line": 24
+    }
+  ],
+  "footprint_dashboard.html": [
+    {
+      "original": "Plastic Footprint Dashboard",
+      "key": "footprint.dashboard.plastic_footprint_dashboard",
+      "line": 191
+    },
+    {
+      "original": "Your Badge Level",
+      "key": "footprint.dashboard.your_badge_level",
+      "line": 17
+    },
+    {
+      "original": "Total Lifetime Weight",
+      "key": "footprint.dashboard.total_lifetime_weight",
+      "line": 36
+    },
+    {
+      "original": "All time contribution",
+      "key": "footprint.dashboard.all_time_contribution",
+      "line": 38
+    },
+    {
+      "original": "Current Month",
+      "key": "footprint.dashboard.current_month",
+      "line": 45
+    },
+    {
+      "original": "No change",
+      "key": "footprint.dashboard.no_change",
+      "line": 54
+    },
+    {
+      "original": "No data this month",
+      "key": "footprint.dashboard.no_data_this_month",
+      "line": 60
+    },
+    {
+      "original": "Monthly Plastic Footprint",
+      "key": "footprint.dashboard.monthly_plastic_footprint",
+      "line": 72
+    },
+    {
+      "original": "Recent Scans",
+      "key": "footprint.dashboard.recent_scans",
+      "line": 86
+    },
+    {
+      "original": "Date",
+      "key": "footprint.dashboard.date",
+      "line": 94
+    },
+    {
+      "original": "Material Type",
+      "key": "footprint.dashboard.material_type",
+      "line": 95
+    },
+    {
+      "original": "Weight (g)",
+      "key": "footprint.dashboard.weight_g",
+      "line": 96
+    },
+    {
+      "original": "Confidence",
+      "key": "footprint.dashboard.confidence",
+      "line": 97
+    },
+    {
+      "original": "N/A",
+      "key": "footprint.dashboard.na",
+      "line": 112
+    },
+    {
+      "original": "No scans yet. Start scanning waste items to track your footprint!",
+      "key": "footprint.dashboard.no_scans_yet_start_scanning_waste_items_",
+      "line": 121
+    }
+  ],
+  "infrastructure_map.html": [
+    {
+      "original": "Infrastructure Reports Map",
+      "key": "infrastructure.map.infrastructure_reports_map",
+      "line": 392
+    },
+    {
+      "original": "View all reported infrastructure issues across the city and track their resolution status.",
+      "key": "infrastructure.map.view_all_reported_infrastructure_issues_",
+      "line": 392
+    },
+    {
+      "original": "Report New Issue",
+      "key": "infrastructure.map.report_new_issue",
+      "line": 392
+    },
+    {
+      "original": "Filters",
+      "key": "common.filter",
+      "line": 392
+    },
+    {
+      "original": "Category",
+      "key": "infrastructure.map.category",
+      "line": 33
+    },
+    {
+      "original": "All Categories",
+      "key": "infrastructure.map.all_categories",
+      "line": 35
+    },
+    {
+      "original": "Status",
+      "key": "infrastructure.map.status",
+      "line": 43
+    },
+    {
+      "original": "All Statuses",
+      "key": "infrastructure.map.all_statuses",
+      "line": 45
+    },
+    {
+      "original": "Severity",
+      "key": "infrastructure.map.severity",
+      "line": 53
+    },
+    {
+      "original": "All Severities",
+      "key": "infrastructure.map.all_severities",
+      "line": 55
+    },
+    {
+      "original": "Apply Filters",
+      "key": "infrastructure.map.apply_filters",
+      "line": 392
+    },
+    {
+      "original": "Statistics",
+      "key": "infrastructure.map.statistics",
+      "line": 392
+    },
+    {
+      "original": "Total Reports:",
+      "key": "infrastructure.map.total_reports",
+      "line": 76
+    },
+    {
+      "original": "Pending:",
+      "key": "infrastructure.map.pending",
+      "line": 80
+    },
+    {
+      "original": "In Progress:",
+      "key": "infrastructure.map.in_progress",
+      "line": 84
+    },
+    {
+      "original": "Resolved:",
+      "key": "infrastructure.map.resolved",
+      "line": 88
+    },
+    {
+      "original": "High Severity:",
+      "key": "infrastructure.map.high_severity",
+      "line": 92
+    },
+    {
+      "original": "Legend",
+      "key": "infrastructure.map.legend",
+      "line": 392
+    },
+    {
+      "original": "Status Colors",
+      "key": "infrastructure.map.status_colors",
+      "line": 105
+    },
+    {
+      "original": "Pending",
+      "key": "infrastructure.map.pending_1",
+      "line": 108
+    },
+    {
+      "original": "Under Review",
+      "key": "infrastructure.map.under_review",
+      "line": 112
+    },
+    {
+      "original": "In Progress",
+      "key": "infrastructure.map.in_progress_1",
+      "line": 116
+    },
+    {
+      "original": "Resolved",
+      "key": "infrastructure.map.resolved_1",
+      "line": 120
+    },
+    {
+      "original": "Rejected",
+      "key": "infrastructure.map.rejected",
+      "line": 124
+    },
+    {
+      "original": "Tips",
+      "key": "infrastructure.map.tips",
+      "line": 127
+    },
+    {
+      "original": "Click on a marker to see details",
+      "key": "infrastructure.map.click_on_a_marker_to_see_details",
+      "line": 129
+    },
+    {
+      "original": "Use filters to find specific issues",
+      "key": "infrastructure.map.use_filters_to_find_specific_issues",
+      "line": 130
+    },
+    {
+      "original": "Report new issues using the button above",
+      "key": "infrastructure.map.report_new_issues_using_the_button_above",
+      "line": 131
+    }
+  ],
+  "item_details.html": [
+    {
+      "original": "Marketplace",
+      "key": "nav.marketplace",
+      "line": 8
+    },
+    {
+      "original": "Item Details",
+      "key": "item.details.item_details",
+      "line": 9
+    },
+    {
+      "original": "Recyclable",
+      "key": "index.recyclable",
+      "line": 293
+    },
+    {
+      "original": "E-Waste",
+      "key": "index.ewaste",
+      "line": 293
+    },
+    {
+      "original": "Description",
+      "key": "item.details.description",
+      "line": 46
+    },
+    {
+      "original": "Location",
+      "key": "item.details.location",
+      "line": 49
+    },
+    {
+      "original": "Contact Information",
+      "key": "item.details.contact_information",
+      "line": 55
+    },
+    {
+      "original": "Email",
+      "key": "item.details.email",
+      "line": 293
+    },
+    {
+      "original": "Call",
+      "key": "item.details.call",
+      "line": 293
+    },
+    {
+      "original": "Visit Recycling Marketplace",
+      "key": "item.details.visit_recycling_marketplace_1",
+      "line": 293
+    },
+    {
+      "original": "This plastic item can be sent to the municipality for raw material processing.",
+      "key": "item.details.this_plastic_item_can_be_sent_to_the_mun",
+      "line": 293
+    },
+    {
+      "original": "Send to Municipality",
+      "key": "item.details.send_to_municipality",
+      "line": 293
+    },
+    {
+      "original": "Municipality Status",
+      "key": "item.details.municipality_status",
+      "line": 107
+    },
+    {
+      "original": "AI Analysis Results",
+      "key": "item.details.ai_analysis_results",
+      "line": 293
+    },
+    {
+      "original": "Computer Vision Analysis",
+      "key": "item.details.computer_vision_analysis",
+      "line": 144
+    },
+    {
+      "original": "Primary material:",
+      "key": "item.details.primary_material",
+      "line": 293
+    },
+    {
+      "original": "Recyclability score:",
+      "key": "item.details.recyclability_score",
+      "line": 293
+    },
+    {
+      "original": "Analysis method:",
+      "key": "item.details.analysis_method",
+      "line": 293
+    },
+    {
+      "original": "Material composition:",
+      "key": "item.details.material_composition",
+      "line": 159
+    },
+    {
+      "original": "Copy Analysis",
+      "key": "item.details.copy_analysis",
+      "line": 293
+    },
+    {
+      "original": "Recycling Tips",
+      "key": "item.details.recycling_tips",
+      "line": 293
+    },
+    {
+      "original": "Tips for Plastic Recycling:",
+      "key": "item.details.tips_for_plastic_recycling",
+      "line": 201
+    },
+    {
+      "original": "Rinse containers to remove food residue",
+      "key": "item.details.rinse_containers_to_remove_food_residue_1",
+      "line": 203
+    },
+    {
+      "original": "Remove caps and lids (they can often be recycled separately)",
+      "key": "item.details.remove_caps_and_lids_they_can_often_be_r",
+      "line": 204
+    },
+    {
+      "original": "Check for recycling symbols (1-7) to identify plastic type",
+      "key": "item.details.check_for_recycling_symbols_17_to_identi",
+      "line": 205
+    },
+    {
+      "original": "Compress items to save space during transport",
+      "key": "common.save",
+      "line": 206
+    },
+    {
+      "original": "Tips for Paper Recycling:",
+      "key": "item.details.tips_for_paper_recycling",
+      "line": 209
+    },
+    {
+      "original": "Remove any plastic windows or non-paper materials",
+      "key": "item.details.remove_any_plastic_windows_or_nonpaper_m",
+      "line": 211
+    },
+    {
+      "original": "Keep paper dry and clean",
+      "key": "item.details.keep_paper_dry_and_clean",
+      "line": 212
+    },
+    {
+      "original": "Flatten cardboard boxes to save space",
+      "key": "item.details.flatten_cardboard_boxes_to_save_space",
+      "line": 213
+    },
+    {
+      "original": "Shredded paper may require special handling",
+      "key": "item.details.shredded_paper_may_require_special_handl",
+      "line": 214
+    },
+    {
+      "original": "Tips for Metal Recycling:",
+      "key": "item.details.tips_for_metal_recycling",
+      "line": 217
+    },
+    {
+      "original": "Rinse food containers thoroughly",
+      "key": "item.details.rinse_food_containers_thoroughly",
+      "line": 219
+    },
+    {
+      "original": "Remove non-metal parts if possible",
+      "key": "item.details.remove_nonmetal_parts_if_possible",
+      "line": 220
+    },
+    {
+      "original": "Aluminum cans can be crushed to save space",
+      "key": "item.details.aluminum_cans_can_be_crushed_to_save_spa",
+      "line": 221
+    },
+    {
+      "original": "Some metals have higher recycling value than others",
+      "key": "item.details.some_metals_have_higher_recycling_value_",
+      "line": 222
+    },
+    {
+      "original": "Tips for Glass Recycling:",
+      "key": "item.details.tips_for_glass_recycling",
+      "line": 225
+    },
+    {
+      "original": "Rinse containers to remove food residue",
+      "key": "item.details.rinse_containers_to_remove_food_residue_1",
+      "line": 203
+    },
+    {
+      "original": "Remove lids and caps (they're often made of different materials)",
+      "key": "item.details.remove_lids_and_caps_theyre_often_made_o",
+      "line": 228
+    },
+    {
+      "original": "Sort by color if required by your local recycling program",
+      "key": "item.details.sort_by_color_if_required_by_your_local_",
+      "line": 229
+    },
+    {
+      "original": "Handle carefully to avoid breakage",
+      "key": "item.details.handle_carefully_to_avoid_breakage",
+      "line": 230
+    },
+    {
+      "original": "Tips for E-Waste Recycling:",
+      "key": "item.details.tips_for_ewaste_recycling",
+      "line": 233
+    },
+    {
+      "original": "Back up and erase all personal data",
+      "key": "item.details.back_up_and_erase_all_personal_data",
+      "line": 235
+    },
+    {
+      "original": "Keep batteries intact (don't remove them)",
+      "key": "item.details.keep_batteries_intact_dont_remove_them",
+      "line": 236
+    },
+    {
+      "original": "Look for specialized e-waste collection events",
+      "key": "item.details.look_for_specialized_ewaste_collection_e",
+      "line": 237
+    },
+    {
+      "original": "Some manufacturers offer take-back programs",
+      "key": "item.details.some_manufacturers_offer_takeback_progra",
+      "line": 238
+    },
+    {
+      "original": "General Recycling Tips:",
+      "key": "item.details.general_recycling_tips",
+      "line": 241
+    },
+    {
+      "original": "Clean items before recycling",
+      "key": "item.details.clean_items_before_recycling",
+      "line": 243
+    },
+    {
+      "original": "Check local recycling guidelines",
+      "key": "item.details.check_local_recycling_guidelines",
+      "line": 244
+    },
+    {
+      "original": "Consider reuse options before recycling",
+      "key": "item.details.consider_reuse_options_before_recycling",
+      "line": 245
+    },
+    {
+      "original": "Separate different materials whenever possible",
+      "key": "item.details.separate_different_materials_whenever_po",
+      "line": 246
+    },
+    {
+      "original": "Next Steps",
+      "key": "item.details.next_steps",
+      "line": 293
+    },
+    {
+      "original": "Track Waste Journey",
+      "key": "item.details.track_waste_journey",
+      "line": 293
+    },
+    {
+      "original": "Inform Municipality for Collection",
+      "key": "item.details.inform_municipality_for_collection",
+      "line": 293
+    },
+    {
+      "original": "Analyze Another Item",
+      "key": "item.details.analyze_another_item",
+      "line": 293
+    },
+    {
+      "original": "Visit Recycling Marketplace",
+      "key": "item.details.visit_recycling_marketplace_1",
+      "line": 293
+    }
+  ],
+  "language_selection.html": [
+    {
+      "original": "Select Your Language",
+      "key": "language.selection.select_your_language",
+      "line": 141
+    },
+    {
+      "original": "Choose your preferred language for ReGenWorks",
+      "key": "language.selection.choose_your_preferred_language_for_waste",
+      "line": 12
+    },
+    {
+      "original": "Continue",
+      "key": "language.selection.continue",
+      "line": 141
+    },
+    {
+      "original": "Test Voice Input",
+      "key": "language.selection.test_voice_input",
+      "line": 141
+    },
+    {
+      "original": "Try speaking in your selected language:",
+      "key": "language.selection.try_speaking_in_your_selected_language",
+      "line": 53
+    }
+  ],
+  "listing_form.html": [
+    {
+      "original": "Analyze",
+      "key": "listing.form.analyze",
+      "line": 8
+    },
+    {
+      "original": "List Item",
+      "key": "listing.form.list_item",
+      "line": 9
+    },
+    {
+      "original": "List Your Recyclable Item",
+      "key": "listing.form.list_your_recyclable_item",
+      "line": 118
+    },
+    {
+      "original": "Item Summary",
+      "key": "listing.form.item_summary",
+      "line": 32
+    },
+    {
+      "original": "Recyclable",
+      "key": "index.recyclable",
+      "line": 118
+    },
+    {
+      "original": "E-Waste",
+      "key": "index.ewaste",
+      "line": 118
+    },
+    {
+      "original": "This plastic item will be automatically forwarded to the municipality for raw material processing.",
+      "key": "listing.form.this_plastic_item_will_be_automatically_",
+      "line": 118
+    },
+    {
+      "original": "Title",
+      "key": "listing.form.title",
+      "line": 118
+    },
+    {
+      "original": "Description",
+      "key": "item.details.description",
+      "line": 118
+    },
+    {
+      "original": "Contact Email",
+      "key": "listing.form.contact_email",
+      "line": 118
+    },
+    {
+      "original": "Contact Phone",
+      "key": "listing.form.contact_phone",
+      "line": 84
+    },
+    {
+      "original": "Location",
+      "key": "item.details.location",
+      "line": 118
+    },
+    {
+      "original": "Important:",
+      "key": "listing.form.important",
+      "line": 98
+    },
+    {
+      "original": "List Item in Marketplace",
+      "key": "listing.form.list_item_in_marketplace",
+      "line": 118
+    },
+    {
+      "original": "Cancel",
+      "key": "common.cancel",
+      "line": 118
+    }
+  ],
+  "login.html": [
+    {
+      "original": "Login",
+      "key": "auth.login",
+      "line": 8
+    },
+    {
+      "original": "Don't have an account?",
+      "key": "login.dont_have_an_account",
+      "line": 79
+    },
+    {
+      "original": "Register here",
+      "key": "login.register_here",
+      "line": 53
+    },
+    {
+      "original": "Benefits of Logging In",
+      "key": "login.benefits_of_logging_in",
+      "line": 60
+    },
+    {
+      "original": "Earn eco-points for every recycling action",
+      "key": "login.earn_ecopoints_for_every_recycling_actio",
+      "line": 79
+    },
+    {
+      "original": "Unlock achievements as you recycle more",
+      "key": "login.unlock_achievements_as_you_recycle_more",
+      "line": 79
+    },
+    {
+      "original": "Track your environmental impact",
+      "key": "login.track_your_environmental_impact",
+      "line": 79
+    },
+    {
+      "original": "Build recycling streaks for bonus rewards",
+      "key": "login.build_recycling_streaks_for_bonus_reward",
+      "line": 79
+    }
+  ],
+  "marketplace.html": [
+    {
+      "original": "Recycling Marketplace",
+      "key": "marketplace.recycling_marketplace",
+      "line": 119
+    },
+    {
+      "original": "Add New Item",
+      "key": "marketplace.add_new_item",
+      "line": 119
+    },
+    {
+      "original": "How the Marketplace Works",
+      "key": "marketplace.how_the_marketplace_works",
+      "line": 30
+    },
+    {
+      "original": "Municipality",
+      "key": "nav.municipality",
+      "line": 119
+    },
+    {
+      "original": "Recyclable",
+      "key": "index.recyclable",
+      "line": 119
+    },
+    {
+      "original": "E-Waste",
+      "key": "index.ewaste",
+      "line": 119
+    },
+    {
+      "original": "View Details",
+      "key": "marketplace.view_details",
+      "line": 119
+    },
+    {
+      "original": "No items listed yet",
+      "key": "marketplace.no_items_listed_yet",
+      "line": 106
+    },
+    {
+      "original": "Be the first to list a recyclable item in the marketplace!",
+      "key": "marketplace.be_the_first_to_list_a_recyclable_item_i",
+      "line": 119
+    },
+    {
+      "original": "Analyze & List Item",
+      "key": "marketplace.analyze_list_item",
+      "line": 119
+    }
+  ],
+  "municipality.html": [
+    {
+      "original": "Municipality Recycling Program",
+      "key": "municipality.municipality_recycling_program",
+      "line": 222
+    },
+    {
+      "original": "About Municipal Recycling",
+      "key": "municipality.about_municipal_recycling",
+      "line": 24
+    },
+    {
+      "original": "Items Sent to Municipality",
+      "key": "municipality.items_sent_to_municipality",
+      "line": 43
+    },
+    {
+      "original": "Image",
+      "key": "municipality.image",
+      "line": 52
+    },
+    {
+      "original": "Item",
+      "key": "municipality.item",
+      "line": 53
+    },
+    {
+      "original": "Material",
+      "key": "index.material",
+      "line": 54
+    },
+    {
+      "original": "Date Sent",
+      "key": "municipality.date_sent",
+      "line": 55
+    },
+    {
+      "original": "Status",
+      "key": "infrastructure.map.status",
+      "line": 56
+    },
+    {
+      "original": "Actions",
+      "key": "municipality.actions",
+      "line": 57
+    },
+    {
+      "original": "Pending",
+      "key": "infrastructure.map.pending_1",
+      "line": 78
+    },
+    {
+      "original": "Accepted",
+      "key": "municipality.accepted",
+      "line": 80
+    },
+    {
+      "original": "Rejected",
+      "key": "infrastructure.map.rejected",
+      "line": 82
+    },
+    {
+      "original": "Update",
+      "key": "municipality.update",
+      "line": 222
+    },
+    {
+      "original": "Set as Pending",
+      "key": "municipality.set_as_pending",
+      "line": 222
+    },
+    {
+      "original": "Set as Accepted",
+      "key": "municipality.set_as_accepted",
+      "line": 222
+    },
+    {
+      "original": "Set as Rejected",
+      "key": "municipality.set_as_rejected",
+      "line": 222
+    },
+    {
+      "original": "Material Usage",
+      "key": "municipality.material_usage",
+      "line": 222
+    },
+    {
+      "original": "How Plastic Waste is Used in Construction:",
+      "key": "municipality.how_plastic_waste_is_used_in_constructio",
+      "line": 145
+    },
+    {
+      "original": "Plastic Roads:",
+      "key": "municipality.plastic_roads",
+      "line": 147
+    },
+    {
+      "original": "Mixed with asphalt to create stronger, longer-lasting roads",
+      "key": "municipality.mixed_with_asphalt_to_create_stronger_lo",
+      "line": 222
+    },
+    {
+      "original": "Plastic Bricks:",
+      "key": "municipality.plastic_bricks",
+      "line": 148
+    },
+    {
+      "original": "Made from compressed plastic waste for affordable housing",
+      "key": "municipality.made_from_compressed_plastic_waste_for_a",
+      "line": 222
+    },
+    {
+      "original": "Concrete Mixture:",
+      "key": "municipality.concrete_mixture",
+      "line": 149
+    },
+    {
+      "original": "Adding processed plastic to concrete to improve durability",
+      "key": "municipality.adding_processed_plastic_to_concrete_to_",
+      "line": 222
+    },
+    {
+      "original": "Roofing Tiles:",
+      "key": "municipality.roofing_tiles",
+      "line": 150
+    },
+    {
+      "original": "Converting plastics into weather-resistant roofing materials",
+      "key": "municipality.converting_plastics_into_weatherresistan",
+      "line": 222
+    },
+    {
+      "original": "Furniture:",
+      "key": "municipality.furniture",
+      "line": 151
+    },
+    {
+      "original": "Creating public benches and tables from recycled plastics",
+      "key": "municipality.creating_public_benches_and_tables_from_",
+      "line": 222
+    },
+    {
+      "original": "Environmental Impact",
+      "key": "index.environmental_impact",
+      "line": 222
+    },
+    {
+      "original": "Benefits of Municipal Plastic Recycling:",
+      "key": "municipality.benefits_of_municipal_plastic_recycling",
+      "line": 166
+    },
+    {
+      "original": "Waste Reduction",
+      "key": "municipality.waste_reduction",
+      "line": 173
+    },
+    {
+      "original": "Decreases landfill waste and plastic pollution in waterways",
+      "key": "municipality.decreases_landfill_waste_and_plastic_pol",
+      "line": 174
+    },
+    {
+      "original": "Resource Conservation",
+      "key": "municipality.resource_conservation",
+      "line": 183
+    },
+    {
+      "original": "Reduces need for new plastic production, saving oil and energy",
+      "key": "municipality.reduces_need_for_new_plastic_production_",
+      "line": 184
+    },
+    {
+      "original": "Construction Innovation",
+      "key": "municipality.construction_innovation",
+      "line": 193
+    },
+    {
+      "original": "Creates durable materials with unique properties for building",
+      "key": "municipality.creates_durable_materials_with_unique_pr",
+      "line": 194
+    },
+    {
+      "original": "No items sent to municipality yet",
+      "key": "municipality.no_items_sent_to_municipality_yet",
+      "line": 208
+    },
+    {
+      "original": "Analyze & List Item",
+      "key": "marketplace.analyze_list_item",
+      "line": 222
+    }
+  ],
+  "my_infrastructure_reports.html": [
+    {
+      "original": "My Infrastructure Reports",
+      "key": "base.my_infrastructure_reports",
+      "line": 324
+    },
+    {
+      "original": "Track the status of infrastructure issues you've reported and see your impact on the community.",
+      "key": "my.infrastructure.reports.track_the_status_of_infrastructure_issue",
+      "line": 324
+    },
+    {
+      "original": "Report New Issue",
+      "key": "infrastructure.map.report_new_issue",
+      "line": 324
+    },
+    {
+      "original": "Total Reports",
+      "key": "my.infrastructure.reports.total_reports",
+      "line": 28
+    },
+    {
+      "original": "Pending",
+      "key": "infrastructure.map.pending_1",
+      "line": 36
+    },
+    {
+      "original": "In Progress",
+      "key": "infrastructure.map.in_progress_1",
+      "line": 44
+    },
+    {
+      "original": "Resolved",
+      "key": "infrastructure.map.resolved_1",
+      "line": 52
+    },
+    {
+      "original": "My Reports",
+      "key": "base.my_reports",
+      "line": 324
+    },
+    {
+      "original": "Title",
+      "key": "listing.form.title",
+      "line": 72
+    },
+    {
+      "original": "Category",
+      "key": "infrastructure.map.category",
+      "line": 73
+    },
+    {
+      "original": "Reported On",
+      "key": "my.infrastructure.reports.reported_on",
+      "line": 74
+    },
+    {
+      "original": "Status",
+      "key": "infrastructure.map.status",
+      "line": 75
+    },
+    {
+      "original": "Severity",
+      "key": "infrastructure.map.severity",
+      "line": 76
+    },
+    {
+      "original": "Actions",
+      "key": "municipality.actions",
+      "line": 77
+    },
+    {
+      "original": "No reports yet",
+      "key": "my.infrastructure.reports.no_reports_yet",
+      "line": 112
+    },
+    {
+      "original": "You haven't submitted any infrastructure reports yet.",
+      "key": "common.submit",
+      "line": 113
+    },
+    {
+      "original": "Create Your First Report",
+      "key": "my.infrastructure.reports.create_your_first_report",
+      "line": 324
+    },
+    {
+      "original": "My Reports Map",
+      "key": "my.infrastructure.reports.my_reports_map",
+      "line": 324
+    },
+    {
+      "original": "Your Civic Impact",
+      "key": "my.infrastructure.reports.your_civic_impact",
+      "line": 324
+    },
+    {
+      "original": "Your Contribution Stats",
+      "key": "my.infrastructure.reports.your_contribution_stats",
+      "line": 146
+    },
+    {
+      "original": "Total reports submitted:",
+      "key": "my.infrastructure.reports.total_reports_submitted",
+      "line": 148
+    },
+    {
+      "original": "Issues resolved:",
+      "key": "my.infrastructure.reports.issues_resolved",
+      "line": 152
+    },
+    {
+      "original": "Points earned from reporting:",
+      "key": "my.infrastructure.reports.points_earned_from_reporting",
+      "line": 156
+    },
+    {
+      "original": "Bonus points from resolutions:",
+      "key": "my.infrastructure.reports.bonus_points_from_resolutions",
+      "line": 160
+    },
+    {
+      "original": "Total impact points:",
+      "key": "my.infrastructure.reports.total_impact_points",
+      "line": 164
+    },
+    {
+      "original": "Community Impact",
+      "key": "my.infrastructure.reports.community_impact",
+      "line": 169
+    },
+    {
+      "original": "By reporting infrastructure issues, you're helping create a safer and more beautiful community for everyone.",
+      "key": "my.infrastructure.reports.by_reporting_infrastructure_issues_youre",
+      "line": 170
+    },
+    {
+      "original": "Your reports have contributed to community improvements in:",
+      "key": "my.infrastructure.reports.your_reports_have_contributed_to_communi",
+      "line": 324
+    },
+    {
+      "original": "Keep reporting!",
+      "key": "my.infrastructure.reports.keep_reporting",
+      "line": 182
+    },
+    {
+      "original": "The more issues we identify and fix, the better our community becomes.",
+      "key": "my.infrastructure.reports.the_more_issues_we_identify_and_fix_the_",
+      "line": 324
+    },
+    {
+      "original": "View Details",
+      "key": "marketplace.view_details",
+      "line": 289
+    }
+  ],
+  "profile.html": [
+    {
+      "original": "My Profile",
+      "key": "nav.profile",
+      "line": 9
+    },
+    {
+      "original": "Eco Points",
+      "key": "profile.eco_points",
+      "line": 26
+    },
+    {
+      "original": "Day Streak",
+      "key": "profile.day_streak",
+      "line": 34
+    },
+    {
+      "original": "My Stats",
+      "key": "profile.my_stats",
+      "line": 41
+    },
+    {
+      "original": "Items Analyzed:",
+      "key": "profile.items_analyzed",
+      "line": 43
+    },
+    {
+      "original": "Recyclable Items:",
+      "key": "profile.recyclable_items",
+      "line": 47
+    },
+    {
+      "original": "E-Waste Items:",
+      "key": "profile.ewaste_items",
+      "line": 51
+    },
+    {
+      "original": "Marketplace Listings:",
+      "key": "profile.marketplace_listings",
+      "line": 55
+    },
+    {
+      "original": "Achievements:",
+      "key": "profile.achievements",
+      "line": 59
+    },
+    {
+      "original": "Settings",
+      "key": "profile.settings",
+      "line": 290
+    },
+    {
+      "original": "Preferred Language",
+      "key": "profile.preferred_language",
+      "line": 290
+    },
+    {
+      "original": "Change Language",
+      "key": "base.change_language",
+      "line": 290
+    },
+    {
+      "original": "Voice Input",
+      "key": "profile.voice_input",
+      "line": 290
+    },
+    {
+      "original": "Enable voice input",
+      "key": "profile.enable_voice_input",
+      "line": 290
+    },
+    {
+      "original": "Badge Level",
+      "key": "profile.badge_level",
+      "line": 290
+    },
+    {
+      "original": "Achievements",
+      "key": "profile.achievements_1",
+      "line": 123
+    },
+    {
+      "original": "You haven't earned any achievements yet. Start recycling to earn your first badge!",
+      "key": "profile.you_havent_earned_any_achievements_yet_s",
+      "line": 290
+    },
+    {
+      "original": "Available Achievements",
+      "key": "profile.available_achievements",
+      "line": 157
+    },
+    {
+      "original": "Recycle Rookie",
+      "key": "profile.recycle_rookie",
+      "line": 167
+    },
+    {
+      "original": "Recycle your first item",
+      "key": "profile.recycle_your_first_item",
+      "line": 168
+    },
+    {
+      "original": "50 points",
+      "key": "profile.50_points",
+      "line": 290
+    },
+    {
+      "original": "Plastic Hero",
+      "key": "profile.plastic_hero",
+      "line": 185
+    },
+    {
+      "original": "Recycle 5 plastic items",
+      "key": "profile.recycle_5_plastic_items",
+      "line": 186
+    },
+    {
+      "original": "100 points",
+      "key": "profile.100_points",
+      "line": 290
+    },
+    {
+      "original": "Recent Rewards",
+      "key": "profile.recent_rewards",
+      "line": 203
+    },
+    {
+      "original": "Date",
+      "key": "footprint.dashboard.date",
+      "line": 211
+    },
+    {
+      "original": "Activity",
+      "key": "profile.activity",
+      "line": 212
+    },
+    {
+      "original": "Points",
+      "key": "profile.points",
+      "line": 213
+    },
+    {
+      "original": "You haven't earned any rewards yet. Start recycling to earn points!",
+      "key": "profile.you_havent_earned_any_rewards_yet_start_",
+      "line": 290
+    },
+    {
+      "original": "Ways to Earn Points",
+      "key": "profile.ways_to_earn_points",
+      "line": 233
+    },
+    {
+      "original": "Recycling an item",
+      "key": "profile.recycling_an_item",
+      "line": 290
+    },
+    {
+      "original": "+10 points",
+      "key": "profile.10_points",
+      "line": 237
+    },
+    {
+      "original": "Properly disposing e-waste",
+      "key": "profile.properly_disposing_ewaste",
+      "line": 290
+    },
+    {
+      "original": "+20 points",
+      "key": "profile.20_points",
+      "line": 241
+    },
+    {
+      "original": "Listing an item in marketplace",
+      "key": "profile.listing_an_item_in_marketplace",
+      "line": 290
+    },
+    {
+      "original": "+5 points",
+      "key": "profile.5_points",
+      "line": 245
+    },
+    {
+      "original": "Dropping off at collection center",
+      "key": "profile.dropping_off_at_collection_center",
+      "line": 290
+    },
+    {
+      "original": "+15 points",
+      "key": "profile.15_points",
+      "line": 249
+    }
+  ],
+  "projects_list.html": [
+    {
+      "original": "Infrastructure Projects",
+      "key": "projects.list.infrastructure_projects",
+      "line": 113
+    },
+    {
+      "original": "See how your recycled waste contributes to real infrastructure projects!",
+      "key": "projects.list.see_how_your_recycled_waste_contributes_",
+      "line": 9
+    },
+    {
+      "original": "All Projects",
+      "key": "projects.list.all_projects",
+      "line": 113
+    },
+    {
+      "original": "Planned",
+      "key": "projects.list.planned",
+      "line": 113
+    },
+    {
+      "original": "In Progress",
+      "key": "infrastructure.map.in_progress_1",
+      "line": 113
+    },
+    {
+      "original": "Completed",
+      "key": "projects.list.completed",
+      "line": 113
+    },
+    {
+      "original": "Progress:",
+      "key": "projects.list.progress",
+      "line": 58
+    },
+    {
+      "original": "0 else 0 %}",
+      "key": "projects.list.0_else_0_",
+      "line": 113
+    },
+    {
+      "original": "Your Contribution:",
+      "key": "projects.list.your_contribution",
+      "line": 86
+    },
+    {
+      "original": "Top Contributor!",
+      "key": "projects.list.top_contributor",
+      "line": 89
+    },
+    {
+      "original": "View Details",
+      "key": "marketplace.view_details",
+      "line": 113
+    },
+    {
+      "original": "No projects found. Check back later!",
+      "key": "projects.list.no_projects_found_check_back_later",
+      "line": 113
+    }
+  ],
+  "project_detail.html": [
+    {
+      "original": "Back to Projects",
+      "key": "project.detail.back_to_projects",
+      "line": 186
+    },
+    {
+      "original": "Project Details",
+      "key": "project.detail.project_details",
+      "line": 17
+    },
+    {
+      "original": "Progress",
+      "key": "project.detail.progress",
+      "line": 31
+    },
+    {
+      "original": "Project Type:",
+      "key": "project.detail.project_type",
+      "line": 49
+    },
+    {
+      "original": "Started:",
+      "key": "project.detail.started",
+      "line": 53
+    },
+    {
+      "original": "Completed:",
+      "key": "project.detail.completed",
+      "line": 56
+    },
+    {
+      "original": "Location:",
+      "key": "project.detail.location",
+      "line": 60
+    },
+    {
+      "original": "Your Contribution",
+      "key": "project.detail.your_contribution",
+      "line": 69
+    },
+    {
+      "original": "You've contributed",
+      "key": "project.detail.youve_contributed",
+      "line": 186
+    },
+    {
+      "original": "Top Contributor!",
+      "key": "projects.list.top_contributor",
+      "line": 73
+    },
+    {
+      "original": "Project Timeline",
+      "key": "project.detail.project_timeline",
+      "line": 85
+    },
+    {
+      "original": "Top Contributors",
+      "key": "project.detail.top_contributors",
+      "line": 114
+    },
+    {
+      "original": "Location",
+      "key": "item.details.location",
+      "line": 132
+    }
+  ],
+  "register.html": [
+    {
+      "original": "Create an Account",
+      "key": "register.create_an_account",
+      "line": 8
+    },
+    {
+      "original": "Username must be 3-20 characters long.",
+      "key": "register.username_must_be_320_characters_long",
+      "line": 26
+    },
+    {
+      "original": "Password must be at least 6 characters long.",
+      "key": "register.password_must_be_at_least_6_characters_l",
+      "line": 55
+    },
+    {
+      "original": "Already have an account?",
+      "key": "register.already_have_an_account",
+      "line": 110
+    },
+    {
+      "original": "Login here",
+      "key": "register.login_here",
+      "line": 78
+    },
+    {
+      "original": "Join the ReGenWorks Community",
+      "key": "register.join_the_ReGenWorks_community",
+      "line": 85
+    },
+    {
+      "original": "Recycle Better",
+      "key": "register.recycle_better",
+      "line": 91
+    },
+    {
+      "original": "Earn Rewards",
+      "key": "register.earn_rewards",
+      "line": 97
+    },
+    {
+      "original": "Save the Planet",
+      "key": "register.save_the_planet",
+      "line": 103
+    }
+  ],
+  "report_infrastructure.html": [
+    {
+      "original": "Report Infrastructure Issues",
+      "key": "report.infrastructure.report_infrastructure_issues",
+      "line": 337
+    },
+    {
+      "original": "Submit Infrastructure Report",
+      "key": "report.infrastructure.submit_infrastructure_report",
+      "line": 337
+    },
+    {
+      "original": "Title",
+      "key": "listing.form.title",
+      "line": 30
+    },
+    {
+      "original": "Category",
+      "key": "infrastructure.map.category",
+      "line": 37
+    },
+    {
+      "original": "Select a category",
+      "key": "report.infrastructure.select_a_category",
+      "line": 39
+    },
+    {
+      "original": "Severity",
+      "key": "infrastructure.map.severity",
+      "line": 46
+    },
+    {
+      "original": "Select severity",
+      "key": "report.infrastructure.select_severity",
+      "line": 48
+    },
+    {
+      "original": "Description",
+      "key": "item.details.description",
+      "line": 57
+    },
+    {
+      "original": "Location Description",
+      "key": "report.infrastructure.location_description",
+      "line": 63
+    },
+    {
+      "original": "Latitude (optional)",
+      "key": "report.infrastructure.latitude_optional",
+      "line": 71
+    },
+    {
+      "original": "Longitude (optional)",
+      "key": "report.infrastructure.longitude_optional",
+      "line": 76
+    },
+    {
+      "original": "Use My Current Location",
+      "key": "report.infrastructure.use_my_current_location",
+      "line": 337
+    },
+    {
+      "original": "Image Upload",
+      "key": "report.infrastructure.image_upload",
+      "line": 91
+    },
+    {
+      "original": "Webcam",
+      "key": "report.infrastructure.webcam",
+      "line": 337
+    },
+    {
+      "original": "File Upload",
+      "key": "report.infrastructure.file_upload",
+      "line": 337
+    },
+    {
+      "original": "Start Camera",
+      "key": "index.start_camera",
+      "line": 337
+    },
+    {
+      "original": "Take Photo",
+      "key": "report.infrastructure.take_photo",
+      "line": 337
+    },
+    {
+      "original": "Retake",
+      "key": "report.infrastructure.retake",
+      "line": 337
+    },
+    {
+      "original": "Preview:",
+      "key": "report.infrastructure.preview",
+      "line": 129
+    },
+    {
+      "original": "Upload a clear photo of the infrastructure issue",
+      "key": "report.infrastructure.upload_a_clear_photo_of_the_infrastructu",
+      "line": 138
+    },
+    {
+      "original": "Submit Report",
+      "key": "report.infrastructure.submit_report",
+      "line": 337
+    },
+    {
+      "original": "Reporting Guidelines",
+      "key": "report.infrastructure.reporting_guidelines",
+      "line": 337
+    },
+    {
+      "original": "What to Report",
+      "key": "report.infrastructure.what_to_report",
+      "line": 163
+    },
+    {
+      "original": "Damaged roads and potholes",
+      "key": "report.infrastructure.damaged_roads_and_potholes",
+      "line": 165
+    },
+    {
+      "original": "Broken streetlights or traffic signals",
+      "key": "report.infrastructure.broken_streetlights_or_traffic_signals",
+      "line": 166
+    },
+    {
+      "original": "Damaged footpaths and sidewalks",
+      "key": "report.infrastructure.damaged_footpaths_and_sidewalks",
+      "line": 167
+    },
+    {
+      "original": "Overflowing or damaged garbage bins",
+      "key": "report.infrastructure.overflowing_or_damaged_garbage_bins",
+      "line": 168
+    },
+    {
+      "original": "Issues with drainage systems",
+      "key": "report.infrastructure.issues_with_drainage_systems",
+      "line": 169
+    },
+    {
+      "original": "Water leaks or broken pipes",
+      "key": "report.infrastructure.water_leaks_or_broken_pipes",
+      "line": 170
+    },
+    {
+      "original": "Damaged public facilities",
+      "key": "report.infrastructure.damaged_public_facilities",
+      "line": 171
+    },
+    {
+      "original": "Tips for Good Reports",
+      "key": "report.infrastructure.tips_for_good_reports",
+      "line": 174
+    },
+    {
+      "original": "Take clear, well-lit photos",
+      "key": "report.infrastructure.take_clear_welllit_photos",
+      "line": 176
+    },
+    {
+      "original": "Include landmarks in the photo to help identify the location",
+      "key": "report.infrastructure.include_landmarks_in_the_photo_to_help_i",
+      "line": 177
+    },
+    {
+      "original": "Be specific about the location in your description",
+      "key": "report.infrastructure.be_specific_about_the_location_in_your_d",
+      "line": 178
+    },
+    {
+      "original": "Rate severity honestly based on safety risk and impact",
+      "key": "report.infrastructure.rate_severity_honestly_based_on_safety_r",
+      "line": 179
+    },
+    {
+      "original": "Provide contact details if you wish to be updated on the resolution",
+      "key": "report.infrastructure.provide_contact_details_if_you_wish_to_b",
+      "line": 180
+    },
+    {
+      "original": "Rewards for Reporting",
+      "key": "report.infrastructure.rewards_for_reporting",
+      "line": 337
+    },
+    {
+      "original": "As a thank you for helping improve your community, you'll receive:",
+      "key": "report.infrastructure.as_a_thank_you_for_helping_improve_your_",
+      "line": 199
+    },
+    {
+      "original": "20 Eco-Points",
+      "key": "report.infrastructure.20_ecopoints",
+      "line": 201
+    },
+    {
+      "original": "for each verified report",
+      "key": "report.infrastructure.for_each_verified_report",
+      "line": 337
+    },
+    {
+      "original": "+30 Bonus Points",
+      "key": "report.infrastructure.30_bonus_points",
+      "line": 202
+    },
+    {
+      "original": "when your reported issue is resolved",
+      "key": "report.infrastructure.when_your_reported_issue_is_resolved",
+      "line": 337
+    },
+    {
+      "original": "Track your contributions in your user profile",
+      "key": "report.infrastructure.track_your_contributions_in_your_user_pr",
+      "line": 203
+    },
+    {
+      "original": "Top contributors will be featured on our Community Champions leaderboard!",
+      "key": "report.infrastructure.top_contributors_will_be_featured_on_our",
+      "line": 205
+    }
+  ],
+  "view_infrastructure_report.html": [
+    {
+      "original": "Infrastructure Report Details",
+      "key": "view.infrastructure.report.infrastructure_report_details",
+      "line": 328
+    },
+    {
+      "original": "Back to My Reports",
+      "key": "view.infrastructure.report.back_to_my_reports",
+      "line": 328
+    },
+    {
+      "original": "Report Details",
+      "key": "view.infrastructure.report.report_details",
+      "line": 328
+    },
+    {
+      "original": "Status",
+      "key": "infrastructure.map.status",
+      "line": 328
+    },
+    {
+      "original": "Location",
+      "key": "item.details.location",
+      "line": 85
+    },
+    {
+      "original": "Latitude:",
+      "key": "view.infrastructure.report.latitude",
+      "line": 90
+    },
+    {
+      "original": "Longitude:",
+      "key": "view.infrastructure.report.longitude",
+      "line": 93
+    },
+    {
+      "original": "Municipality Notes",
+      "key": "view.infrastructure.report.municipality_notes",
+      "line": 328
+    },
+    {
+      "original": "Submitted Photo",
+      "key": "view.infrastructure.report.submitted_photo",
+      "line": 115
+    },
+    {
+      "original": "Update Status (Demo)",
+      "key": "view.infrastructure.report.update_status_demo",
+      "line": 123
+    },
+    {
+      "original": "Update",
+      "key": "municipality.update",
+      "line": 328
+    },
+    {
+      "original": "Resolution Process",
+      "key": "view.infrastructure.report.resolution_process",
+      "line": 328
+    },
+    {
+      "original": "Report Received",
+      "key": "view.infrastructure.report.report_received",
+      "line": 166
+    },
+    {
+      "original": "Your report has been successfully submitted.",
+      "key": "common.success",
+      "line": 168
+    },
+    {
+      "original": "Under Review",
+      "key": "infrastructure.map.under_review",
+      "line": 177
+    },
+    {
+      "original": "Your report is being reviewed by authorities.",
+      "key": "view.infrastructure.report.your_report_is_being_reviewed_by_authori",
+      "line": 180
+    },
+    {
+      "original": "This stage was skipped.",
+      "key": "view.infrastructure.report.this_stage_was_skipped_1",
+      "line": 182
+    },
+    {
+      "original": "Pending review by municipality.",
+      "key": "view.infrastructure.report.pending_review_by_municipality",
+      "line": 184
+    },
+    {
+      "original": "Work In Progress",
+      "key": "view.infrastructure.report.work_in_progress",
+      "line": 194
+    },
+    {
+      "original": "Repair work is underway.",
+      "key": "view.infrastructure.report.repair_work_is_underway",
+      "line": 197
+    },
+    {
+      "original": "This stage was skipped.",
+      "key": "view.infrastructure.report.this_stage_was_skipped_1",
+      "line": 182
+    },
+    {
+      "original": "Waiting for work to begin.",
+      "key": "view.infrastructure.report.waiting_for_work_to_begin",
+      "line": 201
+    },
+    {
+      "original": "Resolution",
+      "key": "view.infrastructure.report.resolution",
+      "line": 211
+    },
+    {
+      "original": "Issue has been successfully resolved.",
+      "key": "view.infrastructure.report.issue_has_been_successfully_resolved",
+      "line": 214
+    },
+    {
+      "original": "Report was rejected.",
+      "key": "view.infrastructure.report.report_was_rejected",
+      "line": 216
+    },
+    {
+      "original": "Pending completion.",
+      "key": "view.infrastructure.report.pending_completion",
+      "line": 218
+    },
+    {
+      "original": "Your Contribution",
+      "key": "project.detail.your_contribution",
+      "line": 328
+    },
+    {
+      "original": "Thank you for helping improve your community!",
+      "key": "view.infrastructure.report.thank_you_for_helping_improve_your_commu",
+      "line": 234
+    },
+    {
+      "original": "Report Submission:",
+      "key": "view.infrastructure.report.report_submission",
+      "line": 236
+    },
+    {
+      "original": "+20 Points",
+      "key": "view.infrastructure.report.20_points",
+      "line": 237
+    },
+    {
+      "original": "Issue Resolution Bonus:",
+      "key": "view.infrastructure.report.issue_resolution_bonus",
+      "line": 242
+    },
+    {
+      "original": "+30 Points",
+      "key": "view.infrastructure.report.30_points",
+      "line": 243
+    },
+    {
+      "original": "Total Points Earned:",
+      "key": "view.infrastructure.report.total_points_earned_1",
+      "line": 247
+    },
+    {
+      "original": "50 Points",
+      "key": "view.infrastructure.report.50_points",
+      "line": 248
+    },
+    {
+      "original": "Total Points Earned:",
+      "key": "view.infrastructure.report.total_points_earned_1",
+      "line": 247
+    },
+    {
+      "original": "20 Points",
+      "key": "view.infrastructure.report.20_points_1",
+      "line": 254
+    },
+    {
+      "original": "Receive 30 additional points when this issue is resolved!",
+      "key": "view.infrastructure.report.receive_30_additional_points_when_this_i",
+      "line": 257
+    }
+  ],
+  "waste_tracking.html": [
+    {
+      "original": "Waste Journey Tracking",
+      "key": "waste.tracking.waste_journey_tracking",
+      "line": 331
+    },
+    {
+      "original": "Blockchain Integrity Verified",
+      "key": "waste.tracking.blockchain_integrity_verified",
+      "line": 331
+    },
+    {
+      "original": "Blockchain Integrity Error",
+      "key": "common.error",
+      "line": 331
+    },
+    {
+      "original": "Waste Item Details",
+      "key": "waste.tracking.waste_item_details",
+      "line": 34
+    },
+    {
+      "original": "Material:",
+      "key": "index.material_1",
+      "line": 39
+    },
+    {
+      "original": "Item ID:",
+      "key": "waste.tracking.item_id",
+      "line": 40
+    },
+    {
+      "original": "Drop-off Date:",
+      "key": "waste.tracking.dropoff_date",
+      "line": 41
+    },
+    {
+      "original": "Recyclable:",
+      "key": "waste.tracking.recyclable",
+      "line": 50
+    },
+    {
+      "original": "Yes",
+      "key": "index.yes_1",
+      "line": 52
+    },
+    {
+      "original": "Status:",
+      "key": "waste.tracking.status_1",
+      "line": 58
+    },
+    {
+      "original": "Recycling Complete",
+      "key": "waste.tracking.recycling_complete",
+      "line": 58
+    },
+    {
+      "original": "Completion Date:",
+      "key": "waste.tracking.completion_date",
+      "line": 59
+    },
+    {
+      "original": "Status:",
+      "key": "waste.tracking.status_1",
+      "line": 58
+    },
+    {
+      "original": "In Progress",
+      "key": "infrastructure.map.in_progress_1",
+      "line": 61
+    },
+    {
+      "original": "Drop Location:",
+      "key": "waste.tracking.drop_location",
+      "line": 64
+    },
+    {
+      "original": "Journey Progress",
+      "key": "waste.tracking.journey_progress",
+      "line": 75
+    },
+    {
+      "original": "Verification QR Code",
+      "key": "waste.tracking.verification_qr_code",
+      "line": 331
+    },
+    {
+      "original": "Scan this QR code to verify the journey of this waste item.",
+      "key": "waste.tracking.scan_this_qr_code_to_verify_the_journey_",
+      "line": 138
+    },
+    {
+      "original": "Add Journey Stage (Demo)",
+      "key": "waste.tracking.add_journey_stage_demo",
+      "line": 331
+    },
+    {
+      "original": "Stage",
+      "key": "waste.tracking.stage",
+      "line": 163
+    },
+    {
+      "original": "Select a stage",
+      "key": "waste.tracking.select_a_stage",
+      "line": 165
+    },
+    {
+      "original": "Location",
+      "key": "item.details.location",
+      "line": 172
+    },
+    {
+      "original": "Details",
+      "key": "waste.tracking.details",
+      "line": 178
+    },
+    {
+      "original": "Verified By",
+      "key": "waste.tracking.verified_by",
+      "line": 183
+    },
+    {
+      "original": "Add Stage",
+      "key": "waste.tracking.add_stage",
+      "line": 331
+    },
+    {
+      "original": "Blockchain Journey",
+      "key": "waste.tracking.blockchain_journey",
+      "line": 331
+    },
+    {
+      "original": "Location:",
+      "key": "project.detail.location",
+      "line": 220
+    },
+    {
+      "original": "Verified by:",
+      "key": "waste.tracking.verified_by_1",
+      "line": 221
+    },
+    {
+      "original": "Previous Hash:",
+      "key": "waste.tracking.previous_hash",
+      "line": 225
+    },
+    {
+      "original": "Block Hash:",
+      "key": "waste.tracking.block_hash",
+      "line": 229
+    },
+    {
+      "original": "Blockchain Authenticity",
+      "key": "waste.tracking.blockchain_authenticity",
+      "line": 253
+    },
+    {
+      "original": "No blockchain data available yet. The journey will begin once the waste item enters the recycling process.",
+      "key": "waste.tracking.no_blockchain_data_available_yet_the_jou",
+      "line": 331
+    }
+  ],
+  "waste_verification.html": [
+    {
+      "original": "Waste Journey Verification",
+      "key": "waste.verification.waste_journey_verification",
+      "line": 231
+    },
+    {
+      "original": "Blockchain Integrity Verified",
+      "key": "waste.tracking.blockchain_integrity_verified",
+      "line": 231
+    },
+    {
+      "original": "Blockchain Integrity Error",
+      "key": "common.error",
+      "line": 231
+    },
+    {
+      "original": "Waste Item Details",
+      "key": "waste.tracking.waste_item_details",
+      "line": 34
+    },
+    {
+      "original": "Material:",
+      "key": "index.material_1",
+      "line": 39
+    },
+    {
+      "original": "Item ID:",
+      "key": "waste.tracking.item_id",
+      "line": 40
+    },
+    {
+      "original": "Drop-off Date:",
+      "key": "waste.tracking.dropoff_date",
+      "line": 41
+    },
+    {
+      "original": "Recyclable:",
+      "key": "waste.tracking.recyclable",
+      "line": 50
+    },
+    {
+      "original": "Yes",
+      "key": "index.yes_1",
+      "line": 52
+    },
+    {
+      "original": "Status:",
+      "key": "waste.tracking.status_1",
+      "line": 58
+    },
+    {
+      "original": "Recycling Complete",
+      "key": "waste.tracking.recycling_complete",
+      "line": 58
+    },
+    {
+      "original": "Completion Date:",
+      "key": "waste.tracking.completion_date",
+      "line": 59
+    },
+    {
+      "original": "Status:",
+      "key": "waste.tracking.status_1",
+      "line": 58
+    },
+    {
+      "original": "In Progress",
+      "key": "infrastructure.map.in_progress_1",
+      "line": 61
+    },
+    {
+      "original": "Drop Location:",
+      "key": "waste.tracking.drop_location",
+      "line": 64
+    },
+    {
+      "original": "Journey Progress",
+      "key": "waste.tracking.journey_progress",
+      "line": 75
+    },
+    {
+      "original": "Blockchain Journey Verification",
+      "key": "waste.verification.blockchain_journey_verification",
+      "line": 231
+    },
+    {
+      "original": "Location:",
+      "key": "project.detail.location",
+      "line": 148
+    },
+    {
+      "original": "Verified by:",
+      "key": "waste.tracking.verified_by_1",
+      "line": 149
+    },
+    {
+      "original": "Previous Hash:",
+      "key": "waste.tracking.previous_hash",
+      "line": 153
+    },
+    {
+      "original": "Block Hash:",
+      "key": "waste.tracking.block_hash",
+      "line": 157
+    },
+    {
+      "original": "Blockchain Authenticity",
+      "key": "waste.tracking.blockchain_authenticity",
+      "line": 181
+    },
+    {
+      "original": "No blockchain data available yet. The journey will begin once the waste item enters the recycling process.",
+      "key": "waste.tracking.no_blockchain_data_available_yet_the_jou",
+      "line": 231
+    }
+  ]
+}

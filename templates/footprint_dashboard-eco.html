@@ -1,0 +1,676 @@
+{% extends "base-eco.html" %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="eco-hero" style="min-height: 50vh; margin-top: 80px; background: linear-gradient(135deg, #6BCB77 0%, #4CAF50 50%, #2E7D32 100%);">
+    <div class="hero-content">
+        <h1 class="hero-title" data-animate="fade-up">
+            <i class="fas fa-chart-line eco-leaf"></i>
+            Environmental Impact
+        </h1>
+        <p class="hero-subtitle" data-animate="fade-up">
+            Track your contribution to a sustainable future
+        </p>
+    </div>
+</section>
+
+<!-- Dashboard Stats -->
+<section class="section">
+    <div class="container">
+        <!-- Stats Cards -->
+        <div class="stats-dashboard-grid" data-animate="fade-up">
+            <!-- Badge Level Card -->
+            <div class="stat-card-eco eco-card">
+                <div class="stat-header">
+                    <h3>Your Badge Level</h3>
+                    <div class="badge-icon-large">
+                        {% if badge_level == 'Champion' %}
+                            <i class="fas fa-trophy"></i>
+                        {% elif badge_level == 'Gold' %}
+                            <i class="fas fa-medal"></i>
+                        {% elif badge_level == 'Silver' %}
+                            <i class="fas fa-medal" style="color: #C0C0C0;"></i>
+                        {% else %}
+                            <i class="fas fa-award" style="color: #CD7F32;"></i>
+                        {% endif %}
+                    </div>
+                    <div class="badge-level-name">{{ badge_level }}</div>
+                    <div class="badge-progress">
+                        <div class="eco-progress">
+                            <div class="eco-progress-bar" style="width: {{ badge_progress }}%;"></div>
+                        </div>
+                        <span class="progress-text">{{ badge_progress }}% to next level</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Total Lifetime Card -->
+            <div class="stat-card-eco eco-card">
+                <div class="stat-header">
+                    <div class="stat-icon-small">
+                        <i class="fas fa-weight"></i>
+                    </div>
+                    <h3>Total Recycled</h3>
+                    <div class="stat-value-large">
+                        <span class="number" data-counter="{{ total_lifetime|round|int }}">0</span>
+                        <span class="unit">g</span>
+                    </div>
+                    <p class="stat-description">All time contribution</p>
+                </div>
+            </div>
+
+            <!-- Current Week Card -->
+            <div class="stat-card-eco eco-card">
+                <div class="stat-header">
+                    <div class="stat-icon-small">
+                        <i class="fas fa-calendar-week"></i>
+                    </div>
+                    <h3>This Week</h3>
+                    {% if current_weekly %}
+                    <div class="stat-value-large">
+                        <span class="number" data-counter="{{ current_weekly.total_weight_grams|round|int }}">0</span>
+                        <span class="unit">g</span>
+                    </div>
+                    <div class="week-comparison">
+                        {% if current_weekly.comparison_percentage > 0 %}
+                            <span class="trend up">
+                                <i class="fas fa-arrow-up"></i>
+                                {{ "%.1f"|format(current_weekly.comparison_percentage) }}% vs last week
+                            </span>
+                        {% elif current_weekly.comparison_percentage < 0 %}
+                            <span class="trend down">
+                                <i class="fas fa-arrow-down"></i>
+                                {{ "%.1f"|format(abs(current_weekly.comparison_percentage)) }}% vs last week
+                            </span>
+                        {% else %}
+                            <span class="trend neutral">
+                                <i class="fas fa-minus"></i>
+                                No change vs last week
+                            </span>
+                        {% endif %}
+                    </div>
+                    {% else %}
+                    <div class="stat-value-large">
+                        <span class="number">0</span>
+                        <span class="unit">g</span>
+                    </div>
+                    <p class="stat-description">No data this week</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        {% if total_lifetime == 0 and not recent_scans %}
+        <div class="eco-card no-data-card" data-animate="fade-up">
+            <div class="no-data-content">
+                <i class="fas fa-info-circle"></i>
+                <h3>Start Your Eco Journey</h3>
+                <p>No footprint data found. Scan some waste items to start tracking your positive environmental impact!</p>
+                <a href="{{ url_for('index') }}" class="eco-btn">
+                    <i class="fas fa-camera"></i>
+                    Start Scanning
+                </a>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</section>
+
+<!-- Charts Section -->
+<section class="section section-alt">
+    <div class="container">
+        <h2 class="text-center mb-5" data-animate="fade-up">Your Recycling Trends</h2>
+
+        <div class="charts-grid">
+            <!-- Weekly Chart -->
+            <div class="chart-card eco-card" data-animate="fade-up">
+                <div class="card-header-eco">
+                    <h3>
+                        <i class="fas fa-chart-bar"></i>
+                        Weekly Impact
+                    </h3>
+                </div>
+                <div class="chart-container">
+                    <canvas id="weeklyChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Material Distribution -->
+            <div class="chart-card eco-card" data-animate="fade-up">
+                <div class="card-header-eco">
+                    <h3>
+                        <i class="fas fa-chart-pie"></i>
+                        Materials Recycled
+                    </h3>
+                </div>
+                <div class="chart-container">
+                    <canvas id="materialChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Impact Metrics -->
+<section class="section">
+    <div class="container">
+        <h2 class="text-center mb-5" data-animate="fade-up">Your Environmental Impact</h2>
+
+        <div class="impact-metrics-grid" data-animate="fade-up">
+            <div class="impact-card eco-card">
+                <div class="impact-icon">
+                    <i class="fas fa-tree"></i>
+                </div>
+                <div class="impact-value">
+                    <span class="number" data-counter="{{ trees_saved|default(42) }}">0</span>
+                </div>
+                <div class="impact-label">Trees Saved</div>
+                <div class="impact-equivalent">Equivalent to planting a small forest</div>
+            </div>
+
+            <div class="impact-card eco-card">
+                <div class="impact-icon">
+                    <i class="fas fa-tint"></i>
+                </div>
+                <div class="impact-value">
+                    <span class="number" data-counter="{{ water_saved|default(1250) }}">0</span>
+                    <span class="unit">L</span>
+                </div>
+                <div class="impact-label">Water Conserved</div>
+                <div class="impact-equivalent">{{ water_saved|default(1250) }} liters of drinking water</div>
+            </div>
+
+            <div class="impact-card eco-card">
+                <div class="impact-icon">
+                    <i class="fas fa-bolt"></i>
+                </div>
+                <div class="impact-value">
+                    <span class="number" data-counter="{{ energy_saved|default(320) }}">0</span>
+                    <span class="unit">kWh</span>
+                </div>
+                <div class="impact-label">Energy Saved</div>
+                <div class="impact-equivalent">Power for {{ energy_saved|default(320) // 24 }} homes for a day</div>
+            </div>
+
+            <div class="impact-card eco-card">
+                <div class="impact-icon">
+                    <i class="fas fa-cloud"></i>
+                </div>
+                <div class="impact-value">
+                    <span class="number" data-counter="{{ co2_saved|default(85) }}">0</span>
+                    <span class="unit">kg</span>
+                </div>
+                <div class="impact-label">CO₂ Reduced</div>
+                <div class="impact-equivalent">Car emissions for {{ co2_saved|default(85) // 10 }} km</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Recent Activity -->
+<section class="section section-alt">
+    <div class="container">
+        <h2 class="text-center mb-5" data-animate="fade-up">Recent Activity</h2>
+
+        <div class="eco-card activity-card" data-animate="fade-up">
+            <div class="activity-header">
+                <h3>
+                    <i class="fas fa-history"></i>
+                    Your Latest Scans
+                </h3>
+                {% if total_lifetime == 0 and not recent_scans %}
+                <form method="POST" action="{{ url_for('sync_footprint_data') }}">
+                    <button type="submit" class="eco-btn eco-btn-secondary">
+                        <i class="fas fa-sync"></i>
+                        Sync My Data
+                    </button>
+                </form>
+                {% endif %}
+            </div>
+
+            <div class="activity-list">
+                {% if recent_scans %}
+                    {% for scan in recent_scans %}
+                    <div class="activity-item">
+                        <div class="activity-icon">
+                            {% if scan.material_type == 'Plastic' %}
+                                <i class="fas fa-wine-bottle"></i>
+                            {% elif scan.material_type == 'Paper' %}
+                                <i class="fas fa-newspaper"></i>
+                            {% elif scan.material_type == 'Metal' %}
+                                <i class="fas fa-cog"></i>
+                            {% elif scan.material_type == 'Glass' %}
+                                <i class="fas fa-glass-martini"></i>
+                            {% elif scan.material_type == 'E-Waste' %}
+                                <i class="fas fa-laptop"></i>
+                            {% else %}
+                                <i class="fas fa-recycle"></i>
+                            {% endif %}
+                        </div>
+                        <div class="activity-details">
+                            <h4>{{ scan.material_type }} - {{ scan.item_description or 'Item' }}</h4>
+                            <p class="activity-date">{{ scan.timestamp.strftime('%B %d, %Y at %I:%M %p') }}</p>
+                        </div>
+                        <div class="activity-weight">
+                            <span class="weight-value">{{ "%.1f"|format(scan.weight_grams) }}g</span>
+                            <span class="eco-points">+5 pts</span>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                <div class="no-activity">
+                    <i class="fas fa-clipboard-list"></i>
+                    <h3>No recent activity</h3>
+                    <p>Start scanning items to see your environmental impact grow!</p>
+                    <a href="{{ url_for('index') }}" class="eco-btn">
+                        <i class="fas fa-camera"></i>
+                        Start Scanning
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+
+{% block extra_js %}
+<style>
+.stats-dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: var(--spacing-xl);
+    margin-bottom: var(--spacing-xl);
+}
+
+.stat-card-eco {
+    text-align: center;
+    padding: var(--spacing-xl);
+    transition: all var(--transition-normal);
+}
+
+.stat-card-eco:hover {
+    transform: translateY(-8px);
+}
+
+.badge-icon-large {
+    font-size: 5rem;
+    color: var(--eco-primary);
+    margin: var(--spacing-lg) 0;
+    animation: float 3s ease-in-out infinite;
+}
+
+.badge-level-name {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--eco-primary-dark);
+    margin-bottom: var(--spacing-md);
+}
+
+.badge-progress {
+    margin-top: var(--spacing-lg);
+}
+
+.progress-text {
+    display: block;
+    margin-top: var(--spacing-xs);
+    font-size: 0.9rem;
+    color: var(--eco-primary-dark);
+    opacity: 0.7;
+}
+
+.stat-icon-small {
+    width: 60px;
+    height: 60px;
+    margin: 0 auto var(--spacing-lg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--eco-gradient-primary);
+    color: white;
+    border-radius: 50%;
+    font-size: 1.5rem;
+}
+
+.stat-value-large {
+    font-size: 3rem;
+    font-weight: 800;
+    color: var(--eco-primary-dark);
+    margin: var(--spacing-lg) 0;
+}
+
+.stat-value-large .unit {
+    font-size: 1.5rem;
+    opacity: 0.7;
+}
+
+.week-comparison {
+    margin-top: var(--spacing-md);
+}
+
+.trend {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    padding: 4px 12px;
+    border-radius: var(--radius-full);
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.trend.up {
+    background: rgba(76, 175, 80, 0.2);
+    color: #2E7D32;
+}
+
+.trend.down {
+    background: rgba(244, 67, 54, 0.2);
+    color: #c62828;
+}
+
+.trend.neutral {
+    background: rgba(158, 158, 158, 0.2);
+    color: #616161;
+}
+
+.no-data-card {
+    text-align: center;
+    padding: var(--spacing-xxl);
+    background: linear-gradient(135deg, rgba(107, 203, 119, 0.1), rgba(76, 175, 80, 0.1));
+}
+
+.no-data-content i {
+    font-size: 4rem;
+    color: var(--eco-primary);
+    margin-bottom: var(--spacing-lg);
+}
+
+.charts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: var(--spacing-xl);
+}
+
+.chart-card {
+    padding: var(--spacing-xl);
+}
+
+.chart-container {
+    position: relative;
+    height: 300px;
+    margin-top: var(--spacing-lg);
+}
+
+.impact-metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: var(--spacing-xl);
+}
+
+.impact-card {
+    text-align: center;
+    padding: var(--spacing-xl);
+    transition: all var(--transition-normal);
+}
+
+.impact-card:hover {
+    transform: scale(1.05);
+}
+
+.impact-icon {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto var(--spacing-lg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--eco-gradient-primary);
+    color: white;
+    border-radius: 50%;
+    font-size: 2rem;
+    animation: pulse 2s ease-in-out infinite;
+}
+
+.impact-value {
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: var(--eco-primary-dark);
+    margin-bottom: var(--spacing-sm);
+}
+
+.impact-value .unit {
+    font-size: 1.2rem;
+    opacity: 0.7;
+    margin-left: 4px;
+}
+
+.impact-label {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--eco-primary-dark);
+    margin-bottom: var(--spacing-xs);
+}
+
+.impact-equivalent {
+    font-size: 0.9rem;
+    color: var(--eco-primary-dark);
+    opacity: 0.7;
+}
+
+.activity-card {
+    padding: var(--spacing-xl);
+}
+
+.activity-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-lg);
+    flex-wrap: wrap;
+    gap: var(--spacing-md);
+}
+
+.activity-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+}
+
+.activity-item {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+    padding: var(--spacing-md);
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: var(--radius-md);
+    transition: all var(--transition-normal);
+}
+
+.activity-item:hover {
+    background: rgba(255, 255, 255, 0.5);
+    transform: translateX(8px);
+}
+
+.activity-icon {
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--eco-gradient-primary);
+    color: white;
+    border-radius: 50%;
+    font-size: 1.2rem;
+    flex-shrink: 0;
+}
+
+.activity-details {
+    flex: 1;
+}
+
+.activity-details h4 {
+    margin: 0 0 var(--spacing-xs) 0;
+    color: var(--eco-primary-dark);
+}
+
+.activity-date {
+    margin: 0;
+    font-size: 0.9rem;
+    color: var(--eco-primary-dark);
+    opacity: 0.7;
+}
+
+.activity-weight {
+    text-align: right;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: var(--spacing-xs);
+}
+
+.weight-value {
+    font-weight: 700;
+    color: var(--eco-primary-dark);
+    font-size: 1.1rem;
+}
+
+.eco-points {
+    background: var(--eco-gradient-primary);
+    color: white;
+    padding: 2px 8px;
+    border-radius: var(--radius-full);
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.no-activity {
+    text-align: center;
+    padding: var(--spacing-xxl);
+}
+
+.no-activity i {
+    font-size: 4rem;
+    color: var(--eco-primary);
+    margin-bottom: var(--spacing-lg);
+    opacity: 0.5;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .stats-dashboard-grid {
+        grid-template-columns: 1fr;
+        gap: var(--spacing-lg);
+    }
+
+    .charts-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .impact-metrics-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: var(--spacing-lg);
+    }
+
+    .activity-header {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .stat-value-large {
+        font-size: 2.5rem;
+    }
+
+    .impact-value {
+        font-size: 2rem;
+    }
+}
+</style>
+
+<script>
+// Initialize Charts
+document.addEventListener('DOMContentLoaded', function() {
+    // Weekly Chart
+    const weeklyCtx = document.getElementById('weeklyChart');
+    if (weeklyCtx) {
+        new Chart(weeklyCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                datasets: [{
+                    label: 'Waste Recycled (g)',
+                    data: [120, 190, 80, 150, 200, 130, 170],
+                    backgroundColor: 'rgba(107, 203, 119, 0.6)',
+                    borderColor: 'rgba(107, 203, 119, 1)',
+                    borderWidth: 2,
+                    borderRadius: 8
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: {
+                            color: 'rgba(0, 0, 0, 0.05)'
+                        }
+                    },
+                    x: {
+                        grid: {
+                            display: false
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    // Material Distribution Chart
+    const materialCtx = document.getElementById('materialChart');
+    if (materialCtx) {
+        new Chart(materialCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Plastic', 'Paper', 'Metal', 'Glass', 'E-Waste'],
+                datasets: [{
+                    data: [35, 25, 20, 15, 5],
+                    backgroundColor: [
+                        'rgba(107, 203, 119, 0.8)',
+                        'rgba(76, 175, 80, 0.8)',
+                        'rgba(56, 142, 60, 0.8)',
+                        'rgba(46, 125, 50, 0.8)',
+                        'rgba(27, 94, 32, 0.8)'
+                    ],
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            padding: 20,
+                            font: {
+                                size: 12
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    }
+});
+
+// Load Chart.js
+const chartScript = document.createElement('script');
+chartScript.src = 'https://cdn.jsdelivr.net/npm/chart.js';
+document.head.appendChild(chartScript);
+</script>
+{% endblock %}
+{% endblock %}

@@ -1,0 +1,186 @@
+{% extends "base-eco.html" %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <a href="{{ url_for('projects_list') }}" class="btn btn-secondary mb-3">
+            <i class="fas fa-arrow-left me-1"></i>{{ get_localized_string('projects.back_to_projects', get_current_language(), 'Back to Projects') }}
+        </a>
+        <h1 class="mb-4">{{ project.project_name }}</h1>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card bg-dark mb-4">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">{{ get_localized_string('projects.project_details', get_current_language(), 'Project Details') }}</h5>
+                <span class="badge 
+                    {% if project.status == 'completed' %}bg-success
+                    {% elif project.status == 'in_progress' %}bg-warning
+                    {% elif project.status == 'planned' %}bg-info
+                    {% else %}bg-secondary{% endif %}">
+                    {{ project.status.replace('_', ' ').title() }}
+                </span>
+            </div>
+            <div class="card-body">
+                <p>{{ project.description }}</p>
+                
+                {% if project.total_plastic_required_grams %}
+                <div class="mb-3">
+                    <h6>{{ get_localized_string('projects.progress', get_current_language(), 'Progress') }}</h6>
+                    <div class="progress" style="height: 30px;">
+                        <div class="progress-bar" role="progressbar" 
+                             style="width: {{ progress }}%"
+                             aria-valuenow="{{ progress }}" 
+                             aria-valuemax="100">
+                            {{ "%.0f"|format(progress) }}%
+                        </div>
+                    </div>
+                    <small class="text-muted">
+                        {{ "%.0f"|format(project.total_plastic_allocated_grams) }}g allocated / 
+                        {{ "%.0f"|format(project.total_plastic_required_grams) }}g required
+                    </small>
+                </div>
+                {% endif %}
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        <p><strong>{{ get_localized_string('projects.project_type', get_current_language(), 'Project Type') }}:</strong> 
+                            <span class="badge bg-secondary">{{ project.project_type.replace('_', ' ').title() if project.project_type else 'N/A' }}</span>
+                        </p>
+                        {% if project.date_started %}
+                        <p><strong>Started:</strong> {{ project.date_started.strftime('%Y-%m-%d') }}</p>
+                        {% endif %}
+                        {% if project.date_completed %}
+                        <p><strong>Completed:</strong> {{ project.date_completed.strftime('%Y-%m-%d') }}</p>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-6">
+                        <p><strong>Location:</strong></p>
+                        <p class="text-muted">
+                            {{ "%.6f"|format(project.location_lat) }}, {{ "%.6f"|format(project.location_lng) }}
+                        </p>
+                    </div>
+                </div>
+                
+                {% if user_contribution %}
+                <div class="alert alert-success">
+                    <h6><i class="fas fa-user me-1"></i>{{ get_localized_string('projects.your_contribution', get_current_language(), 'Your Contribution') }}</h6>
+                    <p class="mb-0">
+                        {{ get_localized_string('projects.youve_contributed', get_current_language(), "You've contributed") }} <strong>{{ "%.2f"|format(user_contribution) }}g</strong> {{ get_localized_string('projects.of_plastic_to_this_project', get_current_language(), 'of plastic to this project!') }}
+                        {% if is_top_contributor %}
+                        <span class="badge bg-warning ms-2">{{ get_localized_string('projects.top_contributor', get_current_language(), 'Top Contributor!') }}</span>
+                        {% endif %}
+                    </p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        
+        <!-- Ledger Entries -->
+        {% if ledger_entries %}
+        <div class="card bg-dark">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="fas fa-list me-2"></i>{{ get_localized_string('projects.project_timeline', get_current_language(), 'Project Timeline') }}</h5>
+            </div>
+            <div class="card-body">
+                <div class="timeline">
+                    {% for entry in ledger_entries %}
+                    <div class="mb-3 pb-3 border-bottom border-secondary">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <strong>{{ entry.status.replace('_', ' ').title() }}</strong>
+                                <p class="text-muted mb-1 small">{{ entry.timestamp.strftime('%Y-%m-%d %H:%M') }}</p>
+                                {% if entry.verified_by %}
+                                <small class="text-muted">{{ get_localized_string('projects.verified_by', get_current_language(), 'Verified by') }}: {{ entry.verified_by }}</small>
+                                {% endif %}
+                            </div>
+                            <span class="badge bg-secondary">Block: {{ entry.block_hash[:8] }}...</span>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+    
+    <div class="col-md-4">
+        <!-- Top Contributors -->
+        {% if contributors %}
+        <div class="card bg-dark mb-4">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="fas fa-users me-2"></i>{{ get_localized_string('projects.top_contributors', get_current_language(), 'Top Contributors') }}</h5>
+            </div>
+            <div class="card-body">
+                <ol class="list-group list-group-numbered">
+                    {% for contrib in contributors[:5] %}
+                    <li class="list-group-item bg-dark text-light border-secondary">
+                        <strong>{{ contrib.username }}</strong><br>
+                        <small class="text-muted">{{ "%.2f"|format(contrib.total_contribution) }}g</small>
+                    </li>
+                    {% endfor %}
+                </ol>
+            </div>
+        </div>
+        {% endif %}
+        
+        <!-- Map Preview -->
+        <div class="card bg-dark">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="fas fa-map-marker-alt me-2"></i>{{ get_localized_string('projects.location', get_current_language(), 'Location') }}</h5>
+            </div>
+            <div class="card-body">
+                <div id="map" style="height: 300px; width: 100%;"></div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/ol@v7.3.0/dist/ol.js"></script>
+<script>
+    // Initialize map
+    const map = new ol.Map({
+        target: 'map',
+        layers: [
+            new ol.layer.Tile({
+                source: new ol.source.OSM()
+            })
+        ],
+        view: new ol.View({
+            center: ol.proj.fromLonLat([{{ project.location_lng }}, {{ project.location_lat }}]),
+            zoom: 15
+        })
+    });
+    
+    // Add marker
+    const marker = new ol.Feature({
+        geometry: new ol.geom.Point(
+            ol.proj.fromLonLat([{{ project.location_lng }}, {{ project.location_lat }}])
+        )
+    });
+    
+    const markerStyle = new ol.style.Style({
+        image: new ol.style.Icon({
+            anchor: [0.5, 1],
+            src: 'https://cdn.jsdelivr.net/npm/ol@v7.3.0/src/ol/icon.png'
+        })
+    });
+    
+    marker.setStyle(markerStyle);
+    
+    const vectorSource = new ol.source.Vector({
+        features: [marker]
+    });
+    
+    const vectorLayer = new ol.layer.Vector({
+        source: vectorSource
+    });
+    
+    map.addLayer(vectorLayer);
+</script>
+{% endblock %}
+

@@ -1,0 +1,708 @@
+{% extends "base-eco.html" %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="eco-hero" style="min-height: 60vh; margin-top: 80px; background: linear-gradient(135deg, #E91E63 0%, #9C27B0 50%, #673AB7 100%);">
+    <div class="hero-content">
+        <h1 class="hero-title" data-animate="fade-up">
+            <i class="fas fa-gift eco-leaf" style="color: #E91E63;"></i>
+            Eco Rewards Store
+        </h1>
+        <p class="hero-subtitle" data-animate="fade-up">
+            Redeem your eco points for exciting rewards and make a difference
+        </p>
+    </div>
+</section>
+
+<!-- Points Balance -->
+<section class="section">
+    <div class="container">
+        <div class="points-balance eco-card" data-animate="fade-up">
+            <div class="balance-info">
+                <h2>Your Eco Points</h2>
+                <div class="balance-display">
+                    <span class="balance-amount">{{ current_user.eco_points if current_user.is_authenticated else '0' }}</span>
+                    <span class="balance-label">points</span>
+                </div>
+                {% if not current_user.is_authenticated %}
+                <p class="login-prompt">
+                    <a href="{{ url_for('auth.login') }}">Login</a> to view your points and start earning rewards
+                </p>
+                {% endif %}
+            </div>
+            <div class="balance-actions">
+                <a href="{{ url_for('index') }}" class="eco-btn">
+                    <i class="fas fa-camera"></i>
+                    Earn More Points
+                </a>
+                <a href="{{ url_for('leaderboards') }}" class="eco-btn eco-btn-secondary">
+                    <i class="fas fa-trophy"></i>
+                    View Rankings
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Rewards Categories -->
+<section class="section section-alt">
+    <div class="container">
+        <h2 class="text-center mb-5" data-animate="fade-up">Choose Your Reward</h2>
+
+        <div class="category-tabs" data-animate="fade-up">
+            <button class="category-btn active" data-category="all">All Rewards</button>
+            <button class="category-btn" data-category="vouchers">Gift Vouchers</button>
+            <button class="category-btn" data-category="plants">Plants & Seeds</button>
+            <button class="category-btn" data-category="eco">Eco Products</button>
+            <button class="category-btn" data-category="donations">Donations</button>
+        </div>
+
+        <div class="rewards-grid" data-animate="fade-up">
+            <!-- Reward Cards -->
+            <div class="reward-card eco-card" data-category="vouchers">
+                <div class="reward-badge">Popular</div>
+                <div class="reward-image">
+                    <i class="fas fa-shopping-bag"></i>
+                </div>
+                <div class="reward-content">
+                    <h3>Amazon Gift Card</h3>
+                    <p class="reward-description">$20 gift card for eco-friendly purchases</p>
+                    <div class="reward-meta">
+                        <span class="reward-points">2000 pts</span>
+                        <span class="reward-stock">15 available</span>
+                    </div>
+                    <button class="eco-btn reward-btn" data-points="2000" data-name="Amazon Gift Card">
+                        Redeem Now
+                    </button>
+                </div>
+            </div>
+
+            <div class="reward-card eco-card" data-category="plants">
+                <div class="reward-badge new">New</div>
+                <div class="reward-image">
+                    <i class="fas fa-seedling"></i>
+                </div>
+                <div class="reward-content">
+                    <h3>Tree Sapling Kit</h3>
+                    <p class="reward-description">Grow your own tree with our complete sapling kit</p>
+                    <div class="reward-meta">
+                        <span class="reward-points">500 pts</span>
+                        <span class="reward-stock">50 available</span>
+                    </div>
+                    <button class="eco-btn reward-btn" data-points="500" data-name="Tree Sapling Kit">
+                        Redeem Now
+                    </button>
+                </div>
+            </div>
+
+            <div class="reward-card eco-card" data-category="eco">
+                <div class="reward-image">
+                    <i class="fas fa-mug-hot"></i>
+                </div>
+                <div class="reward-content">
+                    <h3>Bamboo Coffee Cup</h3>
+                    <p class="reward-description">Reusable bamboo coffee cup with ReGenWorks logo</p>
+                    <div class="reward-meta">
+                        <span class="reward-points">750 pts</span>
+                        <span class="reward-stock">30 available</span>
+                    </div>
+                    <button class="eco-btn reward-btn" data-points="750" data-name="Bamboo Coffee Cup">
+                        Redeem Now
+                    </button>
+                </div>
+            </div>
+
+            <div class="reward-card eco-card" data-category="vouchers">
+                <div class="reward-image">
+                    <i class="fas fa-utensils"></i>
+                </div>
+                <div class="reward-content">
+                    <h3>Restaurant Voucher</h3>
+                    <p class="reward-description">$15 voucher at participating eco-restaurants</p>
+                    <div class="reward-meta">
+                        <span class="reward-points">1500 pts</span>
+                        <span class="reward-stock">10 available</span>
+                    </div>
+                    <button class="eco-btn reward-btn" data-points="1500" data-name="Restaurant Voucher">
+                        Redeem Now
+                    </button>
+                </div>
+            </div>
+
+            <div class="reward-card eco-card" data-category="donations">
+                <div class="reward-badge">Impact</div>
+                <div class="reward-image">
+                    <i class="fas fa-hand-holding-heart"></i>
+                </div>
+                <div class="reward-content">
+                    <h3>Plant a Tree</h3>
+                    <p class="reward-description">Donate to plant trees in deforested areas</p>
+                    <div class="reward-meta">
+                        <span class="reward-points">300 pts</span>
+                        <span class="reward-stock">Unlimited</span>
+                    </div>
+                    <button class="eco-btn reward-btn" data-points="300" data-name="Plant a Tree">
+                        Donate Now
+                    </button>
+                </div>
+            </div>
+
+            <div class="reward-card eco-card" data-category="eco">
+                <div class="reward-image">
+                    <i class="fas fa-shopping-tote"></i>
+                </div>
+                <div class="reward-content">
+                    <h3>Eco Shopping Bag</h3>
+                    <p class="reward-description">Reusable shopping bag made from recycled materials</p>
+                    <div class="reward-meta">
+                        <span class="reward-points">400 pts</span>
+                        <span class="reward-stock">100 available</span>
+                    </div>
+                    <button class="eco-btn reward-btn" data-points="400" data-name="Eco Shopping Bag">
+                        Redeem Now
+                    </button>
+                </div>
+            </div>
+
+            <div class="reward-card eco-card" data-category="plants">
+                <div class="reward-image">
+                    <i class="fas fa-leaf"></i>
+                </div>
+                <div class="reward-content">
+                    <h3>Herb Garden Starter</h3>
+                    <p class="reward-description">Complete kit to start your indoor herb garden</p>
+                    <div class="reward-meta">
+                        <span class="reward-points">800 pts</span>
+                        <span class="reward-stock">25 available</span>
+                    </div>
+                    <button class="eco-btn reward-btn" data-points="800" data-name="Herb Garden Starter">
+                        Redeem Now
+                    </button>
+                </div>
+            </div>
+
+            <div class="reward-card eco-card" data-category="donations">
+                <div class="reward-badge">Impact</div>
+                <div class="reward-image">
+                    <i class="fas fa-water"></i>
+                </div>
+                <div class="reward-content">
+                    <h3>Clean Water Initiative</h3>
+                    <p class="reward-description">Provide clean water for a family for a month</p>
+                    <div class="reward-meta">
+                        <span class="reward-points">1000 pts</span>
+                        <span class="reward-stock">Unlimited</span>
+                    </div>
+                    <button class="eco-btn reward-btn" data-points="1000" data-name="Clean Water Initiative">
+                        Donate Now
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- How It Works -->
+<section class="section">
+    <div class="container">
+        <h2 class="text-center mb-5" data-animate="fade-up">How It Works</h2>
+
+        <div class="steps-grid" data-animate="fade-up">
+            <div class="step-card eco-card">
+                <div class="step-number">1</div>
+                <div class="step-icon">
+                    <i class="fas fa-recycle"></i>
+                </div>
+                <h3>Recycle Items</h3>
+                <p>Scan and recycle waste items to earn eco points</p>
+            </div>
+
+            <div class="step-card eco-card">
+                <div class="step-number">2</div>
+                <div class="step-icon">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <h3>Track Progress</h3>
+                <p>Monitor your points and environmental impact</p>
+            </div>
+
+            <div class="step-card eco-card">
+                <div class="step-number">3</div>
+                <div class="step-icon">
+                    <i class="fas fa-gift"></i>
+                </div>
+                <h3>Choose Rewards</h3>
+                <p>Select from our wide range of eco-friendly rewards</p>
+            </div>
+
+            <div class="step-card eco-card">
+                <div class="step-number">4</div>
+                <div class="step-icon">
+                    <i class="fas fa-truck"></i>
+                </div>
+                <h3>Get Delivered</h3>
+                <p>Receive your rewards at your doorstep</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Redemption Modal -->
+<div class="modal" id="redemptionModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>Confirm Redemption</h3>
+            <button class="modal-close" onclick="closeModal('redemptionModal')">&times;</button>
+        </div>
+        <div class="modal-body">
+            <div class="reward-summary">
+                <div class="reward-icon-large">
+                    <i class="fas fa-gift"></i>
+                </div>
+                <h3 id="modalRewardName">Reward Name</h3>
+                <p class="reward-points-large">
+                    <span id="modalRewardPoints">0</span> points
+                </p>
+                <p id="modalRewardDescription">Reward description</p>
+            </div>
+
+            <div class="redemption-details">
+                <div class="detail-item">
+                    <span>Your Balance:</span>
+                    <strong>{{ current_user.eco_points if current_user.is_authenticated else '0' }} pts</strong>
+                </div>
+                <div class="detail-item">
+                    <span>After Redemption:</span>
+                    <strong id="remainingBalance">0 pts</strong>
+                </div>
+            </div>
+
+            {% if not current_user.is_authenticated %}
+            <div class="login-required">
+                <p>Please login to redeem this reward</p>
+                <a href="{{ url_for('auth.login') }}" class="eco-btn">Login Now</a>
+            </div>
+            {% endif %}
+        </div>
+        <div class="modal-footer">
+            <button class="eco-btn eco-btn-secondary" onclick="closeModal('redemptionModal')">Cancel</button>
+            <button class="eco-btn" id="confirmRedemption" {% if not current_user.is_authenticated %}style="display: none;"{% endif %}>
+                Confirm Redemption
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Success Modal -->
+<div class="modal" id="successModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>Redemption Successful!</h3>
+            <button class="modal-close" onclick="closeModal('successModal')">&times;</button>
+        </div>
+        <div class="modal-body text-center">
+            <div class="success-icon">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            <p>Your reward has been redeemed successfully!</p>
+            <p class="text-muted">You will receive a confirmation email with delivery details.</p>
+        </div>
+        <div class="modal-footer">
+            <button class="eco-btn" onclick="closeModal('successModal')">Awesome!</button>
+        </div>
+    </div>
+</div>
+
+{% block extra_js %}
+<style>
+.points-balance {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--spacing-xl);
+    background: linear-gradient(135deg, rgba(103, 58, 183, 0.1), rgba(156, 39, 176, 0.1));
+    border: 2px solid rgba(103, 58, 183, 0.3);
+}
+
+.balance-info h2 {
+    color: var(--eco-primary-dark);
+    margin-bottom: var(--spacing-md);
+}
+
+.balance-display {
+    display: flex;
+    align-items: baseline;
+    gap: var(--spacing-sm);
+    margin-bottom: var(--spacing-md);
+}
+
+.balance-amount {
+    font-size: 4rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, #E91E63, #9C27B0);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.balance-label {
+    font-size: 1.5rem;
+    color: var(--eco-primary-dark);
+    opacity: 0.7;
+}
+
+.login-prompt {
+    color: var(--eco-primary-dark);
+    opacity: 0.8;
+}
+
+.login-prompt a {
+    color: #E91E63;
+    font-weight: 600;
+}
+
+.balance-actions {
+    display: flex;
+    gap: var(--spacing-md);
+}
+
+.category-tabs {
+    display: flex;
+    justify-content: center;
+    gap: var(--spacing-md);
+    margin-bottom: var(--spacing-xxl);
+    flex-wrap: wrap;
+}
+
+.category-btn {
+    padding: 10px 24px;
+    background: rgba(255, 255, 255, 0.5);
+    color: var(--eco-primary-dark);
+    border: 2px solid transparent;
+    border-radius: var(--radius-full);
+    font-weight: 600;
+    cursor: pointer;
+    transition: all var(--transition-normal);
+}
+
+.category-btn:hover {
+    background: rgba(107, 203, 119, 0.2);
+}
+
+.category-btn.active {
+    background: var(--eco-gradient-primary);
+    color: white;
+    border-color: var(--eco-primary);
+}
+
+.rewards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: var(--spacing-xl);
+}
+
+.reward-card {
+    position: relative;
+    overflow: visible;
+    transition: all var(--transition-normal);
+}
+
+.reward-card:hover {
+    transform: translateY(-8px);
+}
+
+.reward-badge {
+    position: absolute;
+    top: -10px;
+    right: 20px;
+    padding: 4px 16px;
+    background: var(--eco-gradient-primary);
+    color: white;
+    border-radius: var(--radius-full);
+    font-size: 0.8rem;
+    font-weight: 700;
+    z-index: 1;
+}
+
+.reward-badge.new {
+    background: linear-gradient(135deg, #FF6B6B, #FF5252);
+}
+
+.reward-badge.impact {
+    background: linear-gradient(135deg, #4ECDC4, #44A08D);
+}
+
+.reward-image {
+    height: 150px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, rgba(103, 58, 183, 0.1), rgba(156, 39, 176, 0.1));
+    border-radius: var(--radius-md);
+    margin-bottom: var(--spacing-lg);
+}
+
+.reward-image i {
+    font-size: 3rem;
+    color: #9C27B0;
+}
+
+.reward-content h3 {
+    color: var(--eco-primary-dark);
+    margin-bottom: var(--spacing-sm);
+}
+
+.reward-description {
+    color: var(--eco-primary-dark);
+    opacity: 0.8;
+    margin-bottom: var(--spacing-lg);
+    min-height: 48px;
+}
+
+.reward-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-lg);
+}
+
+.reward-points {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #E91E63;
+}
+
+.reward-stock {
+    font-size: 0.9rem;
+    color: var(--eco-primary-dark);
+    opacity: 0.7;
+}
+
+.steps-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: var(--spacing-xl);
+}
+
+.step-card {
+    text-align: center;
+    padding: var(--spacing-xl);
+    position: relative;
+}
+
+.step-number {
+    position: absolute;
+    top: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 30px;
+    height: 30px;
+    background: var(--eco-gradient-primary);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+}
+
+.step-icon {
+    width: 60px;
+    height: 60px;
+    margin: 0 auto var(--spacing-lg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--eco-gradient-primary);
+    color: white;
+    border-radius: 50%;
+    font-size: 1.5rem;
+}
+
+.step-card h3 {
+    color: var(--eco-primary-dark);
+    margin-bottom: var(--spacing-sm);
+}
+
+.step-card p {
+    color: var(--eco-primary-dark);
+    opacity: 0.8;
+}
+
+.reward-summary {
+    text-align: center;
+    margin-bottom: var(--spacing-xl);
+}
+
+.reward-icon-large {
+    font-size: 4rem;
+    color: #E91E63;
+    margin-bottom: var(--spacing-lg);
+}
+
+.reward-points-large {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #E91E63;
+    margin: var(--spacing-md) 0;
+}
+
+.redemption-details {
+    background: rgba(107, 203, 119, 0.1);
+    border-radius: var(--radius-md);
+    padding: var(--spacing-lg);
+    margin-bottom: var(--spacing-lg);
+}
+
+.detail-item {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: var(--spacing-sm);
+}
+
+.detail-item:last-child {
+    margin-bottom: 0;
+}
+
+.login-required {
+    text-align: center;
+    padding: var(--spacing-lg);
+    background: rgba(233, 30, 99, 0.1);
+    border-radius: var(--radius-md);
+}
+
+.success-icon {
+    font-size: 4rem;
+    color: var(--eco-primary);
+    margin-bottom: var(--spacing-lg);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .points-balance {
+        flex-direction: column;
+        text-align: center;
+        gap: var(--spacing-lg);
+    }
+
+    .balance-actions {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .rewards-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .category-tabs {
+        justify-content: flex-start;
+        overflow-x: auto;
+        padding-bottom: var(--spacing-sm);
+    }
+
+    .steps-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+</style>
+
+<script>
+// Category filtering
+document.querySelectorAll('.category-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+        // Remove active class from all buttons
+        document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
+
+        // Add active class to clicked button
+        this.classList.add('active');
+
+        const category = this.dataset.category;
+        const rewardCards = document.querySelectorAll('.reward-card');
+
+        rewardCards.forEach(card => {
+            if (category === 'all' || card.dataset.category === category) {
+                card.style.display = 'block';
+                // Add animation
+                card.style.animation = 'fadeInUp 0.5s ease-out';
+            } else {
+                card.style.display = 'none';
+            }
+        });
+    });
+});
+
+// Reward redemption
+document.querySelectorAll('.reward-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+        const points = parseInt(this.dataset.points);
+        const name = this.dataset.name;
+        const description = this.parentElement.querySelector('.reward-description').textContent;
+
+        // Update modal content
+        document.getElementById('modalRewardName').textContent = name;
+        document.getElementById('modalRewardPoints').textContent = points;
+        document.getElementById('modalRewardDescription').textContent = description;
+
+        // Calculate remaining balance
+        const currentBalance = parseInt('{{ current_user.eco_points if current_user.is_authenticated else "0" }}');
+        const remainingBalance = currentBalance - points;
+        document.getElementById('remainingBalance').textContent = remainingBalance + ' pts';
+
+        // Show modal
+        document.getElementById('redemptionModal').classList.add('show');
+    });
+});
+
+// Confirm redemption
+document.getElementById('confirmRedemption').addEventListener('click', function() {
+    // Close redemption modal
+    closeModal('redemptionModal');
+
+    // Simulate redemption process
+    setTimeout(() => {
+        // Show success modal
+        document.getElementById('successModal').classList.add('show');
+
+        // Update points display (in real app, this would be done after API call)
+        const balanceAmount = document.querySelector('.balance-amount');
+        if (balanceAmount) {
+            const currentBalance = parseInt(balanceAmount.textContent);
+            const redeemedPoints = parseInt(document.getElementById('modalRewardPoints').textContent);
+            balanceAmount.textContent = currentBalance - redeemedPoints;
+        }
+    }, 500);
+});
+
+function closeModal(modalId) {
+    document.getElementById(modalId).classList.remove('show');
+}
+
+// Close modals on outside click
+document.querySelectorAll('.modal').forEach(modal => {
+    modal.addEventListener('click', function(e) {
+        if (e.target === this) {
+            this.classList.remove('show');
+        }
+    });
+});
+
+// Add animation styles
+const animationStyles = `
+<style>
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+</style>
+`;
+
+document.head.insertAdjacentHTML('beforeend', animationStyles);
+</script>
+{% endblock %}
+{% endblock %}

@@ -1,0 +1,755 @@
+{% extends "base-eco.html" %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="eco-hero" style="min-height: 60vh; margin-top: 80px; background: linear-gradient(135deg, #FFD700 0%, #FFA500 50%, #FF6347 100%);">
+    <div class="hero-content">
+        <h1 class="hero-title" data-animate="fade-up">
+            <i class="fas fa-trophy eco-leaf" style="color: #FFD700;"></i>
+            Eco Champion Leaderboards
+        </h1>
+        <p class="hero-subtitle" data-animate="fade-up">
+            Celebrating our top contributors to a sustainable future
+        </p>
+    </div>
+</section>
+
+<!-- Leaderboards Section -->
+<section class="section">
+    <div class="container">
+        <!-- Time Filter -->
+        <div class="time-filter eco-card" data-animate="fade-up">
+            <div class="filter-buttons">
+                <button class="filter-btn active" data-period="weekly">This Week</button>
+                <button class="filter-btn" data-period="monthly">This Month</button>
+                <button class="filter-btn" data-period="all-time">All Time</button>
+            </div>
+        </div>
+
+        <!-- Top 3 Winners -->
+        <div class="top-winners" data-animate="fade-up">
+            <!-- 2nd Place -->
+            <div class="winner-card second-place">
+                <div class="winner-badge">2</div>
+                <div class="winner-avatar">
+                    <i class="fas fa-user-circle"></i>
+                </div>
+                <h3>Jane Smith</h3>
+                <div class="winner-score">8,450 pts</div>
+                <div class="winner-badge-icon">
+                    <i class="fas fa-medal" style="color: #C0C0C0;"></i>
+                </div>
+            </div>
+
+            <!-- 1st Place -->
+            <div class="winner-card first-place">
+                <div class="crown-icon">
+                    <i class="fas fa-crown"></i>
+                </div>
+                <div class="winner-badge">1</div>
+                <div class="winner-avatar">
+                    <i class="fas fa-user-circle"></i>
+                </div>
+                <h3>Alex Johnson</h3>
+                <div class="winner-score">9,875 pts</div>
+                <div class="winner-badge-icon">
+                    <i class="fas fa-trophy" style="color: #FFD700;"></i>
+                </div>
+            </div>
+
+            <!-- 3rd Place -->
+            <div class="winner-card third-place">
+                <div class="winner-badge">3</div>
+                <div class="winner-avatar">
+                    <i class="fas fa-user-circle"></i>
+                </div>
+                <h3>Mike Chen</h3>
+                <div class="winner-score">7,230 pts</div>
+                <div class="winner-badge-icon">
+                    <i class="fas fa-medal" style="color: #CD7F32;"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- Leaderboard Table -->
+        <div class="leaderboard-table eco-card" data-animate="fade-up">
+            <div class="table-header">
+                <h2>
+                    <i class="fas fa-list-ol"></i>
+                    Full Rankings
+                </h2>
+                <div class="user-rank">
+                    {% if current_user.is_authenticated %}
+                    <span>Your Rank: #24</span>
+                    {% else %}
+                    <a href="{{ url_for('auth.login') }}" class="eco-btn eco-btn-secondary">Login to see your rank</a>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="leaderboard-list">
+                <!-- Rank 4-10 -->
+                <div class="leaderboard-item">
+                    <div class="rank-number">4</div>
+                    <div class="user-info">
+                        <div class="user-avatar">
+                            <i class="fas fa-user-circle"></i>
+                        </div>
+                        <div class="user-details">
+                            <h4>Sarah Williams</h4>
+                            <span class="user-badge">Gold Recycler</span>
+                        </div>
+                    </div>
+                    <div class="user-stats">
+                        <div class="stat-item">
+                            <i class="fas fa-recycle"></i>
+                            <span>342 items</span>
+                        </div>
+                        <div class="score-value">6,890 pts</div>
+                    </div>
+                </div>
+
+                <div class="leaderboard-item">
+                    <div class="rank-number">5</div>
+                    <div class="user-info">
+                        <div class="user-avatar">
+                            <i class="fas fa-user-circle"></i>
+                        </div>
+                        <div class="user-details">
+                            <h4>David Martinez</h4>
+                            <span class="user-badge">Silver Hero</span>
+                        </div>
+                    </div>
+                    <div class="user-stats">
+                        <div class="stat-item">
+                            <i class="fas fa-recycle"></i>
+                            <span>298 items</span>
+                        </div>
+                        <div class="score-value">5,760 pts</div>
+                    </div>
+                </div>
+
+                <div class="leaderboard-item">
+                    <div class="rank-number">6</div>
+                    <div class="user-info">
+                        <div class="user-avatar">
+                            <i class="fas fa-user-circle"></i>
+                        </div>
+                        <div class="user-details">
+                            <h4>Emma Thompson</h4>
+                            <span class="user-badge">Gold Warrior</span>
+                        </div>
+                    </div>
+                    <div class="user-stats">
+                        <div class="stat-item">
+                            <i class="fas fa-recycle"></i>
+                            <span>276 items</span>
+                        </div>
+                        <div class="score-value">5,420 pts</div>
+                    </div>
+                </div>
+
+                <div class="leaderboard-item highlight">
+                    <div class="rank-number">24</div>
+                    <div class="user-info">
+                        <div class="user-avatar current-user">
+                            <i class="fas fa-user-circle"></i>
+                        </div>
+                        <div class="user-details">
+                            <h4>{{ current_user.username if current_user.is_authenticated else 'You' }}</h4>
+                            <span class="user-badge">Rising Star</span>
+                        </div>
+                    </div>
+                    <div class="user-stats">
+                        <div class="stat-item">
+                            <i class="fas fa-recycle"></i>
+                            <span>145 items</span>
+                        </div>
+                        <div class="score-value">{{ current_user.eco_points if current_user.is_authenticated else '0' }} pts</div>
+                    </div>
+                </div>
+
+                <div class="leaderboard-item">
+                    <div class="rank-number">25</div>
+                    <div class="user-info">
+                        <div class="user-avatar">
+                            <i class="fas fa-user-circle"></i>
+                        </div>
+                        <div class="user-details">
+                            <h4>Chris Anderson</h4>
+                            <span class="user-badge">Green Hero</span>
+                        </div>
+                    </div>
+                    <div class="user-stats">
+                        <div class="stat-item">
+                            <i class="fas fa-recycle"></i>
+                            <span>139 items</span>
+                        </div>
+                        <div class="score-value">2,890 pts</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Achievement Showcase -->
+<section class="section section-alt">
+    <div class="container">
+        <h2 class="text-center mb-5" data-animate="fade-up">Recent Achievements</h2>
+
+        <div class="achievements-grid" data-animate="fade-up">
+            <div class="achievement-card eco-card">
+                <div class="achievement-icon">
+                    <i class="fas fa-fire"></i>
+                </div>
+                <h3>On Fire!</h3>
+                <p>7-day streak</p>
+                <div class="achievement-users">
+                    <div class="user-stack">
+                        <i class="fas fa-user-circle"></i>
+                        <i class="fas fa-user-circle"></i>
+                        <i class="fas fa-user-circle"></i>
+                        <span class="more-users">+12</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="achievement-card eco-card">
+                <div class="achievement-icon">
+                    <i class="fas fa-seedling"></i>
+                </div>
+                <h3>Tree Hugger</h3>
+                <p>100 items recycled</p>
+                <div class="achievement-users">
+                    <div class="user-stack">
+                        <i class="fas fa-user-circle"></i>
+                        <i class="fas fa-user-circle"></i>
+                        <i class="fas fa-user-circle"></i>
+                        <span class="more-users">+8</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="achievement-card eco-card">
+                <div class="achievement-icon">
+                    <i class="fas fa-star"></i>
+                </div>
+                <h3>Eco Star</h3>
+                <p>Top 10 this month</p>
+                <div class="achievement-users">
+                    <div class="user-stack">
+                        <i class="fas fa-user-circle"></i>
+                        <i class="fas fa-user-circle"></i>
+                        <i class="fas fa-user-circle"></i>
+                        <span class="more-users">+5</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="achievement-card eco-card">
+                <div class="achievement-icon">
+                    <i class="fas fa-globe"></i>
+                </div>
+                <h3>Planet Saver</h3>
+                <p>1000kg recycled</p>
+                <div class="achievement-users">
+                    <div class="user-stack">
+                        <i class="fas fa-user-circle"></i>
+                        <i class="fas fa-user-circle"></i>
+                        <i class="fas fa-user-circle"></i>
+                        <span class="more-users">+3</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Call to Action -->
+<section class="section">
+    <div class="container">
+        <div class="cta-card eco-card" data-animate="fade-up">
+            <div class="cta-content">
+                <h2>Ready to Climb the Ranks?</h2>
+                <p>Every item you recycle brings you closer to the top. Start your eco journey today and become a ReGenWorks Champion!</p>
+                <a href="{{ url_for('index') }}" class="eco-btn">
+                    <i class="fas fa-camera"></i>
+                    Start Recycling Now
+                </a>
+            </div>
+            <div class="cta-visual">
+                <i class="fas fa-chart-line" style="font-size: 8rem; opacity: 0.2; color: var(--eco-primary);"></i>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% block extra_js %}
+<style>
+.time-filter {
+    text-align: center;
+    margin-bottom: var(--spacing-xxl);
+}
+
+.filter-buttons {
+    display: flex;
+    gap: var(--spacing-md);
+    justify-content: center;
+}
+
+.filter-btn {
+    padding: 12px 32px;
+    background: transparent;
+    color: var(--eco-primary-dark);
+    border: 2px solid var(--eco-light-green);
+    border-radius: var(--radius-full);
+    font-weight: 600;
+    cursor: pointer;
+    transition: all var(--transition-normal);
+}
+
+.filter-btn:hover {
+    background: rgba(107, 203, 119, 0.1);
+}
+
+.filter-btn.active {
+    background: var(--eco-gradient-primary);
+    color: white;
+    border-color: var(--eco-primary);
+}
+
+.top-winners {
+    display: grid;
+    grid-template-columns: 1fr 1.2fr 1fr;
+    gap: var(--spacing-lg);
+    margin-bottom: var(--spacing-xxl);
+}
+
+.winner-card {
+    text-align: center;
+    padding: var(--spacing-xl);
+    background: white;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+    position: relative;
+    transition: all var(--transition-normal);
+}
+
+.winner-card:hover {
+    transform: translateY(-8px);
+}
+
+.first-place {
+    background: linear-gradient(135deg, rgba(255, 215, 0, 0.1), rgba(255, 215, 0, 0.3));
+    transform: scale(1.05);
+}
+
+.second-place {
+    background: linear-gradient(135deg, rgba(192, 192, 192, 0.1), rgba(192, 192, 192, 0.3));
+}
+
+.third-place {
+    background: linear-gradient(135deg, rgba(205, 127, 50, 0.1), rgba(205, 127, 50, 0.3));
+}
+
+.crown-icon {
+    position: absolute;
+    top: -20px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 2rem;
+    color: #FFD700;
+    animation: float 3s ease-in-out infinite;
+}
+
+.winner-badge {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    width: 40px;
+    height: 40px;
+    background: var(--eco-gradient-primary);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 1.2rem;
+}
+
+.first-place .winner-badge {
+    background: linear-gradient(135deg, #FFD700, #FFA500);
+}
+
+.winner-avatar {
+    font-size: 4rem;
+    color: var(--eco-primary-dark);
+    opacity: 0.7;
+    margin: var(--spacing-lg) 0;
+}
+
+.winner-card h3 {
+    font-size: 1.5rem;
+    color: var(--eco-primary-dark);
+    margin: var(--spacing-md) 0;
+}
+
+.winner-score {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--eco-primary);
+    margin-bottom: var(--spacing-md);
+}
+
+.winner-badge-icon {
+    font-size: 2rem;
+}
+
+.leaderboard-table {
+    padding: var(--spacing-xl);
+}
+
+.table-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-xl);
+    flex-wrap: wrap;
+    gap: var(--spacing-md);
+}
+
+.table-header h2 {
+    color: var(--eco-primary-dark);
+}
+
+.user-rank span {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--eco-primary);
+}
+
+.leaderboard-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+}
+
+.leaderboard-item {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-lg);
+    padding: var(--spacing-lg);
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: var(--radius-md);
+    transition: all var(--transition-normal);
+}
+
+.leaderboard-item:hover {
+    background: rgba(255, 255, 255, 0.8);
+    transform: translateX(8px);
+}
+
+.leaderboard-item.highlight {
+    background: linear-gradient(135deg, rgba(107, 203, 119, 0.2), rgba(76, 175, 80, 0.2));
+    border: 2px solid var(--eco-primary);
+}
+
+.rank-number {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--eco-gradient-primary);
+    color: white;
+    border-radius: 50%;
+    font-weight: 700;
+    font-size: 1.2rem;
+    flex-shrink: 0;
+}
+
+.leaderboard-item.highlight .rank-number {
+    background: linear-gradient(135deg, #FFD700, #FFA500);
+    box-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+    flex: 1;
+}
+
+.user-avatar {
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(107, 203, 119, 0.1);
+    border-radius: 50%;
+    font-size: 2rem;
+    color: var(--eco-primary);
+    flex-shrink: 0;
+}
+
+.user-avatar.current-user {
+    background: var(--eco-gradient-primary);
+    color: white;
+}
+
+.user-details h4 {
+    margin: 0 0 var(--spacing-xs) 0;
+    color: var(--eco-primary-dark);
+}
+
+.user-badge {
+    font-size: 0.85rem;
+    padding: 2px 8px;
+    background: rgba(107, 203, 119, 0.2);
+    color: var(--eco-primary-dark);
+    border-radius: var(--radius-full);
+}
+
+.user-stats {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-lg);
+}
+
+.stat-item {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    color: var(--eco-primary-dark);
+    opacity: 0.7;
+    font-size: 0.9rem;
+}
+
+.score-value {
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: var(--eco-primary);
+}
+
+.achievements-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: var(--spacing-xl);
+}
+
+.achievement-card {
+    text-align: center;
+    padding: var(--spacing-xl);
+    transition: all var(--transition-normal);
+}
+
+.achievement-card:hover {
+    transform: translateY(-8px);
+}
+
+.achievement-icon {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto var(--spacing-lg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--eco-gradient-primary);
+    color: white;
+    border-radius: 50%;
+    font-size: 2rem;
+}
+
+.achievement-card h3 {
+    color: var(--eco-primary-dark);
+    margin: var(--spacing-md) 0;
+}
+
+.achievement-card p {
+    color: var(--eco-primary-dark);
+    opacity: 0.7;
+    margin-bottom: var(--spacing-lg);
+}
+
+.user-stack {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: -10px;
+}
+
+.user-stack i {
+    width: 30px;
+    height: 30px;
+    background: rgba(107, 203, 119, 0.2);
+    color: var(--eco-primary);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    border: 2px solid white;
+    margin-left: -10px;
+}
+
+.user-stack i:first-child {
+    margin-left: 0;
+}
+
+.more-users {
+    width: 30px;
+    height: 30px;
+    background: var(--eco-primary);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.7rem;
+    font-weight: 700;
+    margin-left: -10px;
+    border: 2px solid white;
+}
+
+.cta-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--spacing-xxl);
+    gap: var(--spacing-xl);
+}
+
+.cta-content {
+    flex: 1;
+}
+
+.cta-content h2 {
+    font-size: 2rem;
+    margin-bottom: var(--spacing-md);
+    color: var(--eco-primary-dark);
+}
+
+.cta-content p {
+    font-size: 1.2rem;
+    margin-bottom: var(--spacing-xl);
+    color: var(--eco-primary-dark);
+    opacity: 0.9;
+}
+
+.cta-visual {
+    flex-shrink: 0;
+}
+
+/* Responsive adjustments */
+@media (max-width: 968px) {
+    .top-winners {
+        grid-template-columns: 1fr;
+        gap: var(--spacing-md);
+    }
+
+    .first-place {
+        transform: none;
+    }
+
+    .leaderboard-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: var(--spacing-md);
+    }
+
+    .user-stats {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .cta-card {
+        flex-direction: column;
+        text-align: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .filter-buttons {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .filter-btn {
+        width: 100%;
+    }
+
+    .achievements-grid {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+
+<script>
+// Filter functionality
+document.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+        // Remove active class from all buttons
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+
+        // Add active class to clicked button
+        this.classList.add('active');
+
+        // In a real app, this would filter the leaderboard data
+        const period = this.dataset.period;
+        console.log('Filtering by period:', period);
+
+        // Show loading animation
+        const leaderboardList = document.querySelector('.leaderboard-list');
+        leaderboardList.style.opacity = '0.5';
+
+        // Simulate data loading
+        setTimeout(() => {
+            leaderboardList.style.opacity = '1';
+        }, 300);
+    });
+});
+
+// Animate numbers on scroll
+const observerOptions = {
+    threshold: 0.5,
+    rootMargin: '0px'
+};
+
+const numberObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            const target = entry.target;
+            const finalValue = parseInt(target.textContent);
+            let currentValue = 0;
+            const increment = finalValue / 50;
+
+            const timer = setInterval(() => {
+                currentValue += increment;
+                if (currentValue >= finalValue) {
+                    currentValue = finalValue;
+                    clearInterval(timer);
+                }
+
+                target.textContent = Math.floor(currentValue).toLocaleString();
+            }, 30);
+
+            observer.unobserve(target);
+        }
+    });
+}, observerOptions);
+
+// Observe all score values
+document.querySelectorAll('.score-value, .winner-score').forEach(el => {
+    const text = el.textContent;
+    const number = parseInt(text.replace(/[^\d]/g, ''));
+    if (!isNaN(number)) {
+        el.dataset.number = number;
+        numberObserver.observe(el);
+    }
+});
+</script>
+{% endblock %}
+{% endblock %}

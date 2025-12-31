@@ -1,0 +1,99 @@
+<!-- Voice Input Component - Can be included in any page -->
+<div class="voice-input-container mb-3">
+    <div class="input-group">
+        <input type="text" 
+               id="voice-input-field" 
+               class="form-control" 
+               placeholder="{{ get_localized_string('voice.record', current_user.preferred_language or 'en') }}"
+               readonly>
+        <button class="btn btn-info" 
+                id="voice-input-btn" 
+                type="button"
+                title="{{ get_localized_string('voice.record', current_user.preferred_language or 'en') }}">
+            <i class="fas fa-microphone"></i>
+        </button>
+    </div>
+    <div id="voice-status" class="small text-muted mt-1"></div>
+</div>
+
+<script>
+(function() {
+    const voiceBtn = document.getElementById('voice-input-btn');
+    const voiceField = document.getElementById('voice-input-field');
+    const voiceStatus = document.getElementById('voice-status');
+    
+    if (!voiceBtn || !voiceField) return;
+    
+    let recognition = null;
+    let isListening = false;
+    
+    // Initialize Speech Recognition
+    if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        recognition = new SpeechRecognition();
+        recognition.continuous = false;
+        recognition.interimResults = false;
+        
+        // Get user's preferred language
+        const userLang = '{{ current_user.preferred_language or "en" }}';
+        const langMap = {
+            'en': 'en-IN', 'hi': 'hi-IN', 'kn': 'kn-IN', 'ta': 'ta-IN', 'mr': 'mr-IN',
+            'bn': 'bn-IN', 'gu': 'gu-IN', 'te': 'te-IN', 'ml': 'ml-IN', 'or': 'or-IN',
+            'pa': 'pa-IN', 'as': 'as-IN', 'ur': 'ur-IN', 'ne': 'ne-NP'
+        };
+        recognition.lang = langMap[userLang] || 'en-IN';
+        
+        voiceBtn.addEventListener('click', function() {
+            if (isListening) {
+                recognition.stop();
+                isListening = false;
+                voiceBtn.classList.remove('btn-danger');
+                voiceBtn.classList.add('btn-info');
+                voiceBtn.innerHTML = '<i class="fas fa-microphone"></i>';
+                voiceStatus.textContent = '';
+            } else {
+                recognition.start();
+                isListening = true;
+                voiceBtn.classList.remove('btn-info');
+                voiceBtn.classList.add('btn-danger');
+                voiceBtn.innerHTML = '<i class="fas fa-stop"></i>';
+                voiceStatus.textContent = 'Listening...';
+            }
+        });
+        
+        recognition.onresult = function(event) {
+            const transcript = event.results[0][0].transcript;
+            voiceField.value = transcript;
+            voiceField.dispatchEvent(new Event('input', { bubbles: true }));
+            isListening = false;
+            voiceBtn.classList.remove('btn-danger');
+            voiceBtn.classList.add('btn-info');
+            voiceBtn.innerHTML = '<i class="fas fa-microphone"></i>';
+            voiceStatus.textContent = 'Recognized: ' + transcript;
+        };
+        
+        recognition.onend = function() {
+            isListening = false;
+            voiceBtn.classList.remove('btn-danger');
+            voiceBtn.classList.add('btn-info');
+            voiceBtn.innerHTML = '<i class="fas fa-microphone"></i>';
+            if (!voiceStatus.textContent.includes('Recognized:')) {
+                voiceStatus.textContent = '';
+            }
+        };
+        
+        recognition.onerror = function(event) {
+            isListening = false;
+            voiceBtn.classList.remove('btn-danger');
+            voiceBtn.classList.add('btn-info');
+            voiceBtn.innerHTML = '<i class="fas fa-microphone"></i>';
+            voiceStatus.textContent = 'Error: ' + event.error;
+        };
+    } else {
+        voiceBtn.disabled = true;
+        voiceBtn.title = 'Voice input not supported';
+        voiceStatus.textContent = 'Voice input not supported in this browser';
+    }
+})();
+</script>
+

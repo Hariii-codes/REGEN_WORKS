@@ -1,0 +1,113 @@
+{% extends "base-eco.html" %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <h1 class="mb-4">
+            <i class="fas fa-project-diagram me-2"></i>{{ get_localized_string('projects.infrastructure_projects', get_current_language(), 'Infrastructure Projects') }}
+        </h1>
+        <p class="text-muted">{{ get_localized_string('projects.see_how_your_recycled_waste_contributes', get_current_language(), 'See how your recycled waste contributes to real infrastructure projects!') }}</p>
+    </div>
+</div>
+
+<!-- Filter -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="btn-group" role="group">
+            <a href="{{ url_for('projects_list', status='all') }}" 
+               class="btn btn-outline-primary {% if status_filter == 'all' %}active{% endif %}">
+                {{ get_localized_string('projects.all_projects', get_current_language(), 'All Projects') }}
+            </a>
+            <a href="{{ url_for('projects_list', status='planned') }}" 
+               class="btn btn-outline-primary {% if status_filter == 'planned' %}active{% endif %}">
+                {{ get_localized_string('projects.planned', get_current_language(), 'Planned') }}
+            </a>
+            <a href="{{ url_for('projects_list', status='in_progress') }}" 
+               class="btn btn-outline-primary {% if status_filter == 'in_progress' %}active{% endif %}">
+                {{ get_localized_string('projects.in_progress', get_current_language(), 'In Progress') }}
+            </a>
+            <a href="{{ url_for('projects_list', status='completed') }}" 
+               class="btn btn-outline-primary {% if status_filter == 'completed' %}active{% endif %}">
+                {{ get_localized_string('projects.completed', get_current_language(), 'Completed') }}
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Projects Grid -->
+<div class="row">
+    {% if projects %}
+        {% for project in projects %}
+        <div class="col-md-6 col-lg-4 mb-4">
+            <div class="card bg-dark h-100">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">{{ project.project_name }}</h5>
+                    <span class="badge 
+                        {% if project.status == 'completed' %}bg-success
+                        {% elif project.status == 'in_progress' %}bg-warning
+                        {% elif project.status == 'planned' %}bg-info
+                        {% else %}bg-secondary{% endif %}">
+                        {{ project.status.replace('_', ' ').title() }}
+                    </span>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted">{{ project.description[:100] }}{% if project.description|length > 100 %}...{% endif %}</p>
+                    
+                    {% if project.total_plastic_required_grams %}
+                    <div class="mb-3">
+                        <small class="text-muted">Progress:</small>
+                        <div class="progress" style="height: 20px;">
+                            {% set progress = (project.total_plastic_allocated_grams / project.total_plastic_required_grams * 100) if project.total_plastic_required_grams > 0 else 0 %}
+                            <div class="progress-bar" role="progressbar" 
+                                 style="width: {{ progress }}%"
+                                 aria-valuenow="{{ progress }}" 
+                                 aria-valuemin="0" 
+                                 aria-valuemax="100">
+                                {{ "%.0f"|format(progress) }}%
+                            </div>
+                        </div>
+                        <small class="text-muted">
+                            {{ "%.0f"|format(project.total_plastic_allocated_grams) }}g / 
+                            {{ "%.0f"|format(project.total_plastic_required_grams) }}g
+                        </small>
+                    </div>
+                    {% endif %}
+                    
+                    {% if project.project_type %}
+                    <p class="mb-2">
+                        <i class="fas fa-tag me-1"></i>
+                        <span class="badge bg-secondary">{{ project.project_type.replace('_', ' ').title() }}</span>
+                    </p>
+                    {% endif %}
+                    
+                    {% if user_contributions.get(project.id) %}
+                    <div class="alert alert-info mb-2">
+                        <i class="fas fa-user me-1"></i>
+                        <strong>{{ get_localized_string('projects.your_contribution', get_current_language(), 'Your Contribution') }}:</strong> 
+                        {{ "%.2f"|format(user_contributions[project.id].weight) }}g
+                        {% if user_contributions[project.id].is_top %}
+                        <span class="badge bg-warning ms-1">{{ get_localized_string('projects.top_contributor', get_current_language(), 'Top Contributor!') }}</span>
+                        {% endif %}
+                    </div>
+                    {% endif %}
+                </div>
+                <div class="card-footer">
+                    <a href="{{ url_for('project_detail', project_id=project.project_id) }}" 
+                       class="btn btn-primary btn-sm">
+                        <i class="fas fa-info-circle me-1"></i>{{ get_localized_string('projects.view_details', get_current_language(), 'View Details') }}
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    {% else %}
+        <div class="col-12">
+            <div class="alert alert-info">
+                <i class="fas fa-info-circle me-2"></i>
+                No projects found. Check back later!
+            </div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
+

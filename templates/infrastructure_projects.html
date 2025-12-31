@@ -1,0 +1,388 @@
+{% extends "base-eco.html" %}
+
+{% block content %}
+<div class="container-fluid">
+    <!-- Eco Infrastructure Projects Styles -->
+    <style>
+        /* Project Card Styles */
+        .eco-project-card {
+            transition: all var(--transition-normal);
+            border: 1px solid var(--glass-border);
+            overflow: hidden;
+        }
+
+        .eco-project-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(31, 38, 135, 0.2);
+        }
+
+        .project-card-header {
+            padding: var(--spacing-lg);
+            background: linear-gradient(135deg, rgba(46, 125, 50, 0.1), rgba(76, 175, 80, 0.1));
+            border-bottom: 1px solid var(--glass-border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .project-card-body {
+            padding: var(--spacing-lg);
+        }
+
+        .project-card-footer {
+            padding: var(--spacing-md) var(--spacing-lg) var(--spacing-lg);
+            background: rgba(255, 255, 255, 0.5);
+            border-top: 1px solid var(--glass-border);
+        }
+
+        /* Status Badges */
+        .eco-status-badge {
+            padding: 6px 12px;
+            border-radius: var(--radius-full);
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .status-completed {
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            color: white;
+        }
+
+        .status-progress {
+            background: linear-gradient(135deg, #FF9800, #F57C00);
+            color: white;
+        }
+
+        .status-planned {
+            background: linear-gradient(135deg, #03A9F4, #0288D1);
+            color: white;
+        }
+
+        .status-other {
+            background: linear-gradient(135deg, #9E9E9E, #757575);
+            color: white;
+        }
+
+        /* Map Container */
+        .map-container {
+            position: relative;
+            background: var(--bg-gradient-eco);
+        }
+
+        .eco-map-preview {
+            border: 2px solid var(--glass-border);
+            transition: all var(--transition-normal);
+        }
+
+        .eco-project-card:hover .eco-map-preview {
+            border-color: var(--eco-primary);
+        }
+
+        /* Text Styles */
+        .eco-text-muted {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        .eco-label-small {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        /* Contribution Box */
+        .eco-contribution-box {
+            background: linear-gradient(135deg, rgba(33, 150, 243, 0.1), rgba(3, 169, 244, 0.1));
+            padding: var(--spacing-md);
+            border-radius: var(--radius-md);
+            border: 1px solid rgba(33, 150, 243, 0.2);
+            color: var(--text-primary);
+        }
+
+        .eco-badge-achievement {
+            background: linear-gradient(135deg, #FFD700, #FFA000);
+            color: var(--text-primary);
+            padding: 4px 8px;
+            border-radius: var(--radius-full);
+            font-size: 0.75rem;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        /* Progress Bar */
+        .eco-progress {
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: var(--radius-full);
+            height: 28px;
+            overflow: hidden;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+
+        .eco-progress-bar {
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 0.875rem;
+            transition: width 1s ease-in-out;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .eco-progress-bar::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            100% {
+                left: 100%;
+            }
+        }
+
+        .progress-complete {
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+        }
+
+        .progress-half {
+            background: linear-gradient(135deg, #FF9800, #F57C00);
+        }
+
+        .progress-start {
+            background: linear-gradient(135deg, #03A9F4, #0288D1);
+        }
+
+        /* Button Variants */
+        .eco-btn-primary {
+            background: var(--eco-gradient-primary);
+            border: none;
+            padding: 10px 20px;
+            font-size: 0.9rem;
+        }
+
+        .eco-btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(46, 125, 50, 0.3);
+        }
+
+        .eco-btn-success {
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            border: none;
+            padding: 10px 20px;
+            font-size: 0.9rem;
+        }
+
+        .eco-btn-success:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .project-card-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: var(--spacing-sm);
+            }
+        }
+    </style>
+    <div class="row mb-4">
+        <div class="col-12">
+            <h1 class="mb-3">
+                <i class="fas fa-project-diagram me-2"></i>
+                Infrastructure Projects
+            </h1>
+            <p class="text-muted">
+                See how your recycled waste contributes to real infrastructure projects in your community!
+            </p>
+            <div class="mt-3">
+                <a href="{{ url_for('infrastructure_projects_map') }}" class="btn btn-info">
+                    <i class="fas fa-map-marked-alt me-2"></i>View Projects on Map
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Projects Grid -->
+    <div class="row">
+        {% if projects %}
+            {% for project in projects %}
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="glass-card h-100 eco-project-card">
+                    <div class="project-card-header">
+                        <h5 class="mb-0">{{ project.project_name }}</h5>
+                        <span class="eco-status-badge
+                            {% if project.status == 'completed' %}status-completed
+                            {% elif project.status == 'in-progress' or project.status == 'in_progress' %}status-progress
+                            {% elif project.status == 'planned' %}status-planned
+                            {% else %}status-other{% endif %}">
+                            {{ project.status.replace('_', ' ').replace('-', ' ').title() }}
+                        </span>
+                    </div>
+
+                    <!-- OpenLayers Map Preview with Eco Styling -->
+                    <div class="map-container" style="height: 200px; overflow: hidden; position: relative;">
+                        <div id="project-map-{{ project.id }}" class="eco-map-preview" style="height: 100%; width: 100%; border-radius: var(--radius-md);"></div>
+                    </div>
+                    
+                    <div class="project-card-body">
+                        {% if project.description %}
+                        <p class="eco-text-muted mb-3">{{ project.description[:150] }}{% if project.description|length > 150 %}...{% endif %}</p>
+                        {% endif %}
+
+                        <!-- User Contribution -->
+                        {% if user_contributions.get(project.id) and user_contributions[project.id].weight > 0 %}
+                        <div class="eco-contribution-box mb-3">
+                            <i class="fas fa-user me-2"></i>
+                            <strong>Your Contribution:</strong>
+                            {{ "%.2f"|format(user_contributions[project.id].weight) }}g
+                            {% if top_contributors.get(project.id) %}
+                            <span class="eco-badge-achievement ms-2">
+                                <i class="fas fa-trophy me-1"></i>Community Builder
+                            </span>
+                            {% endif %}
+                        </div>
+                        {% endif %}
+
+                        <!-- Project Progress -->
+                        {% if project.total_plastic_required_grams %}
+                        <div class="mb-3">
+                            <small class="eco-label-small d-block mb-2">Progress:</small>
+                            <div class="eco-progress">
+                                {% set progress = (project.total_plastic_allocated_grams / project.total_plastic_required_grams * 100) if project.total_plastic_required_grams > 0 else 0 %}
+                                <div class="eco-progress-bar {% if progress >= 100 %}progress-complete{% elif progress >= 50 %}progress-half{% else %}progress-start{% endif %}"
+                                     style="width: {{ progress }}%">
+                                    {{ "%.0f"|format(progress) }}%
+                                </div>
+                            </div>
+                            <small class="eco-label-small">
+                                {{ "%.0f"|format(project.total_plastic_allocated_grams) }}g /
+                                {{ "%.0f"|format(project.total_plastic_required_grams) }}g
+                            </small>
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="project-card-footer">
+                        <div class="d-grid gap-2">
+                            <a href="{{ url_for('infrastructure_project_detail', project_id=project.id) }}"
+                               class="eco-btn eco-btn-primary">
+                                <i class="fas fa-info-circle me-2"></i>View Details
+                            </a>
+                            {% if current_user.is_authenticated %}
+                            <a href="{{ url_for('contribute_to_project', waste_item_id=0) }}"
+                               class="eco-btn eco-btn-success">
+                                <i class="fas fa-plus me-2"></i>Contribute Materials
+                            </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="col-12">
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle me-2"></i>
+                    No infrastructure projects found. Check back later!
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/ol@v7.3.0/dist/ol.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize maps for each project card
+        {% for project in projects %}
+        (function() {
+            const projectId = {{ project.id }};
+            const lat = {{ project.location_lat }};
+            const lon = {{ project.location_lng }};
+            const projectName = "{{ project.project_name|e }}";
+            const status = "{{ project.status }}";
+            
+            // Initialize OpenLayers map for this project with eco-friendly styling
+            const map = new ol.Map({
+                target: 'project-map-' + projectId,
+                layers: [
+                    new ol.layer.Tile({
+                        source: new ol.source.XYZ({
+                            url: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                            attributions: '© OpenStreetMap contributors'
+                        })
+                    })
+                ],
+                view: new ol.View({
+                    center: ol.proj.fromLonLat([lon, lat]),
+                    zoom: 14
+                })
+            });
+            
+            // Create a marker for the project location
+            const marker = new ol.Feature({
+                geometry: new ol.geom.Point(
+                    ol.proj.fromLonLat([lon, lat])
+                )
+            });
+            
+            // Style the marker based on project status
+            let markerColor = '#007bff'; // Default blue
+            if (status === 'completed') {
+                markerColor = '#28a745'; // Green
+            } else if (status === 'in_progress' || status === 'in-progress') {
+                markerColor = '#ffc107'; // Yellow
+            } else if (status === 'planned') {
+                markerColor = '#17a2b8'; // Cyan
+            }
+            
+            const markerStyle = new ol.style.Style({
+                image: new ol.style.Circle({
+                    radius: 6,
+                    fill: new ol.style.Fill({
+                        color: markerColor
+                    }),
+                    stroke: new ol.style.Stroke({
+                        color: '#fff',
+                        width: 2
+                    })
+                })
+            });
+            
+            marker.setStyle(markerStyle);
+            
+            // Create vector source and layer
+            const vectorSource = new ol.source.Vector({
+                features: [marker]
+            });
+            
+            const vectorLayer = new ol.layer.Vector({
+                source: vectorSource
+            });
+            
+            map.addLayer(vectorLayer);
+            
+            // Disable map controls for card preview (users can click to view details)
+            map.getControls().clear();
+
+                    })();
+        {% endfor %}
+
+            });
+</script>
+{% endblock %}
+
