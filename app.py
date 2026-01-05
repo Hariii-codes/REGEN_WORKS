@@ -88,6 +88,30 @@ def load_user(user_id):
     from models import User
     return User.query.get(int(user_id))
 
+# Import and register blueprints and routes
+from auth import auth_bp
+from routes import register_routes
+from localization_helper import init_app
+from infrastructure_projects import register_infrastructure_project_routes
+
+# NEW: Import pickup routes (ISOLATED FEATURE - does not modify existing functionality)
+from pickup_routes import register_pickup_routes
+
+# Initialize localization helper (register template globals)
+init_app(app)
+
+# Register the auth blueprint
+app.register_blueprint(auth_bp)
+
+# Register all application routes
+register_routes(app)
+
+# Register infrastructure project routes
+register_infrastructure_project_routes(app)
+
+# NEW: Register pickup routes (ISOLATED FEATURE)
+register_pickup_routes(app)
+
 
 with app.app_context():
     try:

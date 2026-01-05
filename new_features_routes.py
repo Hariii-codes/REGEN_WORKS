@@ -56,13 +56,83 @@ def register_new_feature_routes(app):
             
             # Get badge level
             badge_level = current_user.badge_level or 'Bronze'
-            
+
+            # Calculate badge progress
+            badge_progress = 0
+            if badge_level == 'Bronze':
+                badge_progress = min(100, int(float(total_lifetime) / 20))  # 2000g = 100%
+            elif badge_level == 'Silver':
+                badge_progress = min(100, int((float(total_lifetime) - 2000) / 30))  # 5000g = 100%
+            elif badge_level == 'Gold':
+                badge_progress = min(100, int((float(total_lifetime) - 5000) / 50))  # 10000g = 100%
+            else:
+                badge_progress = 100
+
+            # Prepare weekly chart data (last 7 weeks)
+            weekly_chart_data = []
+            weekly_chart_labels = []
+            for week in reversed(weekly_history[:7]):
+                weekly_chart_labels.append(week.month.strftime('%b %d'))
+                weekly_chart_data.append(float(week.total_weight_grams))
+
+            if not weekly_chart_data:
+                weekly_chart_labels = ['No data']
+                weekly_chart_data = [0]
+
+            # Prepare material distribution data
+            material_data = db.session.query(
+                PlasticFootprintScan.material_type,
+                func.sum(PlasticFootprintScan.estimated_weight_grams)
+            ).filter_by(user_id=current_user.id).group_by(
+                PlasticFootprintScan.material_type
+            ).all()
+
+            material_labels = [m[0] for m in material_data] if material_data else ['No data']
+            material_values = [float(m[1]) for m in material_data] if material_data else [0]
+
+            # Calculate environmental impact metrics
+            # Trees saved: approximately 1 tree absorbs ~21kg of CO2 per year
+            # Recycling 1 ton of paper saves ~17 trees
+            # Using conservative estimate: 1000g recycled = 0.01 trees saved
+            trees_saved = max(0, int(float(total_lifetime) / 100))
+
+            # Water conserved: Recycling plastic saves significant water
+            # 1kg recycled plastic saves ~100L of water in production
+            water_saved_liters = max(0, int(float(total_lifetime) / 10))
+
+            # Energy saved: Recycling saves energy vs virgin production
+            # 1kg recycled material saves ~1.5-3 kWh depending on material
+            # Using average of 2 kWh per kg
+            energy_saved_kwh = max(0, int(float(total_lifetime) / 500))
+
+            # CO2 reduced: Recycling reduces greenhouse gas emissions
+            # 1kg recycled material saves ~2-3kg CO2 emissions
+            # Using average of 2.5 kg CO2 per kg recycled
+            co2_reduced_kg = max(0, int(float(total_lifetime) / 400))
+
+            # Calculate homes powered for (energy_saved / 24 kWh daily home usage)
+            homes_powered = energy_saved_kwh // 24 if energy_saved_kwh > 0 else 0
+
+            # Calculate car emissions offset (average car emits ~120g CO2 per km)
+            car_km_offset = int((co2_reduced_kg * 1000) / 120) if co2_reduced_kg > 0 else 0
+
             return render_template('footprint_dashboard.html',
                 weekly_history=weekly_history,
                 current_weekly=current_weekly,
                 recent_scans=recent_scans,
                 total_lifetime=float(total_lifetime),
-                badge_level=badge_level
+                badge_level=badge_level,
+                badge_progress=badge_progress,
+                weekly_chart_labels=weekly_chart_labels,
+                weekly_chart_data=weekly_chart_data,
+                material_labels=material_labels,
+                material_values=material_values,
+                trees_saved=trees_saved,
+                water_saved=water_saved_liters,
+                energy_saved=energy_saved_kwh,
+                co2_reduced=co2_reduced_kg,
+                homes_powered=homes_powered,
+                car_km_offset=car_km_offset
             )
         except Exception as e:
             logging.error(f"Error loading footprint dashboard: {e}")

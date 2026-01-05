@@ -424,3 +424,139 @@ class ProjectLedger(db.Model):
     
     def __repr__(self):
         return f"<ProjectLedger project_id={self.project_id} block_hash={self.block_hash[:16]}...>"
+
+
+# ============================================================================
+# FEATURE 4: WASTE PICKUP SERVICE (NEW ISOLATED FEATURE)
+# ============================================================================
+
+class PickupPartner(db.Model):
+    """NGOs, recyclers, and collectors who can pickup waste from users"""
+    __tablename__ = 'pickup_partner'
+
+    id = db.Column(db.Integer, primary_key=True)
+    partner_id = db.Column(db.String(50), unique=True, nullable=False)
+    name = db.Column(db.String(200), nullable=False)
+    organization_type = db.Column(db.String(50), nullable=False)  # NGO, Recycler, Municipality, Private
+    contact_person = db.Column(db.String(100), nullable=False)
+    contact_phone = db.Column(db.String(20), nullable=False)
+    contact_email = db.Column(db.String(120), nullable=False)
+
+    # Service area
+    base_location_lat = db.Column(db.Numeric(10, 8), nullable=False)
+    base_location_lng = db.Column(db.Numeric(11, 8), nullable=False)
+    service_radius_km = db.Column(db.Numeric(5, 2), default=10.0)  # Service radius in kilometers
+
+    # Partner details
+    accepted_materials = db.Column(db.String(255), nullable=False)  # Comma-separated: Plastic,Paper,Glass
+    operating_hours = db.Column(db.String(100), nullable=False)  # "9 AM - 6 PM"
+    is_active = db.Column(db.Boolean, default=True)
+
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    # Relationships
+    pickup_requests = db.relationship('PickupRequest', backref='assigned_partner', lazy=True)
+
+    def __repr__(self):
+        return f"<PickupPartner partner_id={self.partner_id} name={self.name}>"
+
+
+class PickupRequest(db.Model):
+    """User requests for doorstep waste pickup"""
+    __tablename__ = 'pickup_request'
+
+    id = db.Column(db.Integer, primary_key=True)
+    request_id = db.Column(db.String(50), unique=True, nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id', ondelete='CASCADE'), nullable=False)
+
+    # Waste details
+    waste_type = db.Column(db.String(50), nullable=False)  # Plastic, Paper, Metal, Glass, Electronic, Textile, Organic, Mixed
+    estimated_quantity = db.Column(db.Numeric(10, 2), nullable=False)  # Estimated weight in kg
+    quantity_unit = db.Column(db.String(20), default='kg')  # kg, items
+    item_count = db.Column(db.Integer, nullable=True)  # Number of items if unit is 'items'
+    description = db.Column(db.Text, nullable=True)  # Additional details about waste
+
+    # Pickup location
+    pickup_address = db.Column(db.String(500), nullable=False)
+    pickup_lat = db.Column(db.Numeric(10, 8), nullable=False)
+    pickup_lng = db.Column(db.Numeric(11, 8), nullable=False)
+    landmark = db.Column(db.String(200), nullable=True)
+    area = db.Column(db.String(100), nullable=True)
+
+    # Preferred time
+    preferred_date = db.Column(db.Date, nullable=False)
+    preferred_time_slot = db.Column(db.String(50), nullable=False)  # "9 AM - 12 PM", "2 PM - 5 PM"
+    alternative_time_slot = db.Column(db.String(50), nullable=True)
+
+    # Contact details
+    contact_name = db.Column(db.String(100), nullable=False)
+    contact_phone = db.Column(db.String(20), nullable=False)
+
+    # Status tracking
+    status = db.Column(db.String(20), default='Requested')  # Requested, Assigned, Scheduled, Picked, Completed, Cancelled
+    assigned_partner_id = db.Column(db.Integer, db.ForeignKey('pickup_partner.id', ondelete='SET NULL'), nullable=True)
+    scheduled_date = db.Column(db.Date, nullable=True)
+    scheduled_time_slot = db.Column(db.String(50), nullable=True)
+
+    # Completion details
+    completed_date = db.Column(db.DateTime, nullable=True)
+    collected_weight_kg = db.Column(db.Numeric(10, 2), nullable=True)
+    partner_notes = db.Column(db.Text, nullable=True)
+    user_rating = db.Column(db.Integer, nullable=True)  # 1-5 stars
+    user_feedback = db.Column(db.Text, nullable=True)
+
+    # Link to existing waste tracking (optional - for future integration)
+    linked_batch_id = db.Column(db.Integer, db.ForeignKey('waste_batch.id', ondelete='SET NULL'), nullable=True)
+
+    # Rewards hook (placeholder for future integration)
+    rewards_eligible = db.Column(db.Boolean, default=False)
+    rewards_awarded = db.Column(db.Boolean, default=False)
+    rewards_points = db.Column(db.Integer, nullable=True)
+
+    # Timestamps
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    status_updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    # Relationships
+    user = db.relationship('User', backref=db.backref('pickup_requests', lazy=True, cascade='all, delete-orphan'))
+    linked_batch = db.relationship('WasteBatch', backref='pickup_requests', lazy=True)
+
+    def update_status(self, new_status, notes=None):
+        """Update status with timestamp"""
+        self.status = new_status
+        self.status_updated_at = datetime.utcnow()
+        if new_status == 'Completed':
+            self.completed_date = datetime.utcnow()
+            self.rewards_eligible = True  # Mark eligible for rewards on completion
+        if notes:
+            self.partner_notes = notes
+
+    def assign_partner(self, partner_id, scheduled_time=None):
+        """Assign a pickup partner"""
+        self.assigned_partner_id = partner_id
+        self.status = 'Assigned'
+        self.status_updated_at = datetime.utcnow()
+        if scheduled_time:
+            self.scheduled_time_slot = scheduled_time
+            self.status = 'Scheduled'
+
+    def __repr__(self):
+        return f"<PickupRequest request_id={self.request_id} status={self.status}>"
+
+
+class PickupTimeSlot(db.Model):
+    """Available pickup time slots for scheduling"""
+    __tablename__ = 'pickup_time_slot'
+
+    id = db.Column(db.Integer, primary_key=True)
+    slot_label = db.Column(db.String(50), nullable=False)  # "9 AM - 12 PM", "2 PM - 5 PM", "5 PM - 8 PM"
+    start_hour = db.Column(db.Integer, nullable=False)  # 9, 14, 17
+    end_hour = db.Column(db.Integer, nullable=False)  # 12, 17, 20
+    is_active = db.Column(db.Boolean, default=True)
+    display_order = db.Column(db.Integer, default=0)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    def __repr__(self):
+        return f"<PickupTimeSlot slot_label={self.slot_label}>"

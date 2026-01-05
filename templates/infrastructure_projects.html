@@ -94,11 +94,29 @@
 
         /* Contribution Box */
         .eco-contribution-box {
-            background: linear-gradient(135deg, rgba(33, 150, 243, 0.1), rgba(3, 169, 244, 0.1));
+            background: linear-gradient(135deg, #4CAF50, #45a049) !important;
             padding: var(--spacing-md);
             border-radius: var(--radius-md);
-            border: 1px solid rgba(33, 150, 243, 0.2);
-            color: var(--text-primary);
+            border: 2px solid #4CAF50 !important;
+            color: #ffffff !important;
+            font-weight: 500;
+            box-shadow: 0 2px 8px rgba(76, 175, 80, 0.3);
+        }
+
+        .eco-contribution-box,
+        .eco-contribution-box *,
+        .eco-contribution-box *::before,
+        .eco-contribution-box *::after {
+            color: #ffffff !important;
+        }
+
+        .eco-contribution-box strong {
+            color: #ffffff !important;
+            font-weight: 600;
+        }
+
+        .eco-contribution-box i {
+            color: #ffffff !important;
         }
 
         .eco-badge-achievement {
@@ -241,20 +259,6 @@
                         <p class="eco-text-muted mb-3">{{ project.description[:150] }}{% if project.description|length > 150 %}...{% endif %}</p>
                         {% endif %}
 
-                        <!-- User Contribution -->
-                        {% if user_contributions.get(project.id) and user_contributions[project.id].weight > 0 %}
-                        <div class="eco-contribution-box mb-3">
-                            <i class="fas fa-user me-2"></i>
-                            <strong>Your Contribution:</strong>
-                            {{ "%.2f"|format(user_contributions[project.id].weight) }}g
-                            {% if top_contributors.get(project.id) %}
-                            <span class="eco-badge-achievement ms-2">
-                                <i class="fas fa-trophy me-1"></i>Community Builder
-                            </span>
-                            {% endif %}
-                        </div>
-                        {% endif %}
-
                         <!-- Project Progress -->
                         {% if project.total_plastic_required_grams %}
                         <div class="mb-3">
@@ -277,7 +281,7 @@
                     <div class="project-card-footer">
                         <div class="d-grid gap-2">
                             <a href="{{ url_for('infrastructure_project_detail', project_id=project.id) }}"
-                               class="eco-btn eco-btn-primary">
+                               class="eco-btn eco-btn-success">
                                 <i class="fas fa-info-circle me-2"></i>View Details
                             </a>
                             {% if current_user.is_authenticated %}

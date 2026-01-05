@@ -20,7 +20,7 @@
                 
                 <div class="row text-center">
                     <div class="col-6">
-                        <div class="card bg-dark mb-3">
+                        <div class="card mb-3" style="background: rgba(107, 203, 119, 0.15);">
                             <div class="card-body py-3">
                                 <h5 class="mb-0 eco-points-value">{{ current_user.eco_points }}</h5>
                                 <small class="text-success">{{ get_localized_string('profile.eco_points', get_current_language(), 'Eco Points') }}</small>
@@ -28,7 +28,7 @@
                         </div>
                     </div>
                     <div class="col-6">
-                        <div class="card bg-dark mb-3">
+                        <div class="card mb-3" style="background: rgba(255, 193, 7, 0.15);">
                             <div class="card-body py-3">
                                 <h5 class="mb-0 streak-value">{{ current_user.recycling_streak }}</h5>
                                 <small class="text-warning">{{ get_localized_string('profile.day_streak', get_current_language(), 'Day Streak') }}</small>
@@ -167,7 +167,7 @@
                     <h5 class="mt-4 mb-3">{{ get_localized_string('profile.available_achievements', get_current_language(), 'Available Achievements') }}</h5>
                     <div class="row">
                         <div class="col-md-6 mb-3">
-                            <div class="achievement-card card h-100 bg-dark locked">
+                            <div class="achievement-card card h-100 locked" style="background: rgba(107, 203, 119, 0.12);">
                                 <div class="card-body">
                                     <div class="d-flex align-items-center">
                                         <div class="achievement-icon me-3 text-muted">
@@ -185,7 +185,7 @@
                             </div>
                         </div>
                         <div class="col-md-6 mb-3">
-                            <div class="achievement-card card h-100 bg-dark locked">
+                            <div class="achievement-card card h-100 locked" style="background: rgba(107, 203, 119, 0.12);">
                                 <div class="card-body">
                                     <div class="d-flex align-items-center">
                                         <div class="achievement-icon me-3 text-muted">

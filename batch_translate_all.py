@@ -12,7 +12,7 @@ from pathlib import Path
 logging.basicConfig(level=logging.INFO)
 
 # Configure Google Gemini AI with API key
-api_key = os.environ.get("GEMINI_API_KEY", "AIzaSyACMoAYK8z_VrIR0U8LmOyjz-0C0BhDj2I")
+api_key = os.environ.get("GEMINI_API_KEY", "AIzaSyAixA3oohovvFAdewRF3xP4UHjympdlT18")
 genai.configure(api_key=api_key)
 
 # Target languages - ONLY Hindi and Kannada

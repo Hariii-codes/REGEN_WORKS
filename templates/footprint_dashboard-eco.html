@@ -162,7 +162,7 @@
                     <i class="fas fa-tree"></i>
                 </div>
                 <div class="impact-value">
-                    <span class="number" data-counter="{{ trees_saved|default(42) }}">0</span>
+                    <span class="number" data-counter="{{ trees_saved }}">0</span>
                 </div>
                 <div class="impact-label">Trees Saved</div>
                 <div class="impact-equivalent">Equivalent to planting a small forest</div>
@@ -173,11 +173,11 @@
                     <i class="fas fa-tint"></i>
                 </div>
                 <div class="impact-value">
-                    <span class="number" data-counter="{{ water_saved|default(1250) }}">0</span>
+                    <span class="number" data-counter="{{ water_saved }}">0</span>
                     <span class="unit">L</span>
                 </div>
                 <div class="impact-label">Water Conserved</div>
-                <div class="impact-equivalent">{{ water_saved|default(1250) }} liters of drinking water</div>
+                <div class="impact-equivalent">{{ water_saved }} liters of drinking water</div>
             </div>
 
             <div class="impact-card eco-card">
@@ -185,11 +185,11 @@
                     <i class="fas fa-bolt"></i>
                 </div>
                 <div class="impact-value">
-                    <span class="number" data-counter="{{ energy_saved|default(320) }}">0</span>
+                    <span class="number" data-counter="{{ energy_saved }}">0</span>
                     <span class="unit">kWh</span>
                 </div>
                 <div class="impact-label">Energy Saved</div>
-                <div class="impact-equivalent">Power for {{ energy_saved|default(320) // 24 }} homes for a day</div>
+                <div class="impact-equivalent">Power for {{ homes_powered }} homes for a day</div>
             </div>
 
             <div class="impact-card eco-card">
@@ -197,11 +197,11 @@
                     <i class="fas fa-cloud"></i>
                 </div>
                 <div class="impact-value">
-                    <span class="number" data-counter="{{ co2_saved|default(85) }}">0</span>
+                    <span class="number" data-counter="{{ co2_reduced }}">0</span>
                     <span class="unit">kg</span>
                 </div>
                 <div class="impact-label">CO₂ Reduced</div>
-                <div class="impact-equivalent">Car emissions for {{ co2_saved|default(85) // 10 }} km</div>
+                <div class="impact-equivalent">Car emissions for {{ car_km_offset }} km</div>
             </div>
         </div>
     </div>
@@ -248,11 +248,11 @@
                             {% endif %}
                         </div>
                         <div class="activity-details">
-                            <h4>{{ scan.material_type }} - {{ scan.item_description or 'Item' }}</h4>
+                            <h4>{{ scan.material_type }} {% if scan.waste_item %}- {{ scan.waste_item.material or 'Item' }}{% endif %}</h4>
                             <p class="activity-date">{{ scan.timestamp.strftime('%B %d, %Y at %I:%M %p') }}</p>
                         </div>
                         <div class="activity-weight">
-                            <span class="weight-value">{{ "%.1f"|format(scan.weight_grams) }}g</span>
+                            <span class="weight-value">{{ "%.1f"|format(scan.estimated_weight_grams) }}g</span>
                             <span class="eco-points">+5 pts</span>
                         </div>
                     </div>
@@ -586,91 +586,115 @@
 </style>
 
 <script>
-// Initialize Charts
-document.addEventListener('DOMContentLoaded', function() {
-    // Weekly Chart
-    const weeklyCtx = document.getElementById('weeklyChart');
-    if (weeklyCtx) {
-        new Chart(weeklyCtx, {
-            type: 'bar',
-            data: {
-                labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-                datasets: [{
-                    label: 'Waste Recycled (g)',
-                    data: [120, 190, 80, 150, 200, 130, 170],
-                    backgroundColor: 'rgba(107, 203, 119, 0.6)',
-                    borderColor: 'rgba(107, 203, 119, 1)',
-                    borderWidth: 2,
-                    borderRadius: 8
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        display: false
-                    }
+// Load Chart.js first
+const chartScript = document.createElement('script');
+chartScript.src = 'https://cdn.jsdelivr.net/npm/chart.js';
+chartScript.onload = function() {
+    // Initialize Charts after Chart.js is loaded
+    document.addEventListener('DOMContentLoaded', function() {
+        // Weekly Chart
+        const weeklyCtx = document.getElementById('weeklyChart');
+        if (weeklyCtx) {
+            new Chart(weeklyCtx, {
+                type: 'bar',
+                data: {
+                    labels: {{ weekly_chart_labels|tojson }},
+                    datasets: [{
+                        label: 'Waste Recycled (g)',
+                        data: {{ weekly_chart_data|tojson }},
+                        backgroundColor: 'rgba(107, 203, 119, 0.6)',
+                        borderColor: 'rgba(107, 203, 119, 1)',
+                        borderWidth: 2,
+                        borderRadius: 8
+                    }]
                 },
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        grid: {
-                            color: 'rgba(0, 0, 0, 0.05)'
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return context.parsed.y + 'g recycled';
+                                }
+                            }
                         }
                     },
-                    x: {
-                        grid: {
-                            display: false
-                        }
-                    }
-                }
-            }
-        });
-    }
-
-    // Material Distribution Chart
-    const materialCtx = document.getElementById('materialChart');
-    if (materialCtx) {
-        new Chart(materialCtx, {
-            type: 'doughnut',
-            data: {
-                labels: ['Plastic', 'Paper', 'Metal', 'Glass', 'E-Waste'],
-                datasets: [{
-                    data: [35, 25, 20, 15, 5],
-                    backgroundColor: [
-                        'rgba(107, 203, 119, 0.8)',
-                        'rgba(76, 175, 80, 0.8)',
-                        'rgba(56, 142, 60, 0.8)',
-                        'rgba(46, 125, 50, 0.8)',
-                        'rgba(27, 94, 32, 0.8)'
-                    ],
-                    borderWidth: 0
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        position: 'bottom',
-                        labels: {
-                            padding: 20,
-                            font: {
-                                size: 12
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.05)'
+                            },
+                            ticks: {
+                                callback: function(value) {
+                                    return value + 'g';
+                                }
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
                             }
                         }
                     }
                 }
-            }
-        });
-    }
-});
+            });
+        }
 
-// Load Chart.js
-const chartScript = document.createElement('script');
-chartScript.src = 'https://cdn.jsdelivr.net/npm/chart.js';
+        // Material Distribution Chart
+        const materialCtx = document.getElementById('materialChart');
+        if (materialCtx) {
+            new Chart(materialCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: {{ material_labels|tojson }},
+                    datasets: [{
+                        data: {{ material_values|tojson }},
+                        backgroundColor: [
+                            'rgba(107, 203, 119, 0.8)',
+                            'rgba(76, 175, 80, 0.8)',
+                            'rgba(56, 142, 60, 0.8)',
+                            'rgba(46, 125, 50, 0.8)',
+                            'rgba(27, 94, 32, 0.8)',
+                            'rgba(255, 152, 0, 0.8)',
+                            'rgba(156, 39, 176, 0.8)',
+                            'rgba(33, 150, 243, 0.8)'
+                        ],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                padding: 20,
+                                font: {
+                                    size: 12
+                                }
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                    const percentage = ((context.parsed / total) * 100).toFixed(1);
+                                    return context.parsed + 'g (' + percentage + '%)';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+    });
+};
 document.head.appendChild(chartScript);
 </script>
-{% endblock %}
 {% endblock %}

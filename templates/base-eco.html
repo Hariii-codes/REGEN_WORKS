@@ -216,6 +216,12 @@
                     </a>
                 </li>
                 <li>
+                    <a href="{{ url_for('pickup_home') }}" class="eco-nav-link {% if '/pickup' in request.path %}active{% endif %}">
+                        <i class="fas fa-truck"></i>
+                        <span>Pickup</span>
+                    </a>
+                </li>
+                <li>
                     <a href="{{ url_for('infrastructure_projects') }}" class="eco-nav-link {% if '/infrastructure-projects' in request.path or '/projects' in request.path %}active{% endif %}">
                         <i class="fas fa-project-diagram"></i>
                         <span>Projects</span>

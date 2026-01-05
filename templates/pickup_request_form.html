@@ -1,0 +1,412 @@
+{% extends "base-eco.html" %}
+
+{% block content %}
+<!-- Pickup Request Form -->
+<style>
+    .pickup-form-container {
+        background: white;
+        border-radius: var(--radius-xl);
+        padding: 2rem;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+        max-width: 800px;
+        margin: 0 auto;
+    }
+
+    .form-header {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+
+    .form-header h1 {
+        color: var(--eco-dark);
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+    }
+
+    .form-header p {
+        color: var(--text-secondary);
+    }
+
+    .form-section {
+        margin-bottom: 2rem;
+    }
+
+    .form-section-title {
+        color: var(--eco-dark);
+        font-weight: 600;
+        font-size: 1.1rem;
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .form-section-title i {
+        color: var(--eco-primary);
+    }
+
+    .form-label {
+        color: var(--text-primary);
+        font-weight: 500;
+        margin-bottom: 0.5rem;
+    }
+
+    .map-container {
+        height: 300px;
+        border-radius: var(--radius-lg);
+        overflow: hidden;
+        border: 2px solid var(--eco-light-green);
+        margin-bottom: 1rem;
+    }
+
+    #pickup-map {
+        width: 100%;
+        height: 100%;
+    }
+
+    .location-info {
+        background: rgba(46, 125, 50, 0.05);
+        border-radius: var(--radius-md);
+        padding: 1rem;
+        margin-top: 1rem;
+    }
+
+    .time-slot-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+    }
+
+    .time-slot-option {
+        position: relative;
+    }
+
+    .time-slot-option input[type="radio"] {
+        position: absolute;
+        opacity: 0;
+    }
+
+    .time-slot-option label {
+        display: block;
+        padding: 1rem;
+        border: 2px solid var(--eco-light-green);
+        border-radius: var(--radius-md);
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        background: white;
+    }
+
+    .time-slot-option input[type="radio"]:checked + label {
+        border-color: var(--eco-primary);
+        background: var(--eco-primary);
+        color: white;
+    }
+
+    .time-slot-option label:hover {
+        border-color: var(--eco-primary);
+    }
+
+    .help-text {
+        font-size: 0.85rem;
+        color: var(--text-secondary);
+        margin-top: 0.5rem;
+    }
+
+    @media (max-width: 768px) {
+        .pickup-form-container {
+            padding: 1.5rem;
+        }
+    }
+</style>
+
+<div class="container">
+    <div class="pickup-form-container">
+        <div class="form-header">
+            <h1><i class="fas fa-truck-pickup"></i> Request Waste Pickup</h1>
+            <p>Fill in the details below to schedule a doorstep pickup</p>
+        </div>
+
+        <form method="POST" action="{{ url_for('request_pickup') }}" id="pickupForm">
+            <!-- Waste Details Section -->
+            <div class="form-section">
+                <h3 class="form-section-title">
+                    <i class="fas fa-recycle"></i> Waste Details
+                </h3>
+
+                <div class="mb-3">
+                    <label class="form-label">Type of Waste *</label>
+                    <select class="form-select" name="waste_type" required>
+                        <option value="">Select waste type</option>
+                        <option value="Plastic" {% if prefill_data.get('waste_type') == 'Plastic' %}selected{% endif %}>Plastic</option>
+                        <option value="Paper" {% if prefill_data.get('waste_type') == 'Paper' %}selected{% endif %}>Paper</option>
+                        <option value="Metal" {% if prefill_data.get('waste_type') == 'Metal' %}selected{% endif %}>Metal</option>
+                        <option value="Glass" {% if prefill_data.get('waste_type') == 'Glass' %}selected{% endif %}>Glass</option>
+                        <option value="Electronic" {% if prefill_data.get('waste_type') == 'Electronic' %}selected{% endif %}>Electronic (E-waste)</option>
+                        <option value="Textile" {% if prefill_data.get('waste_type') == 'Textile' %}selected{% endif %}>Textile/Clothing</option>
+                        <option value="Organic" {% if prefill_data.get('waste_type') == 'Organic' %}selected{% endif %}>Organic Waste</option>
+                        <option value="Mixed">Mixed Recyclables</option>
+                    </select>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Estimated Quantity *</label>
+                        <input type="number" step="0.1" min="0.1" class="form-control" name="estimated_quantity"
+                               value="{{ prefill_data.get('estimated_quantity', '') }}"
+                               placeholder="10" required>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Unit *</label>
+                        <select class="form-select" name="quantity_unit">
+                            <option value="kg" selected>Kilograms (kg)</option>
+                            <option value="items">Number of items</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="mb-3" id="itemCountField" style="display: none;">
+                    <label class="form-label">Number of Items</label>
+                    <input type="number" min="1" class="form-control" name="item_count" placeholder="e.g., 5 bottles">
+                    <div class="help-text">Approximate number of items for better estimation</div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Additional Details (Optional)</label>
+                    <textarea class="form-control" name="description" rows="3"
+                              placeholder="Any specific instructions or details about the waste..."></textarea>
+                </div>
+            </div>
+
+            <!-- Pickup Location Section -->
+            <div class="form-section">
+                <h3 class="form-section-title">
+                    <i class="fas fa-map-marker-alt"></i> Pickup Location
+                </h3>
+
+                <div class="mb-3">
+                    <label class="form-label">Pickup Address *</label>
+                    <textarea class="form-control" name="pickup_address" rows="2"
+                              placeholder="House/Flat No., Building, Street, Area" required></textarea>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Landmark (Optional)</label>
+                        <input type="text" class="form-control" name="landmark"
+                               placeholder="Near school, temple, etc.">
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Area/Locality *</label>
+                        <input type="text" class="form-control" name="area" required
+                               placeholder="e.g., Koramangala, Indiranagar">
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Pin Location on Map *</label>
+                    <div class="map-container">
+                        <div id="pickup-map"></div>
+                    </div>
+                    <input type="hidden" name="pickup_lat" id="pickupLat" required>
+                    <input type="hidden" name="pickup_lng" id="pickupLng" required>
+                    <div class="help-text">
+                        <i class="fas fa-info-circle"></i> Click on the map to set your pickup location
+                    </div>
+                </div>
+
+                <div class="location-info" id="locationInfo" style="display: none;">
+                    <strong><i class="fas fa-check-circle text-success"></i> Location set:</strong>
+                    <span id="locationCoords"></span>
+                </div>
+            </div>
+
+            <!-- Preferred Time Section -->
+            <div class="form-section">
+                <h3 class="form-section-title">
+                    <i class="fas fa-calendar-alt"></i> Preferred Pickup Time
+                </h3>
+
+                <div class="mb-3">
+                    <label class="form-label">Preferred Date *</label>
+                    <input type="date" class="form-control" name="preferred_date"
+                           min="{{ date_min }}" required>
+                    <div class="help-text">Pickup can be scheduled 1-7 days in advance</div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Preferred Time Slot *</label>
+                    <div class="time-slot-grid">
+                        {% for slot in time_slots %}
+                        <div class="time-slot-option">
+                            <input type="radio" name="preferred_time_slot" id="slot_{{ loop.index }}" value="{{ slot.slot_label }}" required>
+                            <label for="slot_{{ loop.index }}">
+                                <i class="fas fa-clock mb-2"></i>
+                                <br>{{ slot.slot_label }}
+                            </label>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Alternative Time Slot (Optional)</label>
+                    <select class="form-select" name="alternative_time_slot">
+                        <option value="">No alternative</option>
+                        {% for slot in time_slots %}
+                        <option value="{{ slot.slot_label }}">{{ slot.slot_label }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+
+            <!-- Contact Details Section -->
+            <div class="form-section">
+                <h3 class="form-section-title">
+                    <i class="fas fa-user"></i> Contact Details
+                </h3>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Contact Name *</label>
+                        <input type="text" class="form-control" name="contact_name"
+                               value="{{ current_user.full_name or current_user.username }}"
+                               required>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Contact Phone *</label>
+                        <input type="tel" class="form-control" name="contact_phone"
+                               placeholder="+91 98765 43210" required>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Submit -->
+            <div class="d-grid gap-2">
+                <button type="submit" class="eco-btn eco-btn-success btn-lg">
+                    <i class="fas fa-paper-plane me-2"></i>Submit Pickup Request
+                </button>
+                <a href="{{ url_for('pickup_home') }}" class="btn btn-outline-secondary">
+                    <i class="fas fa-arrow-left me-2"></i>Back to Pickup Service
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/ol@v7.3.0/dist/ol.js"></script>
+<script>
+    // Set min date to tomorrow
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    const maxDate = new Date();
+    maxDate.setDate(maxDate.getDate() + 7);
+
+    const dateInput = document.querySelector('input[name="preferred_date"]');
+    if (dateInput) {
+        dateInput.min = tomorrow.toISOString().split('T')[0];
+        dateInput.max = maxDate.toISOString().split('T')[0];
+        dateInput.value = tomorrow.toISOString().split('T')[0];
+    }
+
+    // Initialize OpenLayers map
+    let map, marker;
+
+    function initMap() {
+        map = new ol.Map({
+            target: 'pickup-map',
+            layers: [
+                new ol.layer.Tile({
+                    source: new ol.source.XYZ({
+                        url: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png'
+                    })
+                })
+            ],
+            view: new ol.View({
+                center: ol.proj.fromLonLat([77.5946, 12.9716]), // Default: Bangalore
+                zoom: 12
+            })
+        });
+
+        // Try to get user's location
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    const coords = [position.coords.longitude, position.coords.latitude];
+                    map.getView().setCenter(ol.proj.fromLonLat(coords));
+                    map.getView().setZoom(15);
+                    addMarker(coords);
+                },
+                () => {
+                    console.log('Could not get user location');
+                }
+            );
+        }
+
+        // Click to set location
+        map.on('click', function(evt) {
+            const coords = ol.proj.toLonLat(evt.coordinate);
+            addMarker(coords);
+        });
+    }
+
+    function addMarker(coords) {
+        // Remove existing marker
+        if (marker) {
+            map.removeLayer(marker);
+        }
+
+        // Add new marker
+        marker = new ol.layer.Vector({
+            source: new ol.source.Vector({
+                features: [
+                    new ol.Feature({
+                        geometry: new ol.geom.Point(ol.proj.fromLonLat(coords))
+                    })
+                ]
+            }),
+            style: new ol.style.Style({
+                image: new ol.style.Circle({
+                    radius: 8,
+                    fill: new ol.style.Fill({ color: '#4CAF50' }),
+                    stroke: new ol.style.Stroke({ color: '#fff', width: 2 })
+                })
+            })
+        });
+
+        map.addLayer(marker);
+
+        // Update form fields
+        document.getElementById('pickupLat').value = coords[1];
+        document.getElementById('pickupLng').value = coords[0];
+
+        // Show location info
+        document.getElementById('locationInfo').style.display = 'block';
+        document.getElementById('locationCoords').textContent =
+            `${coords[1].toFixed(6)}, ${coords[0].toFixed(6)}`;
+    }
+
+    // Show/hide item count field
+    document.querySelector('select[name="quantity_unit"]').addEventListener('change', function() {
+        const itemCountField = document.getElementById('itemCountField');
+        itemCountField.style.display = this.value === 'items' ? 'block' : 'none';
+    });
+
+    // Form validation
+    document.getElementById('pickupForm').addEventListener('submit', function(e) {
+        const lat = document.getElementById('pickupLat').value;
+        const lng = document.getElementById('pickupLng').value;
+
+        if (!lat || !lng) {
+            e.preventDefault();
+            alert('Please click on the map to set your pickup location');
+            return false;
+        }
+    });
+
+    // Initialize map when page loads
+    document.addEventListener('DOMContentLoaded', initMap);
+</script>
+{% endblock %}

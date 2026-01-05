@@ -28,32 +28,34 @@ document.addEventListener('DOMContentLoaded', function() {
     const previewContainer = document.getElementById('image-preview-container');
     const previewImage = document.getElementById('preview-image');
 
-    fileInput.addEventListener('change', function(e) {
-        const file = e.target.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = function(event) {
-                const img = new Image();
-                img.onload = function() {
-                    const aspectRatio = this.width / this.height;
-                    if (aspectRatio > 1) {
-                        // Landscape image
-                        previewImage.style.width = '100%';
-                        previewImage.style.height = 'auto';
-                    } else {
-                        // Portrait image
-                        previewImage.style.width = 'auto';
-                        previewImage.style.height = '100%';
-                    }
+    if (fileInput) {
+        fileInput.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    const img = new Image();
+                    img.onload = function() {
+                        const aspectRatio = this.width / this.height;
+                        if (aspectRatio > 1) {
+                            // Landscape image
+                            previewImage.style.width = '100%';
+                            previewImage.style.height = 'auto';
+                        } else {
+                            // Portrait image
+                            previewImage.style.width = 'auto';
+                            previewImage.style.height = '100%';
+                        }
+                    };
+                    img.src = event.target.result;
+                    previewImage.src = event.target.result;
+                    previewContainer.style.display = 'flex';
+                    previewContainer.classList.remove('d-none');
                 };
-                img.src = event.target.result;
-                previewImage.src = event.target.result;
-                previewContainer.style.display = 'flex';
-                previewContainer.classList.remove('d-none');
-            };
-            reader.readAsDataURL(file);
-        }
-    });
+                reader.readAsDataURL(file);
+            }
+        });
+    }
     const uploadForm = document.getElementById('upload-form');
     const uploadBtn = document.getElementById('upload-btn');
     const uploadSpinner = document.getElementById('upload-spinner');

@@ -6,30 +6,73 @@ from gemini_formatter import format_gemini_response, extract_sections_from_raw_t
 import material_detection
 
 # Configure Google Gemini AI with API key
-api_key = os.environ.get("GEMINI_API_KEY", "AIzaSyACMoAYK8z_VrIR0U8LmOyjz-0C0BhDj2I")
+api_key = os.environ.get("GEMINI_API_KEY", "AIzaSyAixA3oohovvFAdewRF3xP4UHjympdlT18")
 genai.configure(api_key=api_key)
 
 # Flag to enable/disable material detection
 ENABLE_MATERIAL_DETECTION = True
 
+def detect_human_in_image(image):
+    """
+    Pre-check if image contains humans using a quick Gemini detection
+    Only returns True for clear human faces or full bodies, not hands/fingers
+
+    Args:
+        image: PIL Image object
+
+    Returns:
+        True if human(s) detected, False otherwise
+    """
+    try:
+        # Use a lightweight model for human detection
+        model = genai.GenerativeModel('gemini-2.5-flash-lite')
+
+        prompt = (
+            "You are a content filter for a waste analysis app. "
+            "Check if this image clearly shows human FACE(s) or FULL BODY/BODIES. "
+            "IGNORE hands, fingers, or partial body parts - these are acceptable. "
+            "Respond ONLY with 'YES' if you see clear human faces or full bodies, "
+            "or 'NO' if the image only shows waste items, objects, or hands holding items. "
+            "Be conservative - only say YES if humans are clearly visible and prominent."
+        )
+
+        response = model.generate_content(
+            [prompt, image],
+            generation_config={
+                "max_output_tokens": 10,
+                "temperature": 0.1,
+            }
+        )
+
+        result = response.text.strip().upper()
+        logging.info(f"Human detection result: {result}")
+        # Only trigger on explicit YES
+        return result == "YES"
+
+    except Exception as e:
+        logging.error(f"Error in human detection: {e}")
+        # If human detection fails, proceed with analysis (fail-open)
+        return False
+
+
 def analyze_waste(image_path):
     """
     Analyze waste image using Google Gemini AI and material detection
-    
+
     Args:
         image_path: Path to the uploaded image
-        
+
     Returns:
         Dictionary containing analysis results
     """
     try:
         # Open image using PIL
         image = PIL.Image.open(image_path)
-        
+
         # Convert to RGB if needed
         if image.mode != 'RGB':
             image = image.convert('RGB')
-            
+
         # Run material detection if enabled
         material_detection_result = None
         if ENABLE_MATERIAL_DETECTION:
@@ -86,10 +129,14 @@ def analyze_waste(image_path):
         prompt = (
             f"You are ReGenWorks AI Assistant, a specialized waste management analysis expert with deep knowledge of recycling processes, material science, and environmental impacts.\n\n"
             f"{material_info}\n\n"
-            f"Analyze this waste image in detail and provide information in a well-structured, clear format with HTML formatting:\n\n"
+            f"SPECIAL CATEGORY HANDLING:\n"
+            f"- If the image contains human beings, people, or persons: Categorize as 'People' with material 'Unknown', state it's not recyclable, not e-waste, and explain this is a person not waste material.\n"
+            f"- If the image contains personal items like pens, pencils, phones being held: Categorize appropriately and mention it's a personal item.\n"
+            f"- Otherwise, analyze as waste/recyclable material.\n\n"
+            f"Analyze this image in detail and provide information in a well-structured, clear format with HTML formatting:\n\n"
             f"1. Is it recyclable? (Yes/No/Could be) - If the item or its components could potentially be recycled, even if it requires special handling or has mixed materials, indicate this. Be lenient - if components could be recycled, mark it as recyclable. Explain your reasoning in detail.\n"
             f"2. Is it e-waste? (Yes/No) - Provide a confident answer and explain why it is or isn't electronic waste. Include information about hazardous components if present.\n"
-            f"3. Primary material composition - Specifically identify as one of: Plastic, Paper, Metal, Glass, Organic, Textile, Electronic, Mixed/Other. Choose the most dominant material and include specific subcategories.\n"
+            f"3. Primary material composition - Specifically identify as one of: Plastic, Paper, Metal, Glass, Organic, Textile, Electronic, People, Mixed/Other. Choose the most dominant material and include specific subcategories. Use 'People' for humans.\n"
             f"4. Recycling preparation instructions - Provide detailed steps on how to prepare this item for recycling (cleaning, disassembly, separating components, removing labels/caps, etc.). Format this as an ordered list with clear steps.\n"
             f"5. Environmental impact - Explain the environmental consequences if this item is improperly disposed of. Include decomposition time, pollution potential, and resource loss. Format this with bullet points.\n"
             f"6. Carbon emissions impact - Include information about the carbon footprint of this item. Mention how much CO2 equivalent emissions are associated with its production and disposal. Explain the carbon savings if recycled versus sent to landfill. Use specific numbers if possible.\n"
@@ -182,7 +229,11 @@ def analyze_waste(image_path):
                     "fabric": "Textile",
                     "clothing": "Textile",
                     "electronic": "Electronic",
-                    "battery": "Electronic"
+                    "battery": "Electronic",
+                    "people": "Unknown",
+                    "person": "Unknown",
+                    "human": "Unknown",
+                    "unknown": "Unknown"
                 }
                 
                 # Find the first material mentioned

@@ -1,0 +1,390 @@
+{% extends "base-eco.html" %}
+
+{% block content %}
+<!-- Waste Pickup Service - Home Page -->
+<style>
+    .pickup-hero {
+        background: linear-gradient(135deg, #2E7D32, #4CAF50);
+        border-radius: var(--radius-xl);
+        padding: 3rem 2rem;
+        color: white;
+        text-align: center;
+        margin-bottom: 2rem;
+        box-shadow: 0 10px 30px rgba(46, 125, 50, 0.3);
+    }
+
+    .pickup-hero h1 {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+    }
+
+    .pickup-hero p {
+        font-size: 1.2rem;
+        opacity: 0.95;
+        margin-bottom: 2rem;
+    }
+
+    .pickup-features {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 3rem;
+    }
+
+    .pickup-feature-card {
+        background: white;
+        border-radius: var(--radius-lg);
+        padding: 1.5rem;
+        text-align: center;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        transition: transform 0.3s ease;
+    }
+
+    .pickup-feature-card:hover {
+        transform: translateY(-5px);
+    }
+
+    .pickup-feature-icon {
+        font-size: 3rem;
+        color: var(--eco-primary);
+        margin-bottom: 1rem;
+    }
+
+    .pickup-feature-card h4 {
+        color: var(--eco-dark);
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+    }
+
+    .pickup-feature-card p {
+        color: var(--text-secondary);
+        font-size: 0.95rem;
+    }
+
+    .active-pickups-section,
+    .history-section {
+        background: white;
+        border-radius: var(--radius-lg);
+        padding: 2rem;
+        margin-bottom: 2rem;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    }
+
+    .section-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.5rem;
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+
+    .section-header h2 {
+        color: var(--eco-dark);
+        font-weight: 700;
+        font-size: 1.5rem;
+    }
+
+    .pickup-card {
+        background: linear-gradient(135deg, rgba(46, 125, 50, 0.05), rgba(76, 175, 80, 0.05));
+        border: 2px solid var(--eco-light-green);
+        border-radius: var(--radius-lg);
+        padding: 1.5rem;
+        margin-bottom: 1rem;
+        transition: all 0.3s ease;
+    }
+
+    .pickup-card:hover {
+        border-color: var(--eco-primary);
+        box-shadow: 0 8px 20px rgba(46, 125, 50, 0.15);
+    }
+
+    .pickup-card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 1rem;
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+
+    .pickup-request-id {
+        font-size: 0.9rem;
+        color: var(--text-secondary);
+        font-weight: 600;
+    }
+
+    .pickup-status-badge {
+        padding: 6px 16px;
+        border-radius: var(--radius-full);
+        font-size: 0.85rem;
+        font-weight: 600;
+        text-transform: uppercase;
+    }
+
+    .status-Requested {
+        background: linear-gradient(135deg, #03A9F4, #0288D1);
+        color: white;
+    }
+
+    .status-Assigned {
+        background: linear-gradient(135deg, #FF9800, #F57C00);
+        color: white;
+    }
+
+    .status-Scheduled {
+        background: linear-gradient(135deg, #9C27B0, #7B1FA2);
+        color: white;
+    }
+
+    .status-Completed {
+        background: linear-gradient(135deg, #4CAF50, #45a049);
+        color: white;
+    }
+
+    .status-Cancelled {
+        background: linear-gradient(135deg, #9E9E9E, #757575);
+        color: white;
+    }
+
+    .pickup-details {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+        margin-top: 1rem;
+    }
+
+    .pickup-detail-item {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .pickup-detail-item i {
+        color: var(--eco-primary);
+        font-size: 1.2rem;
+    }
+
+    .pickup-detail-item span {
+        color: var(--text-primary);
+        font-size: 0.95rem;
+    }
+
+    .pickup-detail-label {
+        color: var(--text-secondary);
+        font-size: 0.85rem;
+        margin-right: 0.25rem;
+    }
+
+    .pickup-actions {
+        margin-top: 1rem;
+        padding-top: 1rem;
+        border-top: 1px solid var(--eco-light-green);
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 3rem 2rem;
+        color: var(--text-secondary);
+    }
+
+    .empty-state i {
+        font-size: 4rem;
+        color: var(--eco-light-green);
+        margin-bottom: 1rem;
+    }
+
+    .empty-state p {
+        font-size: 1.1rem;
+        margin-bottom: 1.5rem;
+    }
+
+    @media (max-width: 768px) {
+        .pickup-hero h1 {
+            font-size: 1.8rem;
+        }
+
+        .pickup-features {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
+<div class="container">
+    <!-- Hero Section -->
+    <div class="pickup-hero">
+        <h1><i class="fas fa-truck-pickup"></i> Waste Pickup Service</h1>
+        <p>Get doorstep pickup of your recyclable waste. We'll connect you with nearby NGOs and recyclers!</p>
+        <a href="{{ url_for('request_pickup') }}" class="btn btn-light btn-lg">
+            <i class="fas fa-plus me-2"></i>Request Pickup
+        </a>
+    </div>
+
+    <!-- Features -->
+    <div class="pickup-features">
+        <div class="pickup-feature-card">
+            <div class="pickup-feature-icon"><i class="fas fa-home"></i></div>
+            <h4>Doorstep Pickup</h4>
+            <p>We collect waste directly from your location at your preferred time</p>
+        </div>
+        <div class="pickup-feature-card">
+            <div class="pickup-feature-icon"><i class="fas fa-handshake"></i></div>
+            <h4>Verified Partners</h4>
+            <p>Connected with trusted NGOs, recyclers, and municipal collectors</p>
+        </div>
+        <div class="pickup-feature-card">
+            <div class="pickup-feature-icon"><i class="fas fa-clock"></i></div>
+            <h4>Flexible Scheduling</h4>
+            <p>Choose your preferred date and time slot for pickup</p>
+        </div>
+        <div class="pickup-feature-card">
+            <div class="pickup-feature-icon"><i class="fas fa-recycle"></i></div>
+            <h4>Track Status</h4>
+            <p>Monitor your pickup request status in real-time</p>
+        </div>
+    </div>
+
+    <!-- Active Pickups -->
+    <div class="active-pickups-section">
+        <div class="section-header">
+            <h2><i class="fas fa-spinner me-2"></i>Active Pickups</h2>
+            <a href="{{ url_for('request_pickup') }}" class="eco-btn eco-btn-primary">
+                <i class="fas fa-plus me-2"></i>New Pickup
+            </a>
+        </div>
+
+        {% if active_requests %}
+            {% for pickup in active_requests %}
+            <div class="pickup-card">
+                <div class="pickup-card-header">
+                    <div>
+                        <div class="pickup-request-id">{{ pickup.request_id }}</div>
+                        <h5 class="mt-1">{{ pickup.waste_type }} - {{ pickup.estimated_quantity }} {{ pickup.quantity_unit }}</h5>
+                    </div>
+                    <span class="pickup-status-badge status-{{ pickup.status.replace(' ', '-') }}">
+                        {{ pickup.status }}
+                    </span>
+                </div>
+
+                <div class="pickup-details">
+                    <div class="pickup-detail-item">
+                        <i class="fas fa-calendar"></i>
+                        <span>
+                            <span class="pickup-detail-label">Date:</span>
+                            {{ pickup.preferred_date.strftime('%b %d, %Y') }}
+                        </span>
+                    </div>
+                    <div class="pickup-detail-item">
+                        <i class="fas fa-clock"></i>
+                        <span>
+                            <span class="pickup-detail-label">Time:</span>
+                            {{ pickup.preferred_time_slot }}
+                        </span>
+                    </div>
+                    <div class="pickup-detail-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>
+                            <span class="pickup-detail-label">Location:</span>
+                            {{ pickup.area or pickup.pickup_address[:40] }}...
+                        </span>
+                    </div>
+                    {% if pickup.assigned_partner %}
+                    <div class="pickup-detail-item">
+                        <i class="fas fa-user"></i>
+                        <span>
+                            <span class="pickup-detail-label">Partner:</span>
+                            {{ pickup.assigned_partner.name }}
+                        </span>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <div class="pickup-actions">
+                    <a href="{{ url_for('pickup_status', request_id=pickup.request_id) }}" class="eco-btn eco-btn-secondary">
+                        <i class="fas fa-eye me-2"></i>View Details
+                    </a>
+                    {% if pickup.status in ['Requested', 'Assigned'] %}
+                    <form method="POST" action="{{ url_for('cancel_pickup', request_id=pickup.request_id) }}" style="display: inline;">
+                        <button type="submit" class="eco-btn" style="background: #f44336; color: white;" onclick="return confirm('Are you sure you want to cancel this pickup?');">
+                            <i class="fas fa-times me-2"></i>Cancel
+                        </button>
+                    </form>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="empty-state">
+                <i class="fas fa-inbox"></i>
+                <p>No active pickup requests</p>
+                <a href="{{ url_for('request_pickup') }}" class="eco-btn eco-btn-primary">
+                    <i class="fas fa-plus me-2"></i>Request Your First Pickup
+                </a>
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- History -->
+    {% if completed_requests %}
+    <div class="history-section">
+        <div class="section-header">
+            <h2><i class="fas fa-history me-2"></i>Pickup History</h2>
+        </div>
+
+        {% for pickup in completed_requests %}
+        <div class="pickup-card">
+            <div class="pickup-card-header">
+                <div>
+                    <div class="pickup-request-id">{{ pickup.request_id }}</div>
+                    <h5 class="mt-1">{{ pickup.waste_type }} - {{ pickup.estimated_quantity }} {{ pickup.quantity_unit }}</h5>
+                </div>
+                <span class="pickup-status-badge status-{{ pickup.status.replace(' ', '-') }}">
+                    {{ pickup.status }}
+                </span>
+            </div>
+
+            <div class="pickup-details">
+                <div class="pickup-detail-item">
+                    <i class="fas fa-calendar"></i>
+                    <span>
+                        <span class="pickup-detail-label">Date:</span>
+                        {{ pickup.preferred_date.strftime('%b %d, %Y') }}
+                    </span>
+                </div>
+                <div class="pickup-detail-item">
+                    <i class="fas fa-check-circle"></i>
+                    <span>
+                        <span class="pickup-detail-label">Completed:</span>
+                        {% if pickup.completed_date %}
+                            {{ pickup.completed_date.strftime('%b %d, %Y') }}
+                        {% else %}
+                            {{ pickup.status_updated_at.strftime('%b %d, %Y') }}
+                        {% endif %}
+                    </span>
+                </div>
+                {% if pickup.collected_weight_kg %}
+                <div class="pickup-detail-item">
+                    <i class="fas fa-weight"></i>
+                    <span>
+                        <span class="pickup-detail-label">Collected:</span>
+                        {{ pickup.collected_weight_kg }} kg
+                    </span>
+                </div>
+                {% endif %}
+            </div>
+
+            <div class="pickup-actions">
+                <a href="{{ url_for('pickup_status', request_id=pickup.request_id) }}" class="eco-btn eco-btn-secondary">
+                    <i class="fas fa-eye me-2"></i>View Details
+                </a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
